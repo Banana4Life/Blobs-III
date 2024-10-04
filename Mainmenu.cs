@@ -4,7 +4,7 @@ using System;
 public partial class Mainmenu : Node
 {
     // private const String COMMAND_AND_CONTROL_SERVER = "banana4.life";
-    private const String COMMAND_AND_CONTROL_SERVER = "phillip-desktop.dynamic.local.schich.tel";
+    private const String COMMAND_AND_CONTROL_SERVER = "phillip-desktop.local.schich.tel";
     const int GAME_PORT = 39875;
     NetworkState networkState;
     int playerCount = 1;
