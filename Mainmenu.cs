@@ -3,7 +3,8 @@ using System;
 
 public partial class Mainmenu : Node
 {
-    private const String COMMAND_AND_CONTROL_SERVER = "banana4.life";
+    // private const String COMMAND_AND_CONTROL_SERVER = "banana4.life";
+    private const String COMMAND_AND_CONTROL_SERVER = "phillip-desktop.dynamic.local.schich.tel";
     const int GAME_PORT = 39875;
     NetworkState networkState;
     int playerCount = 1;
@@ -11,18 +12,15 @@ public partial class Mainmenu : Node
     PacketPeerUdp c2Peer = initC2Connection();
 
 
-    [Export] 
-    public PackedScene player_scene;
-    [Export] 
-    public Timer timer;
-    [Export] 
-    public TextEdit ipField;
+    [Export] public PackedScene player_scene;
+    [Export] public Timer timer;
+    [Export] public TextEdit ipField;
 
 
     public static PacketPeerUdp initC2Connection()
     {
         var peer = new PacketPeerUdp();
-        peer.ConnectToHost(IP.ResolveHostname(COMMAND_AND_CONTROL_SERVER), GAME_PORT); // TODO resolve ip
+        peer.ConnectToHost(IP.ResolveHostname(COMMAND_AND_CONTROL_SERVER), GAME_PORT);
         return peer;
     }
 
@@ -42,9 +40,17 @@ public partial class Mainmenu : Node
 
     public void _add_player(long id = 1)
     {
-        GD.Print("Add player");
-        var player = player_scene.Instantiate();
-        player.Name = id.ToString();
+        GD.Print($"Add player {id}");
+        var name = "Player " + id;
+        var player = GetNodeOrNull(name);
+        if (player == null)
+        {
+            player = player_scene.Instantiate();
+        }
+
+        player.Name = name;
+
+        ((Player)player).peerId = (int)id;
         CallDeferred("add_child", player);
     }
 
@@ -81,28 +87,41 @@ public partial class Mainmenu : Node
         }
     }
 
+    // every 10s send info to c2
     public void On_timer_timeout()
     {
+        switch (networkState)
+        {
+            case NetworkState.JOINING:
+                c2Peer.PutPacket(_gatherC2Info(RequestType.JOIN).ToUtf8Buffer());
+                break;
+            case NetworkState.HOSTING:
+                c2Peer.PutPacket(_gatherC2Info(RequestType.HOST).ToUtf8Buffer());
+                break;
+            case NetworkState.CONNECTED:
+            case NetworkState.CONNECTING:
+                break;
+        }
     }
 
     public String _gatherC2Info(RequestType type)
     {
         var json = type switch
         {
-            RequestType.JOIN => $$"""
+            RequestType.HOST => $$"""
                                   {
-                                      "type": {{type}}
+                                      "type": "{{type}}",
                                       "playerCount": {{playerCount}}
                                   }
                                   """,
-            RequestType.HOST => $$"""
+            RequestType.JOIN => $$"""
                                     {
-                                       "type":  {{type}}
+                                       "type": "{{type}}"
                                    }
                                   """,
             _ => "{}"
         };
-        return Json.Stringify(json);
+        return json;
     }
 
 
@@ -119,38 +138,20 @@ public partial class Mainmenu : Node
         var jsonString = packet.GetStringFromUtf8();
 
         var json = Json.ParseString(jsonString);
-        
+
         if (json.VariantType == Variant.Type.Nil) return;
 
         var dict = json.AsGodotDictionary();
-        
+
         var host = dict["host"].AsString();
-        var port = dict["count"].AsInt32();
-        var players = dict["players"].AsInt32();
-        
-        GD.Print($"Found Server {host}:{port} with {players} players");
+        var port = dict["port"].AsInt32();
+        var playerCount = dict["playerCount"].AsInt32();
+
+        GD.Print($"Found Server {host}:{port} with {playerCount} players");
         gamePeer.CreateClient(host, port);
         Multiplayer.MultiplayerPeer = gamePeer;
         Multiplayer.Connect("connected_to_server", Callable.From(_on_client_connected));
         networkState = NetworkState.CONNECTING;
-    }
-
-
-    // every 10s send info to c2
-    public void _on_timer_timeout()
-    {
-        switch (networkState)
-        {
-            case NetworkState.JOINING:
-                c2Peer.PutPacket(_gatherC2Info(RequestType.JOIN).ToUtf8Buffer());
-                break;
-            case NetworkState.HOSTING:
-                c2Peer.PutPacket(_gatherC2Info(RequestType.HOST).ToUtf8Buffer());
-                break;
-            case NetworkState.CONNECTED:
-            case NetworkState.CONNECTING:
-                break;
-        }
     }
 
 
