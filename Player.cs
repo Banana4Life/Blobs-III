@@ -4,7 +4,7 @@ using System;
 public partial class Player : CharacterBody2D
 {
 	public const float SPEED = 300.0f;
-	public int peerId;
+	public int peerId = -1;
 
 	public override void _PhysicsProcess(double delta)
 	{
@@ -19,5 +19,6 @@ public partial class Player : CharacterBody2D
 	public void _enter_tree()
 	{
 		SetMultiplayerAuthority(peerId);
+		GD.Print("Entered tree with auth", peerId);
 	}
 }

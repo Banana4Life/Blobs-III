@@ -34,7 +34,6 @@ public partial class Mainmenu : Node
         GD.Print($"Connecting to C&C server: {command_and_control_server}");
         c2Peer = new PacketPeerUdp();
         c2Peer.ConnectToHost(IP.ResolveHostname(command_and_control_server), GAME_PORT);
-        GD.Print($"Port is {c2Peer.GetLocalPort()}");
         
         Multiplayer.PeerDisconnected += OnPlayerDisconnected;
         Multiplayer.ConnectedToServer += _on_client_connected;
@@ -46,6 +45,11 @@ public partial class Mainmenu : Node
     private void OnPlayerDisconnected(long playerId)
     {
         GD.Print("OnPlayerDisconnected", playerId);
+        var found = GetNodeOrNull($"Player {playerId}");
+        if (found != null)
+        {
+            RemoveChild(found);
+        }
     }
 
     private void OnServerDisconnected()
@@ -70,16 +74,16 @@ public partial class Mainmenu : Node
     public void _add_player(long id = 1)
     {
         GD.Print($"Add player {id}");
-        var name = "Player " + id;
+        var name = $"Player {id}";
         var player = GetNodeOrNull(name);
         if (player == null)
         {
             player = player_scene.Instantiate();
         }
 
-        player.Name = name;
+        player.Name = id.ToString();
 
-        ((Player)player).peerId = (int)id;
+        // ((Player)player).peerId = (int)id;
         CallDeferred("add_child", player);
     }
 
