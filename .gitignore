@@ -2,3 +2,4 @@
 .godot/
 /android/
 .idea/
+*.sln.DotSettings.user
