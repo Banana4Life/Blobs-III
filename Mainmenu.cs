@@ -46,7 +46,7 @@ public partial class Mainmenu : Node
         command_and_control_server = DEFUALT_COMMAND_AND_CONTROL_SERVER;
         if (result == Error.Ok)
         {
-            command_and_control_server = config.GetValue("c2server", "host").AsString();
+            command_and_control_server = config.GetValue("c2server", "host", Variant.CreateFrom(DEFUALT_COMMAND_AND_CONTROL_SERVER)).AsString();
         }
 
         GD.Print($"Connecting to C&C server: {command_and_control_server}");
