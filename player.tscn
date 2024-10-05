@@ -7,10 +7,11 @@
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_61gl6"]
 shader = ExtResource("2_8jh64")
 shader_parameter/ColorParameter = Color(0, 0, 0, 1)
-shader_parameter/ColorParameter2 = Color(1, 0, 1, 1)
-shader_parameter/uMagnitude = 0.5
-shader_parameter/uFrequency = 0.5
+shader_parameter/ColorParameter2 = Color(0, 1, 0.533333, 1)
+shader_parameter/uMagnitude = 0.05
+shader_parameter/uFrequency = 4.0
 shader_parameter/uRadius = 0.2
+shader_parameter/uTransparency = 0.2
 
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_pmm4k"]
 properties/0/path = NodePath(".:position")
