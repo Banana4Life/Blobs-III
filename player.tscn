@@ -5,11 +5,14 @@
 
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_pmm4k"]
 properties/0/path = NodePath(".:position")
-properties/0/spawn = true
+properties/0/spawn = false
 properties/0/replication_mode = 1
-properties/1/path = NodePath(".:peerId")
+properties/1/path = NodePath(".:DisplayName")
 properties/1/spawn = true
 properties/1/replication_mode = 1
+properties/2/path = NodePath(".:PlayerSize")
+properties/2/spawn = true
+properties/2/replication_mode = 1
 
 [node name="player" type="CharacterBody2D"]
 script = ExtResource("1_v5huj")
@@ -19,3 +22,11 @@ texture = ExtResource("1_oae10")
 
 [node name="Syncher" type="MultiplayerSynchronizer" parent="."]
 replication_config = SubResource("SceneReplicationConfig_pmm4k")
+
+[node name="Label" type="Label" parent="."]
+offset_left = -54.0
+offset_top = -59.0
+offset_right = 57.0
+offset_bottom = -35.0
+text = "NAME"
+horizontal_alignment = 1
