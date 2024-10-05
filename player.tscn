@@ -2,11 +2,15 @@
 
 [ext_resource type="Texture2D" uid="uid://basqxtapupvpo" path="res://icon.svg" id="1_oae10"]
 [ext_resource type="Script" path="res://Player.cs" id="1_v5huj"]
-[ext_resource type="Shader" uid="uid://6tmohkhqfvur" path="res://shaders/blob.tres" id="2_ukm4n"]
+[ext_resource type="Shader" uid="uid://whygv3qsb6m6" path="res://shaders/blob2.tres" id="2_8jh64"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_61gl6"]
-shader = ExtResource("2_ukm4n")
-shader_parameter/Base_Color = Color(0, 0.729412, 0.560784, 1)
+shader = ExtResource("2_8jh64")
+shader_parameter/ColorParameter = Color(0, 0, 0, 1)
+shader_parameter/ColorParameter2 = Color(1, 0, 1, 1)
+shader_parameter/uMagnitude = 0.5
+shader_parameter/uFrequency = 0.5
+shader_parameter/uRadius = 0.2
 
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_pmm4k"]
 properties/0/path = NodePath(".:position")

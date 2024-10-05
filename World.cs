@@ -28,7 +28,7 @@ public partial class World : Node2D
 
             var color = Color.FromHsv(random.RandfRange(0, 1f), 1f, 1f, 1f);
             (sprite.Material as ShaderMaterial).SetShaderParameter("color", color);
-            GD.Print($"spawn at {spawnPos} {color.H}");
+            // GD.Print($"spawn at {spawnPos} {color.H}");
 
 
             AddChild(particle);
