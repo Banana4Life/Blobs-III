@@ -1,11 +1,13 @@
 using Godot;
 using System;
+using Environment = Godot.Environment;
 
 public partial class Player : CharacterBody2D
 {
 	public const float SPEED = 300.0f;
-	public int peerId = -1;
 
+	[Export] public int peerId;
+	
 	public override void _PhysicsProcess(double delta)
 	{
 		if (IsMultiplayerAuthority())
@@ -18,7 +20,14 @@ public partial class Player : CharacterBody2D
 
 	public void _enter_tree()
 	{
-		SetMultiplayerAuthority(peerId);
-		GD.Print("Entered tree with auth", peerId);
+		if (peerId != 0)
+		{
+			GD.Print($"{Name} Entered tree");
+			SetMultiplayerAuthority(peerId);	
+		}
+		else
+		{
+			GD.Print($"{Name} Entered tree with auth");
+		}
 	}
 }

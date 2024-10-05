@@ -34,18 +34,18 @@ public partial class Mainmenu : Node
         GD.Print($"Connecting to C&C server: {command_and_control_server}");
         c2Peer = new PacketPeerUdp();
         c2Peer.ConnectToHost(IP.ResolveHostname(command_and_control_server), GAME_PORT);
-        
+
+        Multiplayer.PeerConnected += OnPlayerConnected;
         Multiplayer.PeerDisconnected += OnPlayerDisconnected;
-        Multiplayer.ConnectedToServer += _on_client_connected;
-        Multiplayer.ConnectionFailed += _onFailed;
+        Multiplayer.ConnectedToServer += OnConnectOk;
+        Multiplayer.ConnectionFailed += OnConnectionFail;
         Multiplayer.ServerDisconnected += OnServerDisconnected;
-        Multiplayer.PeerConnected += _add_player;
     }
     
     private void OnPlayerDisconnected(long playerId)
     {
         GD.Print("OnPlayerDisconnected", playerId);
-        var found = GetNodeOrNull($"Player {playerId}");
+        var found = GetNodeOrNull(playerName(playerId));
         if (found != null)
         {
             RemoveChild(found);
@@ -57,7 +57,7 @@ public partial class Mainmenu : Node
         GD.Print("OnServerDisconnected");
     }
     
-    private void _onFailed()
+    private void OnConnectionFail()
     {
         GD.Print("failed to connect to game server");
     } 
@@ -71,34 +71,43 @@ public partial class Mainmenu : Node
     }
 
 
-    public void _add_player(long id = 1)
+    public void OnPlayerConnected(long id)
     {
         GD.Print($"Add player {id}");
-        var name = $"Player {id}";
-        var player = GetNodeOrNull(name);
-        if (player == null)
+        var name = playerName(id);
+        
+        if (id == Multiplayer.GetUniqueId() || Multiplayer.IsServer())
         {
-            player = player_scene.Instantiate();
+            GD.Print("actually add ", name);
+            var player = GetNodeOrNull(name);
+            if (player == null)
+            {
+                player = player_scene.Instantiate();
+                player.Name = name;
+                ((Player)player).peerId = (int)id;
+                AddChild(player);
+            }
         }
+    }
 
-        player.Name = id.ToString();
-
-        // ((Player)player).peerId = (int)id;
-        CallDeferred("add_child", player);
+    private static string playerName(long id)
+    {
+        return $"Player {id}";
     }
 
 
-// joining a random server decided by c2
+    // joining a random server decided by c2
     public void _on_join_button_pressed()
     {
         networkState = NetworkState.JOINING;
+        GD.Print($"Finding Server to Join...");
         // TODO clear incoming packets
         timer.Start();
     }
 
     public void _on_join_ip_pressed()
     {
-        Multiplayer.ConnectedToServer += _on_client_connected;
+        Multiplayer.ConnectedToServer += OnConnectOk;
         gamePeer.CreateClient(ipField.Text, GAME_PORT);
         Multiplayer.MultiplayerPeer = gamePeer;
         networkState = NetworkState.CONNECTING;
@@ -174,10 +183,11 @@ public partial class Mainmenu : Node
     }
 
 
-    private void _on_client_connected()
+    private void OnConnectOk()
     {
         GD.Print("Client connected");
         networkState = NetworkState.CONNECTED;
+        OnPlayerConnected(Multiplayer.GetUniqueId());
         // TODO start game        
     }
 
@@ -199,7 +209,7 @@ public partial class Mainmenu : Node
         gamePeer.CreateServer(localPort);
         
         Multiplayer.MultiplayerPeer = gamePeer;
-        _add_player(); // host without joining
+        OnPlayerConnected(1); // host without joining
         networkState = NetworkState.HOSTING;
         timer.Stop();
         timer.Start();
