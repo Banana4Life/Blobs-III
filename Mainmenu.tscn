@@ -59,11 +59,10 @@ offset_right = 1141.0
 offset_bottom = 407.0
 
 [node name="edName" type="LineEdit" parent="."]
-offset_left = 169.0
-offset_top = 30.0
-offset_right = 354.0
+offset_left = 73.0
+offset_top = 27.0
+offset_right = 246.0
 offset_bottom = 61.0
-placeholder_text = "Player Name"
 
 [connection signal="pressed" from="Host Button" to="." method="_on_host_button_pressed"]
 [connection signal="pressed" from="Host Button2" to="." method="_on_host_button_2_pressed"]
