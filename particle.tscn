@@ -1,11 +1,16 @@
 [gd_scene load_steps=5 format=3 uid="uid://cimkbk2l628bd"]
 
-[ext_resource type="Shader" uid="uid://blg37qff5g43a" path="res://shaders/particle.tres" id="1_hg02x"]
+[ext_resource type="Shader" uid="uid://whygv3qsb6m6" path="res://shaders/blob2.tres" id="1_an8a7"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_i0b0s"]
 resource_local_to_scene = true
-shader = ExtResource("1_hg02x")
-shader_parameter/color = Color(1, 0, 0, 1)
+shader = ExtResource("1_an8a7")
+shader_parameter/cellColor = Color(1, 0, 0, 1)
+shader_parameter/bodyColor = Color(1, 0.262745, 0.752941, 0.317647)
+shader_parameter/uSeed = 0.0
+shader_parameter/uMagnitude = 0.19
+shader_parameter/uFrequency = 5.5
+shader_parameter/uRadius = 0.2
 
 [sub_resource type="CanvasTexture" id="CanvasTexture_tdlh4"]
 
