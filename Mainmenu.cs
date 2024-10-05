@@ -76,7 +76,7 @@ public partial class Mainmenu : Node
         GD.Print($"Add player {id}");
         var name = playerName(id);
         
-        if (id == Multiplayer.GetUniqueId() || Multiplayer.IsServer())
+        if (id != 1 || Multiplayer.IsServer())
         {
             GD.Print("actually add ", name);
             var player = GetNodeOrNull(name);
