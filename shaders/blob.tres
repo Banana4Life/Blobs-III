@@ -1,6 +1,6 @@
-[gd_resource type="VisualShader" load_steps=18 format=3 uid="uid://6tmohkhqfvur"]
+[gd_resource type="VisualShader" load_steps=17 format=3 uid="uid://6tmohkhqfvur"]
 
-[ext_resource type="Script" path="res://shaderV/rgba/noise/worley2x2x2.gd" id="1_c1l80"]
+[ext_resource type="Script" path="res://shaderV/rgba/noise/worley2x2x2.gd" id="1_cyqt6"]
 
 [sub_resource type="VisualShaderNodeVectorDistance" id="VisualShaderNodeVectorDistance_oxo85"]
 default_input_values = [0, Vector2(0, 0), 1, Vector2(0.5, 0.5)]
@@ -34,7 +34,7 @@ default_value = Color(0, 0.729412, 0.560784, 1)
 output_port_for_preview = 0
 default_input_values = [1, Vector3(0, 0, 0), 2, 5.0, 3, 1.0, 4, 0.0]
 initialized = true
-script = ExtResource("1_c1l80")
+script = ExtResource("1_cyqt6")
 
 [sub_resource type="VisualShaderNodeInput" id="VisualShaderNodeInput_y21et"]
 input_name = "time"
@@ -52,10 +52,8 @@ input_name = "uv"
 operator = 7
 
 [sub_resource type="VisualShaderNodeClamp" id="VisualShaderNodeClamp_8e2ua"]
-default_input_values = [0, 0.0, 1, 0.2, 2, 0.7]
-
-[sub_resource type="VisualShaderNodeUVPolarCoord" id="VisualShaderNodeUVPolarCoord_ses3p"]
 output_port_for_preview = 0
+default_input_values = [0, 0.0, 1, 0.2, 2, 0.7]
 
 [resource]
 code = "shader_type canvas_item;
@@ -65,7 +63,7 @@ uniform vec4 Base_Color : source_color = vec4(0.000000, 0.729412, 0.560784, 1.00
 
 
 // WorleyNoise2x2x2
-#include \"res://rgba/noise/worley2x2x2.gdshaderinc\"
+#include \"res://shaderV/rgba/noise/worley2x2x2.gdshaderinc\"
 
 void fragment() {
 	vec4 n_out4p0;
@@ -171,7 +169,7 @@ void fragment() {
 
 }
 "
-graph_offset = Vector2(-1504.89, -217.381)
+graph_offset = Vector2(-836.247, -188.692)
 mode = 1
 flags/light_only = false
 nodes/fragment/0/position = Vector2(420, 40)
@@ -187,8 +185,6 @@ nodes/fragment/7/node = SubResource("VisualShaderNodeColorOp_p184w")
 nodes/fragment/7/position = Vector2(160, 480)
 nodes/fragment/8/node = SubResource("VisualShaderNodeClamp_8e2ua")
 nodes/fragment/8/position = Vector2(-560, 20)
-nodes/fragment/9/node = SubResource("VisualShaderNodeUVPolarCoord_ses3p")
-nodes/fragment/9/position = Vector2(-1000, -240)
 nodes/fragment/10/node = SubResource("VisualShaderNodeVectorDistance_oxo85")
 nodes/fragment/10/position = Vector2(-1260, -420)
 nodes/fragment/11/node = SubResource("VisualShaderNodeMultiplyAdd_obu61")
@@ -207,4 +203,4 @@ nodes/fragment/23/node = SubResource("VisualShaderNodeCustom_3c63e")
 nodes/fragment/23/position = Vector2(-940, 180)
 nodes/fragment/24/node = SubResource("VisualShaderNodeInput_y21et")
 nodes/fragment/24/position = Vector2(-1420, 280)
-nodes/fragment/connections = PackedInt32Array(3, 0, 4, 2, 4, 0, 7, 0, 2, 0, 7, 1, 7, 0, 0, 0, 6, 0, 9, 0, 6, 0, 10, 0, 10, 0, 11, 0, 11, 0, 12, 1, 12, 0, 13, 0, 13, 0, 16, 0, 8, 0, 17, 0, 17, 0, 16, 2, 16, 0, 0, 1, 23, 0, 8, 0, 6, 0, 23, 0, 24, 0, 23, 4, 19, 0, 23, 2)
+nodes/fragment/connections = PackedInt32Array(3, 0, 4, 2, 4, 0, 7, 0, 2, 0, 7, 1, 7, 0, 0, 0, 6, 0, 10, 0, 10, 0, 11, 0, 11, 0, 12, 1, 12, 0, 13, 0, 13, 0, 16, 0, 8, 0, 17, 0, 17, 0, 16, 2, 16, 0, 0, 1, 23, 0, 8, 0, 6, 0, 23, 0, 24, 0, 23, 4, 19, 0, 23, 2)

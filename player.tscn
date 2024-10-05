@@ -2,7 +2,7 @@
 
 [ext_resource type="Texture2D" uid="uid://basqxtapupvpo" path="res://icon.svg" id="1_oae10"]
 [ext_resource type="Script" path="res://Player.cs" id="1_v5huj"]
-[ext_resource type="Shader" uid="uid://6tmohkhqfvur" path="res://blob.tres" id="2_ukm4n"]
+[ext_resource type="Shader" uid="uid://6tmohkhqfvur" path="res://shaders/blob.tres" id="2_ukm4n"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_61gl6"]
 shader = ExtResource("2_ukm4n")

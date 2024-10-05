@@ -1,0 +1,7 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://3kuoplfp617j"]
+
+[ext_resource type="Shader" uid="uid://blg37qff5g43a" path="res://shaders/particle.tres" id="1_8twlm"]
+
+[resource]
+shader = ExtResource("1_8twlm")
+shader_parameter/color = Color(1, 0, 0, 1)

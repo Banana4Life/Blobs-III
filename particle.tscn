@@ -1,0 +1,26 @@
+[gd_scene load_steps=5 format=3 uid="uid://cimkbk2l628bd"]
+
+[ext_resource type="Shader" uid="uid://blg37qff5g43a" path="res://shaders/particle.tres" id="1_hg02x"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_i0b0s"]
+resource_local_to_scene = true
+shader = ExtResource("1_hg02x")
+shader_parameter/color = Color(1, 0, 0, 1)
+
+[sub_resource type="CanvasTexture" id="CanvasTexture_tdlh4"]
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_ljpuu"]
+properties/0/path = NodePath(".:position")
+properties/0/spawn = false
+properties/0/replication_mode = 1
+
+[node name="Node2D" type="Node2D"]
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+material = SubResource("ShaderMaterial_i0b0s")
+rotation = 3.14159
+scale = Vector2(20, 20)
+texture = SubResource("CanvasTexture_tdlh4")
+
+[node name="Syncher" type="MultiplayerSynchronizer" parent="."]
+replication_config = SubResource("SceneReplicationConfig_ljpuu")
