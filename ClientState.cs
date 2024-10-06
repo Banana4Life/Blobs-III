@@ -133,7 +133,7 @@ public class ClientState : State
             };
             peerConnection.SessionDescriptionCreated += (type, sdp) =>
             {
-                GD.Print($"Received SDP: {type} offer:\n{sdp}");
+                GD.Print($"Received SDP: {type}:\n{sdp}");
                 signalingClient.OfferMessage(serverId, sdp);
             };
             gamePeer.CreateClient(peerId);
