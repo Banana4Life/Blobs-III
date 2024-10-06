@@ -35,9 +35,18 @@ public partial class Mainmenu : Control
 
     private void _on_join_button_pressed()
     {
-        Global.Instance.EnterClientState(UI_getPlayerName());
-        GetTree().Root.AddChild(countdown.Instantiate());
-        Visible = false;
+        if (Input.GetActionStrength("start-server") > 0.5)
+        {
+            Global.Instance.EnterServerState(UI_getPlayerName());
+            GetTree().Root.AddChild(countdown.Instantiate());
+            Visible = false;
+        }
+        else
+        {
+            Global.Instance.EnterClientState(UI_getPlayerName());
+            GetTree().Root.AddChild(countdown.Instantiate());
+            Visible = false;
+        }
     }
 
     private string UI_getPlayerName()
