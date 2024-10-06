@@ -1,6 +1,7 @@
-[gd_scene load_steps=5 format=3 uid="uid://cimkbk2l628bd"]
+[gd_scene load_steps=7 format=3 uid="uid://cimkbk2l628bd"]
 
 [ext_resource type="Shader" uid="uid://whygv3qsb6m6" path="res://shaders/blob2.tres" id="1_an8a7"]
+[ext_resource type="Script" path="res://Particle.cs" id="1_jl415"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_i0b0s"]
 resource_local_to_scene = true
@@ -19,9 +20,13 @@ properties/0/path = NodePath(".:position")
 properties/0/spawn = false
 properties/0/replication_mode = 1
 
+[sub_resource type="CircleShape2D" id="CircleShape2D_5l2jb"]
+
 [node name="Node2D" type="Node2D"]
+script = ExtResource("1_jl415")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
+visible = false
 material = SubResource("ShaderMaterial_i0b0s")
 rotation = 3.14159
 scale = Vector2(20, 20)
@@ -29,3 +34,12 @@ texture = SubResource("CanvasTexture_tdlh4")
 
 [node name="Syncher" type="MultiplayerSynchronizer" parent="."]
 replication_config = SubResource("SceneReplicationConfig_ljpuu")
+
+[node name="Area2D" type="Area2D" parent="."]
+scale = Vector2(0.6, 0.6)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+scale = Vector2(1, 1)
+shape = SubResource("CircleShape2D_5l2jb")
+
+[connection signal="area_entered" from="Area2D" to="." method="_on_area_2d_area_entered"]
