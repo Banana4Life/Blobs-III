@@ -9,8 +9,8 @@ public partial class Particle : RigidBody2D
     [Export] public float seed;
     [Export] public float mag;
     [Export] public float freq;
-    
 
+    
     public override void _Ready()
     {
         var syncher = GetNode<MultiplayerSynchronizer>("ParticleSync");
@@ -54,8 +54,7 @@ public partial class Particle : RigidBody2D
 
     public void _on_area_2d_area_entered(Area2D area)
     {
-        // GD.Print($"area entered {area} {this}");
-        var otherParent = area.GetParent(); // TODO other things that collide?
+        var otherParent = area.GetParent().GetParent(); // TODO other things that collide?
         
         if (otherParent is Particle otherParticle) // Spawning particle
         {
@@ -67,8 +66,7 @@ public partial class Particle : RigidBody2D
                 }
                 else
                 {
-                    // TODO how does this happen?
-                    GD.Print("Both are valid?");
+                    // GD.Print("Both are valid?");
                 }
             }
             else if (otherParticle.validSpawn)
@@ -81,23 +79,10 @@ public partial class Particle : RigidBody2D
                 otherParticle.RemoveFromGame();
             }
         }
-        if (area.Name == "PlayerArea")
+        else
         {
-            if (validSpawn)
-            {
-                area.GetParent().GetParent<Player>().GrowPlayer(size);
-            }
-            RemoveFromGame();
+            GD.Print($"area entered {area} {this}");
         }
-        if (otherParent is Player player)
-        {
-            if (validSpawn)
-            {
-                player.GrowPlayer(size);
-            }
-            RemoveFromGame();
-        }
-        
     }
 
     public override void _IntegrateForces(PhysicsDirectBodyState2D state)
@@ -113,7 +98,8 @@ public partial class Particle : RigidBody2D
         {
             validSpawn = true;
             // GD.Print("Spawned particle " + size);
-            
+
+            GetNode<CollisionShape2D>("PhysicsCollisionShape").Disabled = false;
             var syncher = GetNode<MultiplayerSynchronizer>("ParticleSync");
             syncher.SetVisibilityFor(0, true);
         }

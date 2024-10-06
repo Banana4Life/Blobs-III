@@ -9,8 +9,8 @@ public partial class World : Node2D
 
     private int players = 1;
     public int totalMass = 0;
-    [Export] public int maxMass = 10000;
-    [Export] public Vector2 PlayArea = new(1000, 1000);
+    [Export] public int maxMass;
+    [Export] public Vector2 PlayArea;
     public int i = 0;
 
     private RandomNumberGenerator random = new();
@@ -29,8 +29,8 @@ public partial class World : Node2D
 
         var particle = particlePrefab.Instantiate<Particle>();
         var spawnPos = new Vector2(
-            random.RandfRange(0f, spawnRange.X),
-            random.RandfRange(0f, spawnRange.Y)
+            random.RandfRange(-PlayArea.X / 2, PlayArea.X / 2),
+            random.RandfRange(-PlayArea.Y / 2, PlayArea.Y / 2)
             // random.RandfRange(50f, 50f)
         );
 
@@ -110,8 +110,8 @@ public partial class World : Node2D
         existing.GlobalPosition = position;
         existing.PlayerSize = size;
         existing.DisplayName = displayName;
-        GD.Print(
-            $"{Multiplayer.GetUniqueId()}: Player {displayName}({id}) init size: {existing.PlayerSize} auth {existing.GetMultiplayerAuthority()}");
+        GD.Print($"{Multiplayer.GetUniqueId()}: Player {displayName}({id}) init size: {existing.PlayerSize} auth {existing.GetMultiplayerAuthority()}");
+        
 
         authorityPlayer = existing;
         var cam = GetNode<Camera2D>("Camera2D");

@@ -12,6 +12,8 @@ size = Vector2(2725, 1627)
 script = ExtResource("1_h5r3q")
 particlePrefab = ExtResource("2_ldhtw")
 playerPrefab = ExtResource("3_u1fp8")
+maxMass = 10000
+PlayArea = Vector2(3000, 3000)
 
 [node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="."]
 _spawnable_scenes = PackedStringArray("res://entity/particle.tscn", "res://entity/player.tscn")
@@ -33,5 +35,6 @@ texture = ExtResource("4_gxdw6")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
 position = Vector2(-2.5, -3.5)
 shape = SubResource("RectangleShape2D_ibvco")
+disabled = true
 
 [node name="Camera2D" type="Camera2D" parent="."]
