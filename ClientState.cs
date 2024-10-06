@@ -61,6 +61,8 @@ public class ClientState : State
     {
         GD.Print($"Client - {multiplayer.GetUniqueId()}: connected to Server");
         state = NetworkState.CONNECTED;
+        
+        Global.Instance.SendPlayerInfo(playerName);
     }
 
 

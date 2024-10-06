@@ -1,5 +1,6 @@
 using Godot;
 using System;
+using System.Diagnostics;
 using LD56;
 
 record Peer(Guid Id, int PeerId, WebRtcPeerConnection Connection);
@@ -12,7 +13,6 @@ public partial class Mainmenu : Node2D
     [Export] public PackedScene player_scene;
     [Export] public PackedScene worldScene;
 
-    private PlayerManager _manager = new();
 
     public override void _Ready()
     {
@@ -24,7 +24,6 @@ public partial class Mainmenu : Node2D
     private void SetupMultiPlayer()
     {
         Multiplayer.PeerDisconnected += OnPlayerLeave;
-        Multiplayer.ConnectedToServer += OnPlayerJoin;
     }
 
     private void InitMainMenu()
@@ -42,31 +41,6 @@ public partial class Mainmenu : Node2D
             c2_base_uri = config.GetValue("c2server", "host", Variant.CreateFrom(DEFAULT_C2_BASE_URI)).AsString();
         }
     }
-    
-    [Rpc(MultiplayerApi.RpcMode.AnyPeer)]
-    public void sendPlayerInfo(String name, long id)
-    {
-        // TODO add player to game manager
-        GD.Print($"{Multiplayer.GetUniqueId()}: send player info {name}({id})");
-        if (Multiplayer.IsServer())
-        {
-            var spawnPos = new Vector2(50, new Random().Next(50,500));
-            var spawnSize = new Random().Next(50, 150);
-
-            GD.Print($"{Multiplayer.GetUniqueId()}: broadcasting spawn {name}({id}) to {spawnPos} size {spawnSize}...");
-            _manager.Players.Add(new PlayerManager.PlayerInfo(name, id, spawnSize));
-            
-            SpawnPlayer(name, id);
-            if (id != 1)
-            {
-                RpcId(id, MethodName.initPlayerOnAuthority, name, id, spawnPos, spawnSize);
-            }
-            else
-            {
-                initPlayerOnAuthority(name, id, spawnPos, spawnSize);
-            }
-        }
-    }
 
 
     [Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = true)]
@@ -78,30 +52,26 @@ public partial class Mainmenu : Node2D
         existing.DisplayName = displayName;
         GD.Print($"{Multiplayer.GetUniqueId()}: Player {displayName}({id}) init size: {existing.PlayerSize} auth {existing.GetMultiplayerAuthority()}");
     }
-    
-    private void SpawnPlayer(string displayName, long id)
-    {
-        GD.Print($"{Multiplayer.GetUniqueId()}: player spawn {displayName} {id}");
 
-        var player = player_scene.Instantiate();
-        player.Name = id.ToString();
-        AddChild(player);
+    public override void _Process(double delta)
+    {
     }
+
 
 
     private void _on_host_button_pressed()
     {
         Global.Instance.State = new ServerState(Multiplayer, c2_base_uri);
-        sendPlayerInfo(UI_getPlayerName() + "(Host)", 1);
-        // GetTree().Root.AddChild(worldScene.Instantiate());
-        // Visible = false;
+        Global.Instance.PlayerManager.AddPlayer(UI_getPlayerName(), 1);
+        GetTree().Root.AddChild(worldScene.Instantiate());
+        Visible = false;
     }
 
     private void _on_join_button_pressed()
     {
         Global.Instance.State = new ClientState(Multiplayer, c2_base_uri, UI_getPlayerName());
-        // GetTree().Root.AddChild(worldScene.Instantiate());
-        // Visible = false;
+        GetTree().Root.AddChild(worldScene.Instantiate());
+        Visible = false;
     }
 
     private string UI_getPlayerName()
@@ -120,10 +90,4 @@ public partial class Mainmenu : Node2D
         }
     }
 
-    private void OnPlayerJoin()
-    {
-        var peerId = Multiplayer.GetUniqueId();
-        // Send RPC to Server that spawns the player for everyone
-        RpcId(1, MethodName.sendPlayerInfo, UI_getPlayerName() ?? $"Player_{peerId}", peerId);
-    }
 }

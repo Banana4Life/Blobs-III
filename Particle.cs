@@ -6,7 +6,16 @@ public partial class Particle : Node2D
 {
     private bool validSpawn = false;
     private double aliveTime = 0;
-    public int size;
+    [Export] public int size;
+    [Export] public Color Color;
+
+    public override void _Ready()
+    {
+        var sprite = GetNode<Sprite2D>("Sprite2D");
+        var shaderMat = (sprite.Material as ShaderMaterial);
+        shaderMat.SetShaderParameter("bodyColor", Color);
+        shaderMat.SetShaderParameter("cellColor", Colors.Black);
+    }
 
 
     public void RemoveFromGame()
