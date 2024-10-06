@@ -30,6 +30,12 @@ public class ServerState : State
         GD.Print($"Server connecting to C&C server: {baseUri}");
         signalingClient = new("server", baseUri, $"/ld56/signal/{myId}/host");
     }
+    
+    private void TransitionState(NetworkState newState)
+    {
+        GD.Print($"Server - Transition {state} -> {newState}");
+        state = newState;
+    }
 
     private void OnPeerConnected(long id)
     {
@@ -63,7 +69,8 @@ public class ServerState : State
                 {
                     gamePeer.CreateServer();
                     multiplayer.MultiplayerPeer = gamePeer;
-                    state = NetworkState.HOSTING;
+                    TransitionState(NetworkState.HOSTING);
+                    Global.Instance.LoadWorldScene();
                 }
 
                 break;

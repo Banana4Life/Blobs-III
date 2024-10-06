@@ -1,9 +1,7 @@
-[gd_scene load_steps=5 format=3 uid="uid://mlrhpblxt33d"]
+[gd_scene load_steps=3 format=3 uid="uid://mlrhpblxt33d"]
 
 [ext_resource type="Script" path="res://Mainmenu.cs" id="1_mc8xx"]
 [ext_resource type="Texture2D" uid="uid://c3gwlsm3viiuk" path="res://ui/main_menu/background.jpg" id="2_oa8qe"]
-[ext_resource type="PackedScene" uid="uid://fmi00jcend8v" path="res://player.tscn" id="2_vloj2"]
-[ext_resource type="PackedScene" uid="uid://c72a651i70tmf" path="res://ui/transitions/countdown.tscn" id="3_0byh3"]
 
 [node name="Main_Menu" type="Control" node_paths=PackedStringArray("playerName")]
 layout_mode = 3
@@ -13,8 +11,6 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_mc8xx")
-player_scene = ExtResource("2_vloj2")
-countdown = ExtResource("3_0byh3")
 playerName = NodePath("MarginContainer/VBoxContainer2/HBoxContainer/edName")
 
 [node name="TextureRect" type="TextureRect" parent="."]

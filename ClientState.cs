@@ -88,10 +88,10 @@ public class ClientState : State
                 UpdateAwaitAcceptState(dt);
                 break;
             case NetworkState.OFFERING:
-                UpdateOfferingState();
+                UpdateOfferingState(dt);
                 break;
             case NetworkState.CONNECTED:
-                UpdateConnectedState();
+                UpdateConnectedState(dt);
                 break;
         }
     }
@@ -113,12 +113,7 @@ public class ClientState : State
 
     private void UpdateAwaitAcceptState(double dt)
     {
-        timeAwaiting += dt;
-        if (timeAwaiting >= 3) // Waited for 3s to connect
-        {
-            Global.Instance.EnterServerState(playerName);
-            return;
-        }
+        if (WaitForCountdown(dt)) return;
         var packet = signalingClient.ReadPacket();
         if (packet != null)
         {
@@ -147,8 +142,9 @@ public class ClientState : State
         }
     }
 
-    private void UpdateOfferingState()
+    private void UpdateOfferingState(double dt)
     {
+        if (WaitForCountdown(dt)) return;
         if (peerConnection == null)
         {
             GD.PushWarning($"Updating in Offering state, but without a peer connection!");
@@ -176,7 +172,24 @@ public class ClientState : State
         }
     }
 
-    private void UpdateConnectedState()
+    private bool WaitForCountdown(double dt)
     {
+        timeAwaiting += dt;
+        if (timeAwaiting >= 3) // Waited for 3s to connect we host instead now...
+        {
+            Global.Instance.EnterServerState(playerName);
+            return true;
+        }
+
+        return false;
+    }
+
+    private void UpdateConnectedState(double dt)
+    {
+        timeAwaiting += dt;
+        if (timeAwaiting >= 3)
+        {
+            Global.Instance.LoadWorldScene();
+        }
     }
 }

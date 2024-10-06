@@ -19,6 +19,7 @@ public partial class Particle : Node2D
         syncher.SetVisibilityFor(0, false);
         
         var sprite = GetNode<Sprite2D>("Sprite2D");
+        sprite.Visible = false;
         var shaderMat = (sprite.Material as ShaderMaterial);
         shaderMat.SetShaderParameter("bodyColor", Color);
         shaderMat.SetShaderParameter("cellColor", Colors.Black);
@@ -41,6 +42,7 @@ public partial class Particle : Node2D
 
     public void _on_area_2d_area_entered(Area2D area)
     {
+        // GD.Print($"area entered {area} {this}");
         var otherParticle = area.GetParent<Particle>(); // TODO other things that collide?
         if (validSpawn)
         {
@@ -72,6 +74,9 @@ public partial class Particle : Node2D
         if (aliveTime >= 0.5d)
         {
             validSpawn = true;
+            
+            var sprite = GetNode<Sprite2D>("Sprite2D");
+            // sprite.Visible = true;
             
             var syncher = GetNode<MultiplayerSynchronizer>("Syncher");
             syncher.SetVisibilityFor(0, true);

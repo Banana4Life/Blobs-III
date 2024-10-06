@@ -6,7 +6,11 @@ public partial class Global : Node
 {
     private const string DEFAULT_C2_BASE_URI = "wss://banana4.life";
     private string c2_base_uri;
-    
+
+    private PackedScene worldScene = GD.Load<PackedScene>("res://world.tscn");
+    private PackedScene mainMenuScene = GD.Load<PackedScene>("res://ui/main_menu/main_menu.tscn");
+    private PackedScene countDownScene = GD.Load<PackedScene>("res://ui/transitions/countdown.tscn");
+
     public static Global Instance { get; private set; }
 
     public State State;
@@ -15,7 +19,7 @@ public partial class Global : Node
     public override void _Ready()
     {
         Instance = this;
-        
+
         var config = new ConfigFile();
         var result = config.Load("user://config.cfg");
         c2_base_uri = DEFAULT_C2_BASE_URI;
@@ -28,15 +32,16 @@ public partial class Global : Node
     public void EnterClientState(string playerName)
     {
         State = new ClientState(Multiplayer, c2_base_uri, playerName);
-
+        LoadCountdownScene();
     }
 
+    
     public void EnterServerState(string playerName)
     {
         State = new ServerState(Multiplayer, c2_base_uri);
         PlayerManager.AddPlayer(playerName, 1);
     }
-    
+
     public override void _Process(double delta)
     {
         if (State != null)
@@ -61,6 +66,31 @@ public partial class Global : Node
         {
             GD.PrintErr("Got Player Info on Client?");
         }
+    }
+
+    private void LoadScene(PackedScene packedScene)
+    {
+        // TODO discard scenes?
+        // if (GetTree().CurrentScene is CanvasItem mm)
+        // {
+            // mm.Visible = false;
+        // }
+
+        GetTree().ChangeSceneToPacked(packedScene);
+        
+        // var newScene = packedScene.Instantiate();
+        // GetTree().Root.AddChild(newScene);
+        // GetTree().SetCurrentScene(newScene);
+    }
+
+    public void LoadWorldScene()
+    {
+        LoadScene(worldScene);
+    }
+    
+    private void LoadCountdownScene()
+    {
+        LoadScene(countDownScene);
     }
 
 }

@@ -44,7 +44,6 @@ properties/6/replication_mode = 1
 script = ExtResource("1_jl415")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-visible = false
 material = SubResource("ShaderMaterial_i0b0s")
 rotation = 3.14159
 scale = Vector2(20, 20)
