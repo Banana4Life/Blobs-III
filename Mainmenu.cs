@@ -6,9 +6,6 @@ record Peer(Guid Id, int PeerId, WebRtcPeerConnection Connection);
 
 public partial class Mainmenu : Control
 {
-    private const string DEFAULT_C2_BASE_URI = "wss://banana4.life";
-    private string c2_base_uri;
-
     [Export] public PackedScene player_scene;
     [Export] public PackedScene worldScene;
     [Export] public LineEdit playerName;

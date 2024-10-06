@@ -5,22 +5,122 @@ namespace LD56;
 
 public static class NameGenerator
 {
-    static readonly List<String> Names =
-    [
-        "Bob",
-        "Alice",
-        "Charlie",
-        "Eve",
-        "Dave",
-        "Grace",
-        "Heidi",
-        "Ivan",
-        "Judy",
-        "Mallory"
-    ];
+    static readonly List<string> animals = new()
+    {
+        "kitten",
+        "puppy",
+        "bunny",
+        "hamster",
+        "duckling",
+        "chick",
+        "foal",
+        "calf",
+        "fawn",
+        "cub",
+        "lamb",
+        "piglet",
+        "mouse",
+        "gerbil",
+        "guinea",
+        "hedgehog",
+        "chinchilla",
+        "koala",
+        "otter",
+        "ferret",
+        "panda",
+        "squirrel",
+        "racoon",
+        "penguin",
+        "seal",
+        "sloth",
+        "feline",
+        "canary",
+        "sparrow",
+        "owl",
+        "bat",
+        "goat",
+        "pika",
+        "vole",
+        "mole",
+        "weasel",
+        "stoat",
+        "badger",
+        "meerkat",
+        "shrew",
+        "gecko",
+        "frog",
+        "toad",
+        "turtle",
+        "newt",
+        "dormouse",
+        "lemur",
+        "possum",
+        "koala",
+        "beaver"
+    };
+
+    
+    static readonly List<string> adjectives = new()
+    {
+        "adorable",
+        "tiny",
+        "fluffy",
+        "cuddly",
+        "playful",
+        "charming",
+        "petite",
+        "precious",
+        "sweet",
+        "dainty",
+        "lovable",
+        "delicate",
+        "wee",
+        "miniature",
+        "soft",
+        "snuggly",
+        "cute",
+        "endearing",
+        "little",
+        "small",
+        "mini",
+        "baby",
+        "innocent",
+        "gentle",
+        "light",
+        "darling",
+        "bouncy",
+        "squeaky",
+        "fuzzy",
+        "whimsical",
+        "plush",
+        "chubby",
+        "curious",
+        "nimble",
+        "happy",
+        "angelic",
+        "joyful",
+        "frisky",
+        "friendly",
+        "warm",
+        "bright",
+        "soft-hearted",
+        "sprightly",
+        "spunky",
+        "teensy",
+        "bubbly",
+        "jolly",
+        "rotund",
+        "plump",
+        "perky"
+    };
+    
+    
+
 
     public static string RandomName()
     {
-        return Names[new Random().Next(0, Names.Count)];
+        var random = new Random();
+        return adjectives[random.Next(0, adjectives.Count)] + " " + 
+               animals[random.Next(0, animals.Count)];
     }
 }

@@ -1,13 +1,11 @@
-using System;
 using Godot;
 
 namespace LD56;
 
 public partial class Global : Node
 {
-    private const String DEFAULT_C2_BASE_URI = "wss://banana4.life";
-    private String c2_base_uri;
-    
+    private const string DEFAULT_C2_BASE_URI = "wss://banana4.life";
+    private string c2_base_uri;
     
     public static Global Instance { get; private set; }
 
@@ -33,7 +31,7 @@ public partial class Global : Node
 
     }
 
-    public void EnterServerState(String playerName)
+    public void EnterServerState(string playerName)
     {
         State = new ServerState(Multiplayer, c2_base_uri);
         PlayerManager.AddPlayer(playerName, 1);
