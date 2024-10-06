@@ -1,6 +1,7 @@
 using Godot;
 using System;
 using System.Collections.Generic;
+using LD56;
 
 public partial class World : Node2D
 {
@@ -8,7 +9,7 @@ public partial class World : Node2D
 
     private int players = 1;
     public int totalMass = 0;
-    public int maxMass = 10000;
+    public int maxMass = 100;
     public int i = 0;
 
     private RandomNumberGenerator random = new();
@@ -63,7 +64,7 @@ public partial class World : Node2D
     // Called every frame. 'delta' is the elapsed time since the previous frame.
     public override void _Process(double delta)
     {
-        if (Multiplayer.IsServer())
+        if (Global.Instance.State is ServerState)
         {
             spawnToMaxMass();
         }

@@ -8,7 +8,6 @@ public partial class Mainmenu : Node2D
 {
     private const String DEFAULT_C2_BASE_URI = "wss://banana4.life";
     private String c2_base_uri;
-    private State state;
 
     [Export] public PackedScene player_scene;
     [Export] public PackedScene worldScene;
@@ -92,17 +91,17 @@ public partial class Mainmenu : Node2D
 
     private void _on_host_button_pressed()
     {
-        state = new ServerState(Multiplayer, c2_base_uri);
+        Global.Instance.State = new ServerState(Multiplayer, c2_base_uri);
         sendPlayerInfo(UI_getPlayerName() + "(Host)", 1);
-        GetTree().Root.AddChild(worldScene.Instantiate());
-        Visible = false;
+        // GetTree().Root.AddChild(worldScene.Instantiate());
+        // Visible = false;
     }
 
     private void _on_join_button_pressed()
     {
-        state = new ClientState(Multiplayer, c2_base_uri, UI_getPlayerName());
-        GetTree().Root.AddChild(worldScene.Instantiate());
-        Visible = false;
+        Global.Instance.State = new ClientState(Multiplayer, c2_base_uri, UI_getPlayerName());
+        // GetTree().Root.AddChild(worldScene.Instantiate());
+        // Visible = false;
     }
 
     private string UI_getPlayerName()
@@ -110,17 +109,6 @@ public partial class Mainmenu : Node2D
         return GetNode<LineEdit>("edName").Text;
     }
 
-
-    // Called every frame. 'delta' is the elapsed time since the previous frame.
-    public override void _Process(double delta)
-    {
-        if (state != null)
-        {
-            state.Update(delta);
-        }
-    }
-    
-    
     private void OnPlayerLeave(long playerId)
     {
         // TODO check where the players needs to be removed

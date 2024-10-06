@@ -122,6 +122,8 @@ public class ClientState : State
             };
             gamePeer.CreateClient(peerId);
             multiplayer.MultiplayerPeer = gamePeer;
+            GD.Print("UpdateAwaitAcceptState created client");
+
 
             gamePeer.AddPeer(peerConnection, 1);
             peerConnection.CreateDataChannel("test");
