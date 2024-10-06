@@ -3,10 +3,9 @@
 [ext_resource type="Script" path="res://Mainmenu.cs" id="1_ty3gg"]
 [ext_resource type="PackedScene" uid="uid://fmi00jcend8v" path="res://player.tscn" id="2_22awo"]
 
-[node name="Mainmenu" type="Node2D" node_paths=PackedStringArray("timer", "ipField")]
+[node name="Mainmenu" type="Node2D" node_paths=PackedStringArray("ipField")]
 script = ExtResource("1_ty3gg")
 player_scene = ExtResource("2_22awo")
-timer = NodePath("Timer")
 ipField = NodePath("edIP")
 
 [node name="Host Button" type="Button" parent="."]

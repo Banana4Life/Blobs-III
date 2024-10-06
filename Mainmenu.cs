@@ -1,8 +1,9 @@
 using Godot;
 using System;
 using System.Collections.Generic;
-using Godot.Collections;
 using LD56;
+
+record Peer(Guid Id, int PeerId, WebRtcPeerConnection Connection);
 
 public partial class Mainmenu : Node
 {
@@ -21,20 +22,15 @@ public partial class Mainmenu : Node
     };
 
 
-    private const String DEFUALT_COMMAND_AND_CONTROL_SERVER = "banana4.life";
-    private String command_and_control_server;
+    private const String DEFAULT_C2_BASE_URI = "wss://banana4.life";
+    private String c2_base_uri;
     const int GAME_PORT = 39875;
-    NetworkState networkState;
-    int playerCount = 1;
-    ENetMultiplayerPeer gamePeer = new();
-    PacketPeerUdp c2Peer;
-
+    private State state;
 
     private String externalHost = "127.0.0.1";
-    private int externalPort = 39875;
+    private int externalPort = GAME_PORT;
 
     [Export] public PackedScene player_scene;
-    [Export] public Timer timer;
     [Export] public TextEdit ipField;
 
     private PlayerManager _manager = new();
@@ -43,15 +39,13 @@ public partial class Mainmenu : Node
     {
         var config = new ConfigFile();
         var result = config.Load("user://config.cfg");
-        command_and_control_server = DEFUALT_COMMAND_AND_CONTROL_SERVER;
+        c2_base_uri = DEFAULT_C2_BASE_URI;
         if (result == Error.Ok)
         {
-            command_and_control_server = config.GetValue("c2server", "host", Variant.CreateFrom(DEFUALT_COMMAND_AND_CONTROL_SERVER)).AsString();
+            c2_base_uri = config.GetValue("c2server", "host", Variant.CreateFrom(DEFAULT_C2_BASE_URI)).AsString();
         }
 
-        GD.Print($"Connecting to C&C server: {command_and_control_server}");
-        c2Peer = new PacketPeerUdp();
-        c2Peer.ConnectToHost(IP.ResolveHostname(command_and_control_server), GAME_PORT);
+        GD.Print($"Connecting to C&C server: {c2_base_uri}");
 
         Multiplayer.PeerConnected += OnPlayerConnected;
         Multiplayer.PeerDisconnected += OnPlayerDisconnected;
@@ -69,6 +63,10 @@ public partial class Mainmenu : Node
     private void OnPlayerDisconnected(long playerId)
     {
         GD.Print("OnPlayerDisconnected", playerId);
+        if (state != null)
+        {
+            state.PlayerDisconnected((int)playerId);
+        }
         var found = GetNodeOrNull(playerId.ToString());
         if (found != null)
         {
@@ -88,22 +86,23 @@ public partial class Mainmenu : Node
 
     public void _on_host_button_2_pressed()
     {
-        GD.Print($"hosting... {externalHost}");
-        networkState = NetworkState.HOSTING;
-        timer.Start();
-        gamePeer.CreateServer(GAME_PORT);
-        // TODO compression?
-        var playerName = GetNode<LineEdit>("edName").Text;
-        sendPlayerInfo(playerName + "(Host)", 1);
-        Multiplayer.MultiplayerPeer = gamePeer;
+        // GD.Print($"hosting... {externalHost}");
+        // networkState = NetworkState.HOSTING;
+        // timer.Start();
+        // // gamePeer.CreateServer(GAME_PORT);
+        // // TODO compression?
+        // var playerName = GetNode<LineEdit>("edName").Text;
+        // sendPlayerInfo(playerName + "(Host)", 1);
+        // Multiplayer.MultiplayerPeer = gamePeer;
     }
 
     public void _on_host_button_pressed()
     {
         // TODO dedicated server could go to hosting immediately
         GD.Print("hosting... discover external ip/port");
-        networkState = NetworkState.DISCOVERY;
-        timer.Start();
+        state = new ServerState(Multiplayer, c2_base_uri);
+        var playerName = GetNode<LineEdit>("edName").Text;
+        sendPlayerInfo(playerName + "(Host)", 1);
     }
 
     [Rpc(MultiplayerApi.RpcMode.AnyPeer)]
@@ -155,185 +154,38 @@ public partial class Mainmenu : Node
     // joining a random server decided by c2
     public void _on_join_button_pressed()
     {
-        networkState = NetworkState.JOINING;
-        GD.Print($"Finding Server to Join...");
-        // TODO clear incoming packets
-        timer.Start();
+        state = new ClientState(Multiplayer, c2_base_uri);
     }
 
     public void _on_join_ip_pressed()
     {
-        gamePeer.CreateClient(ipField.Text, GAME_PORT);
-        Multiplayer.MultiplayerPeer = gamePeer;
-        networkState = NetworkState.CONNECTING;
+        // gamePeer.CreateClient(ipField.Text, GAME_PORT);
+        // Multiplayer.MultiplayerPeer = gamePeer;
+        // networkState = NetworkState.CONNECTING;
     }
 
 
     // Called every frame. 'delta' is the elapsed time since the previous frame.
     public override void _Process(double delta)
     {
-        switch (networkState)
+        if (state != null)
         {
-            case NetworkState.DISCOVERY:
-                if (c2Peer.GetAvailablePacketCount() > 0)
-                {
-                    _handleHostDiscoveryResponsePacket();
-                }
-
-                break;
-            case NetworkState.JOINING:
-                if (c2Peer.GetAvailablePacketCount() > 0)
-                {
-                    _handleClientJoinResponsePacket();
-                }
-
-                break;
+            state.Update(delta);
         }
     }
-
-    // every 10s send info to c2
-    public void On_timer_timeout()
-    {
-        switch (networkState)
-        {
-            case NetworkState.JOINING:
-                c2Peer.PutPacket(_gatherC2Info(RequestType.JOIN).ToUtf8Buffer());
-                break;
-            case NetworkState.DISCOVERY:
-                c2Peer.PutPacket(_gatherC2Info(RequestType.HOST).ToUtf8Buffer());
-                break;
-            case NetworkState.HOSTING:
-                c2Peer.PutPacket(_gatherC2Info(RequestType.HOSTING).ToUtf8Buffer());
-                break;
-            case NetworkState.CONNECTED:
-            case NetworkState.CONNECTING:
-                break;
-        }
-    }
-
-    public String _gatherC2Info(RequestType type)
-    {
-        var json = type switch
-        {
-            RequestType.HOST => $$"""
-                                  {
-                                      "type": "{{type}}"
-                                  }
-                                  """,
-            RequestType.HOSTING => $$"""
-                                     {
-                                         "type": "{{type}}",
-                                         "host": "{{externalHost}}",
-                                         "port": {{externalPort}},
-                                         "playerCount": {{playerCount}}
-                                     }
-                                     """,
-            RequestType.JOIN => $$"""
-                                    {
-                                       "type": "{{type}}"
-                                   }
-                                  """,
-            _ => "{}"
-        };
-        return json;
-    }
-
 
     private void OnConnectedToServer()
     {
         var peerId = Multiplayer.GetUniqueId();
-        GD.Print($"{peerId}: Client connected to Server");
-        networkState = NetworkState.CONNECTED;
+        if (state is ClientState clientState)
+        {
+            clientState.ConnectedToServer();
+        }
 
         var playerName = GetNode<LineEdit>("edName").Text;
         RpcId(1, MethodName.sendPlayerInfo, playerName ?? $"Player_{peerId}", peerId);
 
         // Rpc(MethodName.PlayerJoin, peerId);
         // TODO start game        
-    }
-
-
-    public void _handleHostDiscoveryResponsePacket()
-    {
-        var dict = _parseResponseJson(c2Peer);
-        if (dict.Count == 0)
-        {
-            return;
-        }
-
-        var host = dict["host"].AsString();
-        var port = dict["port"].AsInt32();
-        GD.Print($"Start Hosting on {host}:{port}...");
-        externalHost = host;
-        externalPort = port;
-
-        var localPort = c2Peer.GetLocalPort();
-        c2Peer.Close();
-        gamePeer.CreateServer(localPort);
-        // TODO compression?
-
-        Multiplayer.MultiplayerPeer = gamePeer;
-        var playerName = GetNode<LineEdit>("edName").Text;
-        sendPlayerInfo(playerName + "(Host)", 1);
-        networkState = NetworkState.HOSTING;
-        timer.Stop();
-        timer.Start();
-    }
-
-    public void _handleClientJoinResponsePacket()
-    {
-        var dict = _parseResponseJson(c2Peer);
-        if (dict.Count == 0)
-        {
-            return;
-        }
-
-        var host = dict["host"].AsString();
-        var port = dict["port"].AsInt32();
-        var playerCount = dict["playerCount"].AsInt32();
-
-        GD.Print($"Found Server {host}:{port} with {playerCount} players");
-        var error = gamePeer.CreateClient(host, port);
-        if (error != Error.Ok)
-        {
-            GD.Print("WTF?", error);
-            return;
-        }
-
-        Multiplayer.MultiplayerPeer = gamePeer;
-        networkState = NetworkState.CONNECTING;
-    }
-
-    private Dictionary _parseResponseJson(PacketPeerUdp peer)
-    {
-        var packet = peer.GetPacket();
-        var jsonString = packet.GetStringFromUtf8();
-
-        var json = Json.ParseString(jsonString);
-
-        if (json.VariantType == Variant.Type.Nil) return new Dictionary();
-
-        return json.AsGodotDictionary();
-    }
-
-
-    public enum RequestType
-    {
-        JOIN,
-        HOST, // i want to host, what is my external ip/port?
-        HOSTING // i am hosting on ip/port
-    }
-
-
-    public enum NetworkState
-    {
-        // server states
-        DISCOVERY,
-        HOSTING,
-
-        // client states
-        JOINING,
-        CONNECTING,
-        CONNECTED
     }
 }
