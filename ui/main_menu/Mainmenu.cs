@@ -14,6 +14,11 @@ public partial class Mainmenu : Control
         playerName.Text = NameGenerator.RandomName();
     }
 
+    private void _on_random_name_button_pressed()
+    {
+        playerName.Text = NameGenerator.RandomName();
+    }
+    
     private void _on_join_button_pressed()
     {
         var name = UI_getPlayerName();
