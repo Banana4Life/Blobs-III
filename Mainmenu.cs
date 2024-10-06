@@ -7,7 +7,7 @@ record Peer(Guid Id, int PeerId, WebRtcPeerConnection Connection);
 public partial class Mainmenu : Control
 {
     [Export] public PackedScene player_scene;
-    [Export] public PackedScene worldScene;
+    [Export] public PackedScene countdown;
     [Export] public LineEdit playerName;
 
 
@@ -33,17 +33,10 @@ public partial class Mainmenu : Control
         GD.Print($"{Multiplayer.GetUniqueId()}: Player {displayName}({id}) init size: {existing.PlayerSize} auth {existing.GetMultiplayerAuthority()}");
     }
 
-    private void _on_host_button_pressed()
-    {
-        Global.Instance.EnterServerState(UI_getPlayerName());
-        GetTree().Root.AddChild(worldScene.Instantiate());
-        Visible = false;
-    }
-
     private void _on_join_button_pressed()
     {
         Global.Instance.EnterClientState(UI_getPlayerName());
-        GetTree().Root.AddChild(worldScene.Instantiate());
+        GetTree().Root.AddChild(countdown.Instantiate());
         Visible = false;
     }
 
