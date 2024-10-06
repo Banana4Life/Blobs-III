@@ -23,7 +23,7 @@ public class ClientState : State
     private WebRtcPeerConnection peerConnection;
     private readonly MultiplayerApi multiplayer;
     private readonly string playerName;
-    private double timeAwaiting;
+    private double timer;
 
     private void TransitionState(NetworkState newState)
     {
@@ -42,6 +42,7 @@ public class ClientState : State
         this.multiplayer.ServerDisconnected += OnServerDisconnected;
         GD.Print($"Client connecting to C&C server: {baseUri}");
         signalingClient = new("client", baseUri, $"/ld56/signal/{myId}/join");
+        timer = 0;
     }
 
     private void OnPeerConnected(long id)
@@ -75,6 +76,7 @@ public class ClientState : State
 
     public void Update(double dt)
     {
+        timer += dt;
         signalingClient.Update();
         switch (state)
         {
@@ -85,10 +87,10 @@ public class ClientState : State
                 UpdateJoiningState();
                 break;
             case NetworkState.AWAIT_ACCEPT:
-                UpdateAwaitAcceptState(dt);
+                UpdateAwaitAcceptState();
                 break;
             case NetworkState.OFFERING:
-                UpdateOfferingState(dt);
+                UpdateOfferingState();
                 break;
             case NetworkState.CONNECTED:
                 UpdateConnectedState(dt);
@@ -108,12 +110,12 @@ public class ClientState : State
     {
         signalingClient.JoinMessage();
         TransitionState(NetworkState.AWAIT_ACCEPT);
-        timeAwaiting = 0;
+        timer = 0;
     }
 
-    private void UpdateAwaitAcceptState(double dt)
+    private void UpdateAwaitAcceptState()
     {
-        if (WaitForCountdown(dt)) return;
+        if (WaitForCountdown()) return;
         var packet = signalingClient.ReadPacket();
         if (packet != null)
         {
@@ -142,9 +144,9 @@ public class ClientState : State
         }
     }
 
-    private void UpdateOfferingState(double dt)
+    private void UpdateOfferingState()
     {
-        if (WaitForCountdown(dt)) return;
+        if (WaitForCountdown()) return;
         if (peerConnection == null)
         {
             GD.PushWarning($"Updating in Offering state, but without a peer connection!");
@@ -172,10 +174,9 @@ public class ClientState : State
         }
     }
 
-    private bool WaitForCountdown(double dt)
+    private bool WaitForCountdown()
     {
-        timeAwaiting += dt;
-        if (timeAwaiting >= 3) // Waited for 3s to connect we host instead now...
+        if (timer >= 2.5) // Waited for 3s to connect we host instead now...
         {
             GD.Print("No Server Found, Start Hosting...");
             Global.Instance.EnterServerState(playerName);

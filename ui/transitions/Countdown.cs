@@ -21,6 +21,7 @@ public partial class Countdown : Control
 		var timeLeft = 3 - timer;
 		if (timeLeft < 0)
 		{
+			GD.Print("Countdown finished");
 			Global.Instance.LoadWorldScene(true);
 			return;
 		}

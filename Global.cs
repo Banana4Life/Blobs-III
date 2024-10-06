@@ -41,7 +41,7 @@ public partial class Global : Node
     public void EnterServerState(string playerName)
     {
         State = new ServerState(Multiplayer, c2_base_uri, playerName);
-        PlayerManager.AddPlayer(playerName, 1);
+        SendPlayerInfo(playerName);
     }
 
     public override void _Process(double delta)
@@ -54,11 +54,27 @@ public partial class Global : Node
 
     public void SendPlayerInfo(string playerName)
     {
+        GD.Print($"SendPlayerInfo: {playerName}");
         RpcId(1, MethodName.ReceivePlayerInfo, playerName, Multiplayer.GetUniqueId());
     }
-    
+
+    [Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = true)]
+    public void ReceivePlayerInfo(string playerName, int peerId)
+    {
+        GD.Print($"ReceivePlayerInfo: {playerName} ({peerId})");
+        if (State is ServerState)
+        {
+            PlayerManager.AddPlayer(playerName, peerId);
+        }
+        else
+        {
+            GD.PrintErr("Got Player Info on Client?");
+        }
+    }
+
     public void SendPlayerReady()
     {
+        GD.Print($"SendPlayerReady: {Multiplayer.GetUniqueId()}");
         RpcId(1, MethodName.ReceivePlayerReady, Multiplayer.GetUniqueId());
     }
 
@@ -66,20 +82,8 @@ public partial class Global : Node
     [Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = true)]
     public void ReceivePlayerReady(long peerId)
     {
+        GD.Print($"ReceivePlayerReady: {peerId}");
         PlayerManager.SetPlayerReady(peerId);
-    }
-
-    [Rpc(MultiplayerApi.RpcMode.AnyPeer)]
-    public void ReceivePlayerInfo(string player, int peerId)
-    {
-        if (State is ServerState)
-        {
-            PlayerManager.AddPlayer(player, peerId);
-        }
-        else
-        {
-            GD.PrintErr("Got Player Info on Client?");
-        }
     }
 
     public void LoadWorldScene(bool show)

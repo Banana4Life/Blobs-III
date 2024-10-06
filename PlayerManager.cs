@@ -12,6 +12,16 @@ public class PlayerManager
         Players.Add(new PlayerInfo(name, peerId, 150, false, false));
     }
 
+    public void SetPlayerReady(long peerId)
+    {
+        Players.Find(p => p.peerId == peerId).ready = true;
+    }
+
+    public void RemovePlayer(long id)
+    {
+        PlayersToRemove.Enqueue(id);
+    }
+
     public class PlayerInfo
     {
         public PlayerInfo(string name, long peerId, int size, bool alive, bool ready)
@@ -29,15 +39,5 @@ public class PlayerManager
         public int size;
         public bool alive;
         public bool ready;
-    }
-
-    public void RemovePlayer(long id)
-    {
-        PlayersToRemove.Enqueue(id);
-    }
-
-    public void SetPlayerReady(long peerId)
-    {
-        Players.Find(p => p.peerId == peerId).ready = true;
     }
 }

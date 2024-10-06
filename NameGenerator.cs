@@ -103,7 +103,6 @@ public static class NameGenerator
         "friendly",
         "warm",
         "bright",
-        "soft-hearted",
         "sprightly",
         "spunky",
         "teensy",
