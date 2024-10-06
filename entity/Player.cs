@@ -1,12 +1,10 @@
 using Godot;
-using System;
-using Environment = Godot.Environment;
 
 public partial class Player : CharacterBody2D
 {
     public const float SPEED = 300.0f;
 
-    [Export] public String DisplayName;
+    [Export] public string DisplayName;
     [Export] public int PlayerSize;
 
 

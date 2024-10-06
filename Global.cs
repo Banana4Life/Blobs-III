@@ -1,5 +1,4 @@
 using Godot;
-using GodotPlugins.Game;
 
 namespace LD56;
 

@@ -1,6 +1,4 @@
 using Godot;
-using System;
-using Godot.Collections;
 
 public partial class Particle : Node2D
 {

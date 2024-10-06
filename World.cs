@@ -1,6 +1,5 @@
 using Godot;
 using System;
-using System.Collections.Generic;
 using LD56;
 
 public partial class World : Node2D
@@ -115,7 +114,7 @@ public partial class World : Node2D
     }
 
     [Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = true)]
-    private void initPlayerOnAuthority(String displayName, long id, Vector2 position, int size)
+    private void initPlayerOnAuthority(string displayName, long id, Vector2 position, int size)
     {
         var existing = GetNode<Player>(id.ToString());
         existing.GlobalPosition = position;
