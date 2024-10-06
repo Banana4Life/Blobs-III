@@ -9,7 +9,7 @@ public partial class World : Node2D
 
     private int players = 1;
     public int totalMass = 0;
-    [Export] public int maxMass = 1000;
+    [Export] public int maxMass = 10000;
     [Export] public Vector2 PlayArea = new(1000, 1000);
     public int i = 0;
 
@@ -27,7 +27,7 @@ public partial class World : Node2D
         var spawnRange = GetViewport().GetVisibleRect().Size;
 
 
-        var particle = particlePrefab.Instantiate();
+        var particle = particlePrefab.Instantiate<Particle>();
         var spawnPos = new Vector2(
             random.RandfRange(0f, spawnRange.X),
             random.RandfRange(0f, spawnRange.Y)
@@ -35,26 +35,14 @@ public partial class World : Node2D
         );
 
         // TODO place particles outside of player range
-        // TODO respect other particles space?
+        // TODO smarter location finding
 
-
-        ((Node2D)particle).GlobalPosition = spawnPos;
-        var sprite = particle.GetNode<Sprite2D>("Sprite2D");
-        var randScale = random.RandfRange(3f, 10f);
-        // var randScale = random.RandfRange(150f, 150f);
-        ((Node2D)particle).Scale = new Vector2(randScale, randScale);
-
-        var color = Color.FromHsv(random.RandfRange(0, 1f), 1f, 1f, random.RandfRange(0.2f, 0.4f));
-
+        particle.GlobalPosition = spawnPos;
         particle.Name = "particle_" + i++;
-        ((Particle)particle).Color = color;
-        ((Particle)particle).size = (int)(3 * (randScale * randScale) / 4);
-        ((Particle)particle).seed = random.RandfRange(0f, 10000f);
-        ((Particle)particle).mag = random.RandfRange(0.01f, 0.19f);
-        ((Particle)particle).freq = random.RandfRange(0.5f, 5.5f);
+        particle.RandomInit(random);
 
         AddChild(particle);
-        return ((Particle)particle).size;
+        return particle.size;
     }
 
     public void spawnToMaxMass()
@@ -104,12 +92,14 @@ public partial class World : Node2D
     {
         GD.Print($"{Multiplayer.GetUniqueId()}: player spawn {info.name} {info.peerId}");
 
-        var player = playerPrefab.Instantiate();
+        var player = playerPrefab.Instantiate<Player>();
         player.Name = info.peerId.ToString();
+        player.DisplayName = info.name;
+        player.GrowPlayer();
         AddChild(player);
 
         var spawnPos = new Vector2(50, new Random().Next(50, 500));
-        RpcId(info.peerId, MethodName.initPlayerOnAuthority, info.name, info.peerId, spawnPos, info.size);
+        RpcId(info.peerId, MethodName.initPlayerOnAuthority, info.name, info.peerId, spawnPos, player.PlayerSize);
         info.alive = true;
     }
 
@@ -124,5 +114,7 @@ public partial class World : Node2D
             $"{Multiplayer.GetUniqueId()}: Player {displayName}({id}) init size: {existing.PlayerSize} auth {existing.GetMultiplayerAuthority()}");
 
         authorityPlayer = existing;
+        var cam = GetNode<Camera2D>("Camera2D");
+        cam.Position = authorityPlayer.Position;
     }
 }

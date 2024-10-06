@@ -6,6 +6,7 @@ public partial class Player : CharacterBody2D
 
     [Export] public string DisplayName;
     [Export] public int PlayerSize;
+    [Export] public Vector2 targetScale;
 
 
     public override void _Ready()
@@ -23,7 +24,12 @@ public partial class Player : CharacterBody2D
         }
 
         GetNode<Label>("Label").Text = DisplayName;
-        Scale = new Vector2(PlayerSize / 100f, PlayerSize / 100f);
+    }
+
+    public override void _Process(double delta)
+    {
+        var scaled = GetNode<Node2D>("scaled");
+        scaled.Scale = scaled.Scale.Lerp(targetScale, (float) delta);
     }
 
     public void _enter_tree()
@@ -31,8 +37,11 @@ public partial class Player : CharacterBody2D
         SetMultiplayerAuthority(int.Parse(Name));
     }
 
-    public void Grow(int size)
+    public void GrowPlayer(int size = 200)
     {
-        PlayerSize += (int)Mathf.Sqrt(size);
+        PlayerSize += size;
+        var scale = Mathf.Sqrt(PlayerSize / Mathf.Pi) * 2 / 10f;
+        targetScale = new Vector2(scale, scale);
+        GD.Print($"{DisplayName} grows to {PlayerSize} {scale}");
     }
 }

@@ -9,7 +9,7 @@ public class PlayerManager
 
     public void AddPlayer(string name, long peerId)
     {
-        Players.Add(new PlayerInfo(name, peerId, 150, false, false));
+        Players.Add(new PlayerInfo(name, peerId, 0, false, false));
     }
 
     public void SetPlayerReady(long peerId)

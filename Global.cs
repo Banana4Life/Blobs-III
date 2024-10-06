@@ -40,7 +40,6 @@ public partial class Global : Node
     public void EnterServerState(string playerName)
     {
         State = new ServerState(Multiplayer, c2_base_uri, playerName);
-        SendPlayerInfo(playerName);
     }
 
     public override void _Process(double delta)
@@ -108,7 +107,6 @@ public partial class Global : Node
             }
             GD.Print("Show World Scene...");
             GetTree().SetCurrentScene(world);
-            SendPlayerReady();
         }
         world.Visible = show;
         

@@ -153,7 +153,7 @@ public class ClientState : State
             return;
         }
 
-        GD.Print($"PC state: {peerConnection.GetConnectionState()}");
+        // GD.Print($"PC state: {peerConnection.GetConnectionState()}");
         var packet = signalingClient.ReadPacket();
         if (packet != null)
         {

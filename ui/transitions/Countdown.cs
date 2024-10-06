@@ -27,5 +27,6 @@ public partial class Countdown : Control
 
 		GD.Print("Countdown finished");
 		Global.Instance.LoadWorldScene(true);
+		Global.Instance.SendPlayerReady();
 	}
 }
