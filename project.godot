@@ -24,6 +24,10 @@ Audio="*res://Audio.cs"
 
 project/assembly_name="LD56"
 
+[global_group]
+
+MassContributor="Nodes that contribute to global mass"
+
 [input]
 
 start-server={
