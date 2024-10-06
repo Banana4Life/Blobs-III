@@ -10,7 +10,7 @@ public partial class World : Node2D
 
     private int players = 1;
     public int totalMass = 0;
-    [Export] public int maxMass = 10;
+    [Export] public int maxMass = 1000;
     public int i = 0;
 
     private RandomNumberGenerator random = new();
@@ -73,7 +73,7 @@ public partial class World : Node2D
 
             foreach (var playerInfo in Global.Instance.PlayerManager.Players)
             {
-                if (!playerInfo.alive)
+                if (!playerInfo.alive && playerInfo.ready)
                 {
                     SpawnPlayer(playerInfo);
                 }

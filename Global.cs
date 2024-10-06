@@ -56,6 +56,18 @@ public partial class Global : Node
     {
         RpcId(1, MethodName.ReceivePlayerInfo, playerName, Multiplayer.GetUniqueId());
     }
+    
+    public void SendPlayerReady()
+    {
+        RpcId(1, MethodName.ReceivePlayerReady, Multiplayer.GetUniqueId());
+    }
+
+
+    [Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = true)]
+    public void ReceivePlayerReady(long peerId)
+    {
+        PlayerManager.SetPlayerReady(peerId);
+    }
 
     [Rpc(MultiplayerApi.RpcMode.AnyPeer)]
     public void ReceivePlayerInfo(string player, int peerId)
@@ -93,6 +105,7 @@ public partial class Global : Node
             }
             GD.Print("Show World Scene...");
             GetTree().SetCurrentScene(world);
+            SendPlayerReady();
         }
         world.Visible = show;
         
