@@ -1,5 +1,4 @@
 using Godot;
-using System.Globalization;
 using LD56;
 
 public partial class Countdown : Control
@@ -20,13 +19,13 @@ public partial class Countdown : Control
 	{
 		timer += delta;
 		var timeLeft = 3 - timer;
-		if (timeLeft < 0)
+		if (timeLeft > 0)
 		{
-			GD.Print("Countdown finished");
-			Global.Instance.LoadWorldScene(true);
+			label.Text = timeLeft.ToString("0");
 			return;
 		}
 
-		label.Text = ((int) timeLeft + 1).ToString();
+		GD.Print("Countdown finished");
+		Global.Instance.LoadWorldScene(true);
 	}
 }
