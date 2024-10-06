@@ -14,12 +14,6 @@ public partial class Mainmenu : Control
     public override void _Ready()
     {
         InitMainMenu();
-        SetupMultiPlayer();
-    }
-
-    private void SetupMultiPlayer()
-    {
-        Multiplayer.PeerDisconnected += OnPlayerLeave;
     }
 
     private void InitMainMenu()
@@ -58,15 +52,6 @@ public partial class Mainmenu : Control
         return playerName.Text;
     }
 
-    private void OnPlayerLeave(long playerId)
-    {
-        // TODO check where the players needs to be removed
-        // Server only?
-        var found = GetNodeOrNull(playerId.ToString());
-        if (found != null)
-        {
-            RemoveChild(found);
-        }
-    }
+
 
 }

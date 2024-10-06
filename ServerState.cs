@@ -46,7 +46,10 @@ public class ServerState : State
         {
             peer.Connection.Close();
             serverClients.Remove(peer);
+            
         }
+        
+        Global.Instance.PlayerManager.RemovePlayer(id);
         
         
     }

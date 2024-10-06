@@ -1,10 +1,12 @@
 using System.Collections.Generic;
+using Microsoft.VisualBasic.CompilerServices;
 
 namespace LD56;
 
 public class PlayerManager
 {
     public List<PlayerInfo> Players = new();
+    public Queue<long> PlayersToRemove = new();
 
     public void AddPlayer(string name, long peerId)
     {
@@ -26,5 +28,10 @@ public class PlayerManager
         public long peerId;
         public int size;
         public bool alive;
+    }
+
+    public void RemovePlayer(long id)
+    {
+        PlayersToRemove.Enqueue(id);
     }
 }

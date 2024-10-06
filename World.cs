@@ -74,6 +74,18 @@ public partial class World : Node2D
                     SpawnPlayer(playerInfo);
                 }
             }
+
+            var playersToRemove = Global.Instance.PlayerManager.PlayersToRemove;
+            while (playersToRemove.Count > 0)
+            {
+                var peerToRemove = playersToRemove.Dequeue();
+                var found = GetNodeOrNull(peerToRemove.ToString());
+                if (found != null)
+                {
+                    RemoveChild(found);
+                }
+            }
+
         }
     }
     
