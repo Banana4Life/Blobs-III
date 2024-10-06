@@ -13,7 +13,7 @@ public class ServerState : State
         CONNECTING,
         HOSTING,
     }
-    
+
     private NetworkState state = NetworkState.CONNECTING;
     private readonly WebRtcMultiplayerPeer gamePeer = new();
     private readonly Guid myId = Guid.NewGuid();
@@ -26,8 +26,29 @@ public class ServerState : State
     public ServerState(MultiplayerApi multiplayer, string baseUri)
     {
         this.multiplayer = multiplayer;
+        this.multiplayer.PeerConnected += OnPeerConnected;
+        this.multiplayer.PeerDisconnected += OnPeerDisconnected;
         GD.Print($"Server connecting to C&C server: {baseUri}");
         signalingClient = new("server", baseUri, $"/ld56/signal/{myId}/host");
+    }
+
+    private void OnPeerConnected(long id)
+    {
+        GD.Print($"Server - {multiplayer.GetUniqueId()}: OnPeerConnected {id}");
+    }
+
+    private void OnPeerDisconnected(long id)
+    {
+        GD.Print($"Server - {multiplayer.GetUniqueId()}: OnPeerDisconnected {id}");
+     
+        var peer = serverClients.Find(it => it.PeerId == (int)id);
+        if (peer != null)
+        {
+            peer.Connection.Close();
+            serverClients.Remove(peer);
+        }
+        
+        
     }
 
     public void Update(double dt)
@@ -42,6 +63,7 @@ public class ServerState : State
                     multiplayer.MultiplayerPeer = gamePeer;
                     state = NetworkState.HOSTING;
                 }
+
                 break;
             case NetworkState.HOSTING:
                 var packet = signalingClient.ReadPacket();
@@ -58,7 +80,7 @@ public class ServerState : State
                 break;
         }
     }
-    
+
     public void _handleServerHostingPacket(Dictionary dict)
     {
         if (dict.ContainsKey("m"))
@@ -101,7 +123,6 @@ public class ServerState : State
                     gamePeer.AddPeer(peer.Connection, peer.PeerId);
                     peer.Connection.SetRemoteDescription("offer", offer);
                 }
-                
             }
             else
             {
@@ -115,25 +136,14 @@ public class ServerState : State
                 {
                     peerId = peerIdOffset;
                 }
+
                 var peer = new Peer(id, peerId, WebRtcUtil.NewConnection());
                 GD.Print($"New Peer: {peer}");
                 serverClients.Add(peer);
                 signalingClient.HostAcceptsJoinMessage(id, peer.PeerId);
             }
-            
-            
-            
-            
         }
     }
 
-    public void PlayerDisconnected(int peerId)
-    {
-        var peer = serverClients.Find(it => it.PeerId == peerId);
-        if (peer != null)
-        {
-            peer.Connection.Close();
-            serverClients.Remove(peer);
-        }
-    }
+    
 }

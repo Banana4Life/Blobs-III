@@ -8,14 +8,9 @@ public partial class Mainmenu : Node
 {
     private const String DEFAULT_C2_BASE_URI = "wss://banana4.life";
     private String c2_base_uri;
-    const int GAME_PORT = 39875;
     private State state;
 
-    private String externalHost = "127.0.0.1";
-    private int externalPort = GAME_PORT;
-
     [Export] public PackedScene player_scene;
-    [Export] public TextEdit ipField;
 
     private PlayerManager _manager = new();
 
@@ -28,11 +23,8 @@ public partial class Mainmenu : Node
 
     private void SetupMultiPlayer()
     {
-        Multiplayer.PeerConnected += OnPlayerConnected;
-        Multiplayer.PeerDisconnected += OnPlayerDisconnected;
-        Multiplayer.ConnectedToServer += OnConnectedToServer;
-        Multiplayer.ConnectionFailed += OnConnectionFail;
-        Multiplayer.ServerDisconnected += OnServerDisconnected;
+        Multiplayer.PeerDisconnected += OnPlayerLeave;
+        Multiplayer.ConnectedToServer += OnPlayerJoin;
     }
 
     private void InitMainMenu()
@@ -50,46 +42,7 @@ public partial class Mainmenu : Node
             c2_base_uri = config.GetValue("c2server", "host", Variant.CreateFrom(DEFAULT_C2_BASE_URI)).AsString();
         }
     }
-
-    private void OnPlayerConnected(long playerId)
-    {
-        GD.Print(Multiplayer.GetUniqueId(), ": OnPlayerConnected ", playerId);
-    }
-
-    private void OnPlayerDisconnected(long playerId)
-    {
-        GD.Print("OnPlayerDisconnected", playerId);
-        if (state != null)
-        {
-            state.PlayerDisconnected((int)playerId);
-        }
-        var found = GetNodeOrNull(playerId.ToString());
-        if (found != null)
-        {
-            RemoveChild(found);
-        }
-    }
-
-    private void OnServerDisconnected()
-    {
-        GD.Print("OnServerDisconnected");
-    }
-
-    private void OnConnectionFail()
-    {
-        GD.Print("failed to connect to game server");
-    }
-
-
-    public void _on_host_button_pressed()
-    {
-        // TODO dedicated server could go to hosting immediately
-        GD.Print("hosting... discover external ip/port");
-        state = new ServerState(Multiplayer, c2_base_uri);
-        var playerName = GetNode<LineEdit>("edName").Text;
-        sendPlayerInfo(playerName + "(Host)", 1);
-    }
-
+    
     [Rpc(MultiplayerApi.RpcMode.AnyPeer)]
     public void sendPlayerInfo(String name, long id)
     {
@@ -97,7 +50,6 @@ public partial class Mainmenu : Node
         GD.Print($"{Multiplayer.GetUniqueId()}: send player info {name}({id})");
         if (Multiplayer.IsServer())
         {
-            
             var spawnPos = new Vector2(50, new Random().Next(50,500));
             var spawnSize = new Random().Next(50, 150);
 
@@ -136,12 +88,22 @@ public partial class Mainmenu : Node
         AddChild(player);
     }
 
-    // joining a random server decided by c2
-    public void _on_join_button_pressed()
+
+    private void _on_host_button_pressed()
     {
-        state = new ClientState(Multiplayer, c2_base_uri);
+        state = new ServerState(Multiplayer, c2_base_uri);
+        sendPlayerInfo(UI_getPlayerName() + "(Host)", 1);
     }
 
+    private void _on_join_button_pressed()
+    {
+        state = new ClientState(Multiplayer, c2_base_uri, UI_getPlayerName());
+    }
+
+    private string UI_getPlayerName()
+    {
+        return GetNode<LineEdit>("edName").Text;
+    }
 
 
     // Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -152,19 +114,23 @@ public partial class Mainmenu : Node
             state.Update(delta);
         }
     }
+    
+    
+    private void OnPlayerLeave(long playerId)
+    {
+        // TODO check where the players needs to be removed
+        // Server only?
+        var found = GetNodeOrNull(playerId.ToString());
+        if (found != null)
+        {
+            RemoveChild(found);
+        }
+    }
 
-    private void OnConnectedToServer()
+    private void OnPlayerJoin()
     {
         var peerId = Multiplayer.GetUniqueId();
-        if (state is ClientState clientState)
-        {
-            clientState.ConnectedToServer();
-        }
-
-        var playerName = GetNode<LineEdit>("edName").Text;
-        RpcId(1, MethodName.sendPlayerInfo, playerName ?? $"Player_{peerId}", peerId);
-
-        // Rpc(MethodName.PlayerJoin, peerId);
-        // TODO start game        
+        // Send RPC to Server that spawns the player for everyone
+        RpcId(1, MethodName.sendPlayerInfo, UI_getPlayerName() ?? $"Player_{peerId}", peerId);
     }
 }

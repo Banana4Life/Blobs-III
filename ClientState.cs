@@ -22,14 +22,48 @@ public class ClientState : State
     private Guid serverId;
     private WebRtcPeerConnection peerConnection;
     private readonly MultiplayerApi multiplayer;
+    private readonly string playerName;
 
-    public ClientState(MultiplayerApi multiplayer, string baseUri)
+    public ClientState(MultiplayerApi multiplayer, string baseUri, string playerName)
     {
         this.multiplayer = multiplayer;
+        this.playerName = playerName;
+        this.multiplayer.PeerConnected += OnPeerConnected;
+        this.multiplayer.PeerDisconnected += OnPeerDisconnected;
+        this.multiplayer.ConnectedToServer += OnConnectedToServer;
+        this.multiplayer.ConnectionFailed += OnConnectionFailed;
+        this.multiplayer.ServerDisconnected += OnServerDisconnected;
         GD.Print($"Client connecting to C&C server: {baseUri}");
         signalingClient = new("client", baseUri, $"/ld56/signal/{myId}/join");
     }
-    
+
+    private void OnPeerConnected(long id)
+    {
+        GD.Print($"Client - {multiplayer.GetUniqueId()}: OnPeerConnected {id}");
+    }
+
+    private void OnPeerDisconnected(long id)
+    {
+        GD.Print($"Client - {multiplayer.GetUniqueId()}: OnPeerDisconnected {id}");
+    }
+
+    private void OnConnectionFailed()
+    {
+        GD.Print($"Client - {multiplayer.GetUniqueId()}: OnConnectionFailed");
+    }
+
+    private void OnServerDisconnected()
+    {
+        GD.Print($"Client - {multiplayer.GetUniqueId()}: OnServerDisconnected");
+    }
+
+    private void OnConnectedToServer()
+    {
+        GD.Print($"Client - {multiplayer.GetUniqueId()}: connected to Server");
+        state = NetworkState.CONNECTED;
+    }
+
+
     public void Update(double dt)
     {
         signalingClient.Update();
@@ -75,7 +109,7 @@ public class ClientState : State
             serverId = new Guid(packet["id"].AsString());
             peerId = packet["peerId"].AsInt32();
             state = NetworkState.OFFERING;
-            
+
             peerConnection = WebRtcUtil.NewConnection();
             peerConnection.IceCandidateCreated += (media, index, name) =>
             {
@@ -88,7 +122,7 @@ public class ClientState : State
             };
             gamePeer.CreateClient(peerId);
             multiplayer.MultiplayerPeer = gamePeer;
-            
+
             gamePeer.AddPeer(peerConnection, 1);
             peerConnection.CreateDataChannel("test");
             peerConnection.CreateOffer();
@@ -102,6 +136,7 @@ public class ClientState : State
             GD.PushWarning($"Updating in Offering state, but without a peer connection!");
             return;
         }
+
         GD.Print($"PC state: {peerConnection.GetConnectionState()}");
         var packet = signalingClient.ReadPacket();
         if (packet != null)
@@ -117,7 +152,7 @@ public class ClientState : State
             else
             {
                 var answer = packet["answer"].AsString();
-        
+
                 peerConnection.SetRemoteDescription("answer", answer);
             }
         }
@@ -125,16 +160,5 @@ public class ClientState : State
 
     private void UpdateConnectedState()
     {
-    }
-
-    public void PlayerDisconnected(int peerId)
-    {
-        
-    }
-
-    public void ConnectedToServer()
-    {
-        GD.Print($"{peerId}: Client connected to Server");
-        state = NetworkState.CONNECTED;
     }
 }
