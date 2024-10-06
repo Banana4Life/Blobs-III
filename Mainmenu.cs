@@ -1,17 +1,17 @@
 using Godot;
 using System;
-using System.Diagnostics;
 using LD56;
 
 record Peer(Guid Id, int PeerId, WebRtcPeerConnection Connection);
 
-public partial class Mainmenu : Node2D
+public partial class Mainmenu : Control
 {
-    private const String DEFAULT_C2_BASE_URI = "wss://banana4.life";
-    private String c2_base_uri;
+    private const string DEFAULT_C2_BASE_URI = "wss://banana4.life";
+    private string c2_base_uri;
 
     [Export] public PackedScene player_scene;
     [Export] public PackedScene worldScene;
+    [Export] public LineEdit playerName;
 
 
     public override void _Ready()
@@ -28,7 +28,7 @@ public partial class Mainmenu : Node2D
 
     private void InitMainMenu()
     {
-        GetNode<LineEdit>("edName").Text = NameGenerator.RandomName();
+        playerName.Text = NameGenerator.RandomName();
     }
 
     private void LoadConfig()
@@ -44,7 +44,7 @@ public partial class Mainmenu : Node2D
 
 
     [Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = true)]
-    private void initPlayerOnAuthority(String displayName, long id, Vector2 position, int size)
+    private void initPlayerOnAuthority(string displayName, long id, Vector2 position, int size)
     {
         var existing = GetNode<Player>(id.ToString());
         existing.GlobalPosition = position;
@@ -52,12 +52,6 @@ public partial class Mainmenu : Node2D
         existing.DisplayName = displayName;
         GD.Print($"{Multiplayer.GetUniqueId()}: Player {displayName}({id}) init size: {existing.PlayerSize} auth {existing.GetMultiplayerAuthority()}");
     }
-
-    public override void _Process(double delta)
-    {
-    }
-
-
 
     private void _on_host_button_pressed()
     {
@@ -76,7 +70,7 @@ public partial class Mainmenu : Node2D
 
     private string UI_getPlayerName()
     {
-        return GetNode<LineEdit>("edName").Text;
+        return playerName.Text;
     }
 
     private void OnPlayerLeave(long playerId)
