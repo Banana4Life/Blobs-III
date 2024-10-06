@@ -12,6 +12,7 @@ public partial class Countdown : Control
 	public override void _Ready()
 	{
 		timer = 0;
+		DisplayServer.WindowSetTitle($"LD56 - Joining");
 	}
 
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
