@@ -19,7 +19,6 @@ public class ServerState : State
     private readonly Guid myId = Guid.NewGuid();
     private readonly SignalingClient signalingClient;
     private List<Peer> serverClients = [];
-    private int playerCount = 1;
     private readonly SimpleTimer hostingTimer = new(5f);
     private readonly MultiplayerApi multiplayer;
 
@@ -77,7 +76,7 @@ public class ServerState : State
 
                 if (hostingTimer.Update(dt))
                 {
-                    signalingClient.HostingMessage(playerCount);
+                    signalingClient.HostingMessage(1 + serverClients.Count);
                 }
 
                 break;
