@@ -11,6 +11,7 @@ public partial class World : Node2D
     private int players = 1;
     public int totalMass = 0;
     [Export] public int maxMass = 1000;
+    [Export] public Vector2 PlayArea = new(1000,1000);
     public int i = 0;
 
     private RandomNumberGenerator random = new();

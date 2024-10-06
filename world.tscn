@@ -1,9 +1,12 @@
-[gd_scene load_steps=5 format=3 uid="uid://dax87d6xgwgg0"]
+[gd_scene load_steps=6 format=3 uid="uid://dax87d6xgwgg0"]
 
 [ext_resource type="Script" path="res://World.cs" id="1_h5r3q"]
 [ext_resource type="PackedScene" uid="uid://cimkbk2l628bd" path="res://entity/particle.tscn" id="2_ldhtw"]
 [ext_resource type="PackedScene" uid="uid://fmi00jcend8v" path="res://entity/player.tscn" id="3_u1fp8"]
 [ext_resource type="Texture2D" uid="uid://br5yppsjft256" path="res://leaf-texture.jpg" id="4_gxdw6"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ibvco"]
+size = Vector2(2725, 1627)
 
 [node name="world" type="Node2D"]
 script = ExtResource("1_h5r3q")
@@ -24,3 +27,9 @@ color = Color(0, 0.160784, 0, 1)
 [node name="PlayArea" type="Sprite2D" parent="."]
 scale = Vector2(0.5, 0.452)
 texture = ExtResource("4_gxdw6")
+
+[node name="Area2D" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+position = Vector2(-2.5, -3.5)
+shape = SubResource("RectangleShape2D_ibvco")

@@ -43,28 +43,40 @@ public partial class Particle : Node2D
     public void _on_area_2d_area_entered(Area2D area)
     {
         // GD.Print($"area entered {area} {this}");
-        var otherParticle = area.GetParent<Particle>(); // TODO other things that collide?
-        if (validSpawn)
+        var otherParent = area.GetParent(); // TODO other things that collide?
+        if (otherParent is Particle otherParticle) // Spawning particle
         {
-            if (!otherParticle.validSpawn)
+            if (validSpawn)
             {
-                otherParticle.RemoveFromGame();
+                if (!otherParticle.validSpawn)
+                {
+                    otherParticle.RemoveFromGame();
+                }
+                else
+                {
+                    // TODO how does this happen?
+                    // GD.Print("Both are valid?");
+                }
+            }
+            else if (otherParticle.validSpawn)
+            {
+                RemoveFromGame();
             }
             else
             {
-                // TODO how does this happen?
-                // GD.Print("Both are valid?");
+                validSpawn = true;
+                otherParticle.RemoveFromGame();
             }
         }
-        else if (otherParticle.validSpawn)
+        if (otherParent is Player player)
         {
+            if (validSpawn)
+            {
+                player.Grow(size);
+            }
             RemoveFromGame();
         }
-        else
-        {
-            validSpawn = true;
-            otherParticle.RemoveFromGame();
-        }
+        
     }
 
     // Called every frame. 'delta' is the elapsed time since the previous frame.

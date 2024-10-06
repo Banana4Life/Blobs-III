@@ -1,4 +1,4 @@
-[gd_scene load_steps=6 format=3 uid="uid://fmi00jcend8v"]
+[gd_scene load_steps=7 format=3 uid="uid://fmi00jcend8v"]
 
 [ext_resource type="Texture2D" uid="uid://basqxtapupvpo" path="res://icon.svg" id="1_oae10"]
 [ext_resource type="Script" path="res://entity/Player.cs" id="1_v5huj"]
@@ -24,6 +24,9 @@ properties/2/path = NodePath(".:PlayerSize")
 properties/2/spawn = true
 properties/2/replication_mode = 1
 
+[sub_resource type="CircleShape2D" id="CircleShape2D_hvhe3"]
+radius = 45.0
+
 [node name="player" type="CharacterBody2D"]
 script = ExtResource("1_v5huj")
 
@@ -43,3 +46,9 @@ text = "NAME"
 horizontal_alignment = 1
 
 [node name="Camera2D" type="Camera2D" parent="."]
+
+[node name="Area2D" type="Area2D" parent="."]
+scale = Vector2(0.6, 0.6)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+shape = SubResource("CircleShape2D_hvhe3")
