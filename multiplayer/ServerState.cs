@@ -94,6 +94,8 @@ public class ServerState : State
         }
     }
 
+    private int peerIdOffset = 10;
+
     public void _handleServerHostingPacket(Dictionary dict)
     {
         if (dict.ContainsKey("m"))
@@ -139,16 +141,16 @@ public class ServerState : State
             }
             else
             {
-                const int peerIdOffset = 10;
-                int peerId;
-                if (serverClients.Any())
-                {
-                    peerId = Math.Max(serverClients.Max(it => it.PeerId) + 1, peerIdOffset);
-                }
-                else
-                {
-                    peerId = peerIdOffset;
-                }
+                // const int peerIdOffset = 10;
+                int peerId = peerIdOffset++;
+                // if (serverClients.Any())
+                // {
+                    // peerId = Math.Max(serverClients.Max(it => it.PeerId) + 1, peerIdOffset);
+                // }
+                // else
+                // {
+                    // peerId = peerIdOffset;
+                // }
 
                 var peer = new Peer(id, peerId, WebRtcUtil.NewConnection());
                 GD.Print($"New Peer: {peer}");

@@ -1,4 +1,5 @@
 using Godot;
+using LD56;
 
 public partial class Player : CharacterBody2D
 {
@@ -38,10 +39,27 @@ public partial class Player : CharacterBody2D
                         p.RemoveFromGame();
                     }
                 }
+
+                if (collision.GetCollider() is Player pl)
+                {
+                    if (PlayerSize > pl.PlayerSize)
+                    {
+                        GrowPlayer(pl.PlayerSize / 4);
+                        GD.Print($"{Multiplayer.GetUniqueId()} : {DisplayName} eats {pl.DisplayName}");
+                        RpcId(int.Parse(pl.Name), MethodName.GetEaten, pl.Name);    
+                    }
+                }
             }
         }
     }
 
+    [Rpc(MultiplayerApi.RpcMode.AnyPeer)]
+    public void GetEaten(string name)
+    {
+        GD.Print($"{Multiplayer.GetUniqueId()} : GetEaten");
+        var player = GetParent().GetNode<Player>(name);
+        player.GrowPlayer(-player.PlayerSize/2);
+    }
 
     public override void _Process(double delta)
     {
@@ -66,6 +84,6 @@ public partial class Player : CharacterBody2D
     public void GrowPlayer(int size = 200)
     {
         PlayerSize += size;
-        GD.Print($"{DisplayName} grows to {PlayerSize}");
+        GD.Print($"{DisplayName}({Name}) grows to {PlayerSize}");
     }
 }
