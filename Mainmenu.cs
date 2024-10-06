@@ -16,7 +16,6 @@ public partial class Mainmenu : Control
 
     public override void _Ready()
     {
-        LoadConfig();
         InitMainMenu();
         SetupMultiPlayer();
     }
@@ -31,16 +30,6 @@ public partial class Mainmenu : Control
         playerName.Text = NameGenerator.RandomName();
     }
 
-    private void LoadConfig()
-    {
-        var config = new ConfigFile();
-        var result = config.Load("user://config.cfg");
-        c2_base_uri = DEFAULT_C2_BASE_URI;
-        if (result == Error.Ok)
-        {
-            c2_base_uri = config.GetValue("c2server", "host", Variant.CreateFrom(DEFAULT_C2_BASE_URI)).AsString();
-        }
-    }
 
 
     [Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = true)]
@@ -55,15 +44,14 @@ public partial class Mainmenu : Control
 
     private void _on_host_button_pressed()
     {
-        Global.Instance.State = new ServerState(Multiplayer, c2_base_uri);
-        Global.Instance.PlayerManager.AddPlayer(UI_getPlayerName(), 1);
+        Global.Instance.EnterServerState(UI_getPlayerName());
         GetTree().Root.AddChild(worldScene.Instantiate());
         Visible = false;
     }
 
     private void _on_join_button_pressed()
     {
-        Global.Instance.State = new ClientState(Multiplayer, c2_base_uri, UI_getPlayerName());
+        Global.Instance.EnterClientState(UI_getPlayerName());
         GetTree().Root.AddChild(worldScene.Instantiate());
         Visible = false;
     }

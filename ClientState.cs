@@ -23,7 +23,14 @@ public class ClientState : State
     private WebRtcPeerConnection peerConnection;
     private readonly MultiplayerApi multiplayer;
     private readonly string playerName;
+    private double timeAwaiting;
 
+    private void TransitionState(NetworkState newState)
+    {
+        GD.Print($"Client - Transition {state} -> {newState}");
+        state = newState;
+    }
+    
     public ClientState(MultiplayerApi multiplayer, string baseUri, string playerName)
     {
         this.multiplayer = multiplayer;
@@ -60,7 +67,7 @@ public class ClientState : State
     private void OnConnectedToServer()
     {
         GD.Print($"Client - {multiplayer.GetUniqueId()}: connected to Server");
-        state = NetworkState.CONNECTED;
+        TransitionState(NetworkState.CONNECTED);
         
         Global.Instance.SendPlayerInfo(playerName);
     }
@@ -78,7 +85,7 @@ public class ClientState : State
                 UpdateJoiningState();
                 break;
             case NetworkState.AWAIT_ACCEPT:
-                UpdateAwaitAcceptState();
+                UpdateAwaitAcceptState(dt);
                 break;
             case NetworkState.OFFERING:
                 UpdateOfferingState();
@@ -93,24 +100,31 @@ public class ClientState : State
     {
         if (signalingClient.IsConnected)
         {
-            state = NetworkState.JOINING;
+            TransitionState(NetworkState.JOINING);
         }
     }
 
     private void UpdateJoiningState()
     {
         signalingClient.JoinMessage();
-        state = NetworkState.AWAIT_ACCEPT;
+        TransitionState(NetworkState.AWAIT_ACCEPT);
+        timeAwaiting = 0;
     }
 
-    private void UpdateAwaitAcceptState()
+    private void UpdateAwaitAcceptState(double dt)
     {
+        timeAwaiting += dt;
+        if (timeAwaiting >= 3) // Waited for 3s to connect
+        {
+            Global.Instance.EnterServerState(playerName);
+            return;
+        }
         var packet = signalingClient.ReadPacket();
         if (packet != null)
         {
             serverId = new Guid(packet["id"].AsString());
             peerId = packet["peerId"].AsInt32();
-            state = NetworkState.OFFERING;
+            TransitionState(NetworkState.OFFERING);
 
             peerConnection = WebRtcUtil.NewConnection();
             peerConnection.IceCandidateCreated += (media, index, name) =>
