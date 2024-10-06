@@ -1,5 +1,6 @@
 using Godot;
 using System.Globalization;
+using LD56;
 
 public partial class Countdown : Control
 {
@@ -20,9 +21,7 @@ public partial class Countdown : Control
 		var timeLeft = 3 - timer;
 		if (timeLeft < 0)
 		{
-			GetTree().Root.AddChild(worldScene.Instantiate());
-			Visible = false;
-			// TODO: load world
+			Global.Instance.LoadWorldScene();
 			return;
 		}
 
