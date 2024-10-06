@@ -10,6 +10,7 @@ public partial class Mainmenu : Control
 
     public override void _Ready()
     {
+        DisplayServer.WindowSetTitle($"LD56 - Main Menu");
         playerName.Text = NameGenerator.RandomName();
     }
 
