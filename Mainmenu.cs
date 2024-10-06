@@ -4,13 +4,14 @@ using LD56;
 
 record Peer(Guid Id, int PeerId, WebRtcPeerConnection Connection);
 
-public partial class Mainmenu : Node
+public partial class Mainmenu : Node2D
 {
     private const String DEFAULT_C2_BASE_URI = "wss://banana4.life";
     private String c2_base_uri;
     private State state;
 
     [Export] public PackedScene player_scene;
+    [Export] public PackedScene worldScene;
 
     private PlayerManager _manager = new();
 
@@ -93,11 +94,15 @@ public partial class Mainmenu : Node
     {
         state = new ServerState(Multiplayer, c2_base_uri);
         sendPlayerInfo(UI_getPlayerName() + "(Host)", 1);
+        GetTree().Root.AddChild(worldScene.Instantiate());
+        Visible = false;
     }
 
     private void _on_join_button_pressed()
     {
         state = new ClientState(Multiplayer, c2_base_uri, UI_getPlayerName());
+        GetTree().Root.AddChild(worldScene.Instantiate());
+        Visible = false;
     }
 
     private string UI_getPlayerName()
