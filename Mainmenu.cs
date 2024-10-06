@@ -1,27 +1,11 @@
 using Godot;
 using System;
-using System.Collections.Generic;
 using LD56;
 
 record Peer(Guid Id, int PeerId, WebRtcPeerConnection Connection);
 
 public partial class Mainmenu : Node
 {
-    List<String> names = new()
-    {
-        "Bob",
-        "Alice",
-        "Charlie",
-        "Eve",
-        "Dave",
-        "Grace",
-        "Heidi",
-        "Ivan",
-        "Judy",
-        "Mallory"
-    };
-
-
     private const String DEFAULT_C2_BASE_URI = "wss://banana4.life";
     private String c2_base_uri;
     const int GAME_PORT = 39875;
@@ -37,6 +21,27 @@ public partial class Mainmenu : Node
 
     public override void _Ready()
     {
+        LoadConfig();
+        InitMainMenu();
+        SetupMultiPlayer();
+    }
+
+    private void SetupMultiPlayer()
+    {
+        Multiplayer.PeerConnected += OnPlayerConnected;
+        Multiplayer.PeerDisconnected += OnPlayerDisconnected;
+        Multiplayer.ConnectedToServer += OnConnectedToServer;
+        Multiplayer.ConnectionFailed += OnConnectionFail;
+        Multiplayer.ServerDisconnected += OnServerDisconnected;
+    }
+
+    private void InitMainMenu()
+    {
+        GetNode<LineEdit>("edName").Text = NameGenerator.RandomName();
+    }
+
+    private void LoadConfig()
+    {
         var config = new ConfigFile();
         var result = config.Load("user://config.cfg");
         c2_base_uri = DEFAULT_C2_BASE_URI;
@@ -44,15 +49,6 @@ public partial class Mainmenu : Node
         {
             c2_base_uri = config.GetValue("c2server", "host", Variant.CreateFrom(DEFAULT_C2_BASE_URI)).AsString();
         }
-
-        GD.Print($"Connecting to C&C server: {c2_base_uri}");
-
-        Multiplayer.PeerConnected += OnPlayerConnected;
-        Multiplayer.PeerDisconnected += OnPlayerDisconnected;
-        Multiplayer.ConnectedToServer += OnConnectedToServer;
-        Multiplayer.ConnectionFailed += OnConnectionFail;
-        Multiplayer.ServerDisconnected += OnServerDisconnected;
-        GetNode<LineEdit>("edName").Text = names[new Random().Next(0, names.Count)];
     }
 
     private void OnPlayerConnected(long playerId)
@@ -84,17 +80,6 @@ public partial class Mainmenu : Node
         GD.Print("failed to connect to game server");
     }
 
-    public void _on_host_button_2_pressed()
-    {
-        // GD.Print($"hosting... {externalHost}");
-        // networkState = NetworkState.HOSTING;
-        // timer.Start();
-        // // gamePeer.CreateServer(GAME_PORT);
-        // // TODO compression?
-        // var playerName = GetNode<LineEdit>("edName").Text;
-        // sendPlayerInfo(playerName + "(Host)", 1);
-        // Multiplayer.MultiplayerPeer = gamePeer;
-    }
 
     public void _on_host_button_pressed()
     {
@@ -157,12 +142,6 @@ public partial class Mainmenu : Node
         state = new ClientState(Multiplayer, c2_base_uri);
     }
 
-    public void _on_join_ip_pressed()
-    {
-        // gamePeer.CreateClient(ipField.Text, GAME_PORT);
-        // Multiplayer.MultiplayerPeer = gamePeer;
-        // networkState = NetworkState.CONNECTING;
-    }
 
 
     // Called every frame. 'delta' is the elapsed time since the previous frame.

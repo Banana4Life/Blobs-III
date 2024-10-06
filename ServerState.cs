@@ -26,6 +26,7 @@ public class ServerState : State
     public ServerState(MultiplayerApi multiplayer, string baseUri)
     {
         this.multiplayer = multiplayer;
+        GD.Print($"Server connecting to C&C server: {baseUri}");
         signalingClient = new("server", baseUri, $"/ld56/signal/{myId}/host");
     }
 
