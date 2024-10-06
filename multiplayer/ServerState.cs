@@ -21,10 +21,12 @@ public class ServerState : State
     private List<Peer> serverClients = [];
     private readonly SimpleTimer hostingTimer = new(5f);
     private readonly MultiplayerApi multiplayer;
+    private readonly string playerName;
 
-    public ServerState(MultiplayerApi multiplayer, string baseUri)
+    public ServerState(MultiplayerApi multiplayer, string baseUri, string playerName)
     {
         this.multiplayer = multiplayer;
+        this.playerName = playerName;
         this.multiplayer.PeerConnected += OnPeerConnected;
         this.multiplayer.PeerDisconnected += OnPeerDisconnected;
         GD.Print($"Server connecting to C&C server: {baseUri}");
@@ -70,9 +72,8 @@ public class ServerState : State
                     gamePeer.CreateServer();
                     multiplayer.MultiplayerPeer = gamePeer;
                     TransitionState(NetworkState.HOSTING);
-                    Global.Instance.LoadWorldScene();
+                    DisplayServer.WindowSetTitle($"LD56 - Server - {playerName}");
                 }
-
                 break;
             case NetworkState.HOSTING:
                 var packet = signalingClient.ReadPacket();

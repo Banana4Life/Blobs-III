@@ -1,4 +1,5 @@
 using Godot;
+using GodotPlugins.Game;
 
 namespace LD56;
 
@@ -15,6 +16,7 @@ public partial class Global : Node
 
     public State State;
     public PlayerManager PlayerManager = new();
+    private World world;
 
     public override void _Ready()
     {
@@ -31,14 +33,14 @@ public partial class Global : Node
 
     public void EnterClientState(string playerName)
     {
-        State = new ClientState(Multiplayer, c2_base_uri, playerName);
         LoadCountdownScene();
+        State = new ClientState(Multiplayer, c2_base_uri, playerName);
     }
 
     
     public void EnterServerState(string playerName)
     {
-        State = new ServerState(Multiplayer, c2_base_uri);
+        State = new ServerState(Multiplayer, c2_base_uri, playerName);
         PlayerManager.AddPlayer(playerName, 1);
     }
 
@@ -68,29 +70,38 @@ public partial class Global : Node
         }
     }
 
-    private void LoadScene(PackedScene packedScene)
+    public void LoadWorldScene(bool show)
     {
-        // TODO discard scenes?
-        // if (GetTree().CurrentScene is CanvasItem mm)
-        // {
-            // mm.Visible = false;
-        // }
+        GD.Print("Loading World Scene...");
+        if (world == null)
+        {
+            world = worldScene.Instantiate<World>();
+            GetTree().Root.AddChild(world);
+        }
 
-        GetTree().ChangeSceneToPacked(packedScene);
+        if (show)
+        {
+            if (GetTree().CurrentScene is Countdown current1)
+            {
+                GD.Print($"Free {current1.Name} Scene...");
+                current1.QueueFree();
+            }
+            else if (GetTree().CurrentScene is Mainmenu current2)
+            {
+                GD.Print($"Free {current2.Name} Scene...");
+                current2.QueueFree();
+            }
+            GD.Print("Show World Scene...");
+            GetTree().SetCurrentScene(world);
+        }
+        world.Visible = show;
         
-        // var newScene = packedScene.Instantiate();
-        // GetTree().Root.AddChild(newScene);
-        // GetTree().SetCurrentScene(newScene);
-    }
-
-    public void LoadWorldScene()
-    {
-        LoadScene(worldScene);
     }
     
     private void LoadCountdownScene()
     {
-        LoadScene(countDownScene);
+        GetTree().ChangeSceneToPacked(countDownScene);
+        LoadWorldScene(false);
     }
 
 }

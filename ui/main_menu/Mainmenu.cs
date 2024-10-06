@@ -19,6 +19,7 @@ public partial class Mainmenu : Control
         if (Input.GetActionStrength("start-server") > 0.5)
         {
             Global.Instance.EnterServerState(name);
+            Global.Instance.LoadWorldScene(true);
         }
         else
         {

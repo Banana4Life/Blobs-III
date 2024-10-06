@@ -21,10 +21,10 @@ public partial class Countdown : Control
 		var timeLeft = 3 - timer;
 		if (timeLeft < 0)
 		{
-			Global.Instance.LoadWorldScene();
+			Global.Instance.LoadWorldScene(true);
 			return;
 		}
 
-		label.Text = ((int)timeLeft).ToString(CultureInfo.InvariantCulture);
+		label.Text = ((int) timeLeft + 1).ToString();
 	}
 }

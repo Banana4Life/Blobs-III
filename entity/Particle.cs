@@ -15,7 +15,7 @@ public partial class Particle : Node2D
 
     public override void _Ready()
     {
-        var syncher = GetNode<MultiplayerSynchronizer>("Syncher");
+        var syncher = GetNode<MultiplayerSynchronizer>("ParticleSync");
         syncher.SetVisibilityFor(0, false);
         
         var sprite = GetNode<Sprite2D>("Sprite2D");
@@ -76,9 +76,9 @@ public partial class Particle : Node2D
             validSpawn = true;
             
             var sprite = GetNode<Sprite2D>("Sprite2D");
-            // sprite.Visible = true;
+            sprite.Visible = true;
             
-            var syncher = GetNode<MultiplayerSynchronizer>("Syncher");
+            var syncher = GetNode<MultiplayerSynchronizer>("ParticleSync");
             syncher.SetVisibilityFor(0, true);
         }
 

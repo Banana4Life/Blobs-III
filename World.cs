@@ -10,11 +10,15 @@ public partial class World : Node2D
 
     private int players = 1;
     public int totalMass = 0;
-    public int maxMass = 100000;
+    [Export] public int maxMass = 10;
     public int i = 0;
 
     private RandomNumberGenerator random = new();
 
+
+    public override void _Ready()
+    {
+    }
 
     public int spawnRandomParticle()
     {
@@ -79,6 +83,7 @@ public partial class World : Node2D
             while (playersToRemove.Count > 0)
             {
                 var peerToRemove = playersToRemove.Dequeue();
+                GD.Print($"Removing Player {peerToRemove}");
                 var found = GetNodeOrNull(peerToRemove.ToString());
                 if (found != null)
                 {

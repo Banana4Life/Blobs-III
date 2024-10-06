@@ -1,7 +1,7 @@
 [gd_scene load_steps=7 format=3 uid="uid://cimkbk2l628bd"]
 
 [ext_resource type="Shader" uid="uid://whygv3qsb6m6" path="res://shaders/blob2.tres" id="1_an8a7"]
-[ext_resource type="Script" path="res://Particle.cs" id="1_jl415"]
+[ext_resource type="Script" path="res://entity/Particle.cs" id="1_jl415"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_i0b0s"]
 resource_local_to_scene = true
@@ -49,7 +49,7 @@ rotation = 3.14159
 scale = Vector2(20, 20)
 texture = SubResource("CanvasTexture_tdlh4")
 
-[node name="Syncher" type="MultiplayerSynchronizer" parent="."]
+[node name="ParticleSync" type="MultiplayerSynchronizer" parent="."]
 replication_config = SubResource("SceneReplicationConfig_ljpuu")
 
 [node name="Area2D" type="Area2D" parent="."]

@@ -68,6 +68,7 @@ public class ClientState : State
     {
         GD.Print($"Client - {multiplayer.GetUniqueId()}: connected to Server");
         TransitionState(NetworkState.CONNECTED);
+        DisplayServer.WindowSetTitle($"LD56 - {playerName}");
         
         Global.Instance.SendPlayerInfo(playerName);
     }
@@ -177,6 +178,7 @@ public class ClientState : State
         timeAwaiting += dt;
         if (timeAwaiting >= 3) // Waited for 3s to connect we host instead now...
         {
+            GD.Print("No Server Found, Start Hosting...");
             Global.Instance.EnterServerState(playerName);
             return true;
         }
@@ -186,10 +188,6 @@ public class ClientState : State
 
     private void UpdateConnectedState(double dt)
     {
-        timeAwaiting += dt;
-        if (timeAwaiting >= 3)
-        {
-            Global.Instance.LoadWorldScene();
-        }
+       
     }
 }
