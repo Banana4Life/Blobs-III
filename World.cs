@@ -10,7 +10,7 @@ public partial class World : Node2D
 
     private int players = 1;
     public int totalMass = 0;
-    public int maxMass = 100;
+    public int maxMass = 100000;
     public int i = 0;
 
     private RandomNumberGenerator random = new();
@@ -41,13 +41,12 @@ public partial class World : Node2D
 
         var color = Color.FromHsv(random.RandfRange(0, 1f), 1f, 1f, random.RandfRange(0.2f, 0.4f));
         
-        (sprite.Material as ShaderMaterial).SetShaderParameter("uSeed", random.RandfRange(0f, 10000f));
-        (sprite.Material as ShaderMaterial).SetShaderParameter("uMagnitude", random.RandfRange(0.01f, 0.19f));
-        (sprite.Material as ShaderMaterial).SetShaderParameter("uFrequency", random.RandfRange(0.5f, 5.5f));
         particle.Name = "particle_" + i++;
-        // GD.Print($"spawn {i++} at {spawnPos} {color.H}");
         ((Particle)particle).Color = color;
         ((Particle)particle).size = (int)(3 * (randScale * randScale) / 4);
+        ((Particle)particle).seed = random.RandfRange(0f, 10000f);
+        ((Particle)particle).mag = random.RandfRange(0.01f, 0.19f);
+        ((Particle)particle).freq = random.RandfRange(0.5f, 5.5f);
             
         AddChild(particle);
         return ((Particle)particle).size;

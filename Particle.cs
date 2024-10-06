@@ -8,13 +8,23 @@ public partial class Particle : Node2D
     private double aliveTime = 0;
     [Export] public int size;
     [Export] public Color Color;
+    [Export] public float seed;
+    [Export] public float mag;
+    [Export] public float freq;
+    
 
     public override void _Ready()
     {
+        var syncher = GetNode<MultiplayerSynchronizer>("Syncher");
+        syncher.SetVisibilityFor(0, false);
+        
         var sprite = GetNode<Sprite2D>("Sprite2D");
         var shaderMat = (sprite.Material as ShaderMaterial);
         shaderMat.SetShaderParameter("bodyColor", Color);
         shaderMat.SetShaderParameter("cellColor", Colors.Black);
+        shaderMat.SetShaderParameter("uSeed", seed);
+        shaderMat.SetShaderParameter("uMagnitude", mag);
+        shaderMat.SetShaderParameter("uFrequency", freq);
     }
 
 
@@ -62,6 +72,9 @@ public partial class Particle : Node2D
         if (aliveTime >= 0.5d)
         {
             validSpawn = true;
+            
+            var syncher = GetNode<MultiplayerSynchronizer>("Syncher");
+            syncher.SetVisibilityFor(0, true);
         }
 
         GetNode<Sprite2D>("Sprite2D").Visible = validSpawn;
