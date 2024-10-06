@@ -41,3 +41,5 @@ offset_right = 57.0
 offset_bottom = -35.0
 text = "NAME"
 horizontal_alignment = 1
+
+[node name="Camera2D" type="Camera2D" parent="."]

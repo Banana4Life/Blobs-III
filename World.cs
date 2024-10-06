@@ -116,6 +116,8 @@ public partial class World : Node2D
         existing.PlayerSize = size;
         existing.DisplayName = displayName;
         GD.Print($"{Multiplayer.GetUniqueId()}: Player {displayName}({id}) init size: {existing.PlayerSize} auth {existing.GetMultiplayerAuthority()}");
+        
+        existing.GetNode<Camera2D>("Camera2D").MakeCurrent();
     }
 
 
