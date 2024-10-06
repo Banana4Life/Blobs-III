@@ -1,8 +1,5 @@
 using Godot;
-using System;
 using LD56;
-
-record Peer(Guid Id, int PeerId, WebRtcPeerConnection Connection);
 
 public partial class Mainmenu : Control
 {
