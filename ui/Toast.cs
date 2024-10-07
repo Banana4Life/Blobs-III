@@ -17,6 +17,7 @@ public partial class Toast : CanvasLayer
 	{
 		GetNode<Button>("col/row/container/player/btn").Hide();
 		GetNode<PlayerSelector>("col/row/container/player").SetColor(name);
+		timer.Reset();
 		Show();
 	}
 
