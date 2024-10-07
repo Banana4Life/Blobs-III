@@ -52,7 +52,7 @@ public partial class Global : Node
             }
             config.SetValue("savegame", "colors", unlockedColors.ToArray());
             config.Save("user://config.cfg");
-            selectedColor = unlockedColors[Random.RandiRange(0, unlockedColors.Count)];
+            selectedColor = unlockedColors[Random.RandiRange(0, unlockedColors.Count-1)];
             c2_base_uri = config.GetValue("c2server", "host", DEFAULT_C2_BASE_URI).AsString();
             StatsUri = config.GetValue("c2server", "stats", DEFAULT_C2_STATS_URI).AsString();
         }
