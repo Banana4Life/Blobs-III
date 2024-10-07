@@ -60,9 +60,9 @@ render_mode blend_mix;
 
 
 // PerlinNoise3D
-#include \"res://shaderV/rgba/noise/perlin3d.gdshaderinc\"
+#include \"res://shaderV/perlin3d.gdshaderinc\"
 // WorleyNoise2x2x2
-#include \"res://shaderV/rgba/noise/worley2x2x2.gdshaderinc\"
+#include \"res://shaderV/worley2x2x2.gdshaderinc\"
 
 void fragment() {
 // Input:24

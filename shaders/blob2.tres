@@ -136,7 +136,7 @@ uniform float uRadius = 0.20000000298023;
 
 
 // WorleyNoise2x2x2
-#include \"res://shaderV/rgba/noise/worley2x2x2.gdshaderinc\"
+#include \"res://shaderV/worley2x2x2.gdshaderinc\"
 // GlobalExpression:0
 	vec2 random2(vec2 st) {
 	    st = vec2(dot(st, vec2(127.1, 311.7)),
@@ -281,7 +281,6 @@ void fragment() {
 
 }
 "
-graph_offset = Vector2(-8, 0)
 mode = 1
 flags/light_only = false
 nodes/vertex/0/position = Vector2(-1100, -800)
