@@ -63,7 +63,8 @@ public partial class Mainmenu : Control
     private void StatsRequestOnRequestCompleted(long result, long responsecode, string[] headers, byte[] body)
     {
         GD.Print("Received");
-        var variant = Json.ParseString(body.GetStringFromUtf8());
+        var bodyText = body.GetStringFromUtf8();
+        var variant = Json.ParseString(bodyText);
         if (variant.VariantType == Variant.Type.Nil)
         {
             GD.Print("json not found");
