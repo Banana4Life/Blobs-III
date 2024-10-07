@@ -63,19 +63,15 @@ public partial class Mainmenu : CanvasLayer
 
     private void StatsRequestOnRequestCompleted(long result, long responsecode, string[] headers, byte[] body)
     {
-        GD.Print("Received");
         var bodyText = body.GetStringFromUtf8();
         var variant = Json.ParseString(bodyText);
         if (variant.VariantType == Variant.Type.Nil)
         {
-            GD.Print("json not found");
             return;
         }
         
-        GD.Print("set values");
         var statsDictionary = variant.AsGodotDictionary();
         serverCount.Text = Math.Max(statsDictionary["servers"].AsInt32(), 1 ).ToString();
         playerCount.Text = Math.Max(statsDictionary["players"].AsInt32(), 1 ).ToString();
-        GD.Print("values set");
     }
 }
