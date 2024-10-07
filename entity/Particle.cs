@@ -6,6 +6,7 @@ public partial class Particle : RigidBody2D, MassContributor
     private bool validSpawn = false;
     private double aliveTime = 0;
     [Export] public int size;
+    public Vector2 targetScale;
     [Export] public Color Color;
     [Export] public float seed;
     [Export] public float mag;
@@ -34,6 +35,7 @@ public partial class Particle : RigidBody2D, MassContributor
     public void RandomInit(int size)
     {
         this.size = size;
+        Shrink(0); // update targetscale
         var color = Color.FromHsv(random.RandfRange(0, 1f), 1f, 1f, random.RandfRange(0.2f, 0.4f));
         Color = color;
         seed = random.RandfRange(0f, 10000f);
@@ -116,14 +118,30 @@ public partial class Particle : RigidBody2D, MassContributor
         if (validSpawn)
         {
             GetNode<Sprite2D>("scaled/Sprite2D").Visible = validSpawn;
-        
-            var scale = Mathf.Sqrt(size / Mathf.Pi) * 2 / 10f;
-            var newScale = GetNode<Node2D>("scaled").Scale.Lerp(new Vector2(scale, scale), 0.05f);
+            var newScale = GetNode<Node2D>("scaled").Scale.Lerp(targetScale, 0.1f);
             GetNode<Node2D>("scaled").Scale = newScale;
             GetNode<CollisionShape2D>("PhysicsCollisionShape").Scale = newScale;
         }
 
         
     }
-    
+
+    public void Shrink(int mass)
+    {
+        size -= mass;
+        var scale = Mathf.Sqrt(size / Mathf.Pi) * 2 / 10f;
+        targetScale = new Vector2(scale, scale);
+        if (tiny)
+        {
+            var world = GetParent<World>();
+            if (tiny)
+            {
+                world.totalTinyMass -= mass;
+            }
+            else
+            {
+                world.totalMass -= mass;
+            }
+        }
+    }
 }

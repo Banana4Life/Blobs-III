@@ -154,17 +154,7 @@ public partial class Player : CharacterBody2D, MassContributor
     public void EatParticle(string name, int mass)
     {
         var particle = GetParent().GetNode<Particle>(name);
-        particle.size -= mass;
-        
-        var world = GetParent<World>();
-        if (particle.tiny)
-        {
-            world.totalTinyMass -= mass;
-        }
-        else
-        {
-            world.totalMass -= mass;
-        }
+        particle.Shrink(mass);
     }
 
     
@@ -186,7 +176,7 @@ public partial class Player : CharacterBody2D, MassContributor
         GetNode<Label>("Label").Text = DisplayName;
         var scaled = GetNode<Node2D>("scaled");
         var collider = GetNode<CollisionShape2D>("PhysicsCollisionShape");
-        scaled.Scale = scaled.Scale.Lerp(targetScale, (float) delta);
+        scaled.Scale = scaled.Scale.Lerp(targetScale, (float) delta * 2);
         collider.Scale = scaled.Scale;
         
         var scale = Mathf.Sqrt(PlayerSize / Mathf.Pi) * 2 / 10f;
