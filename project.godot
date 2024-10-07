@@ -15,7 +15,7 @@ run/main_scene="res://ui/main_menu/main_menu.tscn"
 config/features=PackedStringArray("4.3", "C#", "Forward Plus")
 boot_splash/image="res://splashscreen.png"
 config/icon="res://icon.png"
-boot_splash/minimum_display_time=2000
+boot_splash/minimum_display_time=1000
 
 [autoload]
 

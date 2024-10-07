@@ -1,12 +1,22 @@
-[gd_scene load_steps=3 format=3 uid="uid://c72a651i70tmf"]
+[gd_scene load_steps=4 format=3 uid="uid://c72a651i70tmf"]
 
 [ext_resource type="Script" path="res://ui/transitions/Countdown.cs" id="1_mx156"]
 [ext_resource type="PackedScene" uid="uid://dax87d6xgwgg0" path="res://world.tscn" id="2_ubr71"]
+[ext_resource type="Texture2D" uid="uid://bl3s5i2pu3chq" path="res://splashscreen.png" id="3_235g2"]
 
 [node name="Countdown" type="CanvasLayer" node_paths=PackedStringArray("label")]
 script = ExtResource("1_mx156")
 label = NodePath("countdown")
 worldScene = ExtResource("2_ubr71")
+
+[node name="TextureRect" type="TextureRect" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("3_235g2")
+expand_mode = 1
 
 [node name="countdown" type="Label" parent="."]
 anchors_preset = 8
