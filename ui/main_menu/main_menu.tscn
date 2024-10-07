@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://mlrhpblxt33d"]
 
 [ext_resource type="Script" path="res://ui/main_menu/Mainmenu.cs" id="1_mc8xx"]
-[ext_resource type="Texture2D" uid="uid://c3gwlsm3viiuk" path="res://ui/main_menu/background.jpg" id="2_oa8qe"]
+[ext_resource type="Texture2D" uid="uid://ch5xkv5nreiml" path="res://ui/main_menu/background.png" id="2_kdndo"]
 [ext_resource type="Texture2D" uid="uid://b73x57dasaedv" path="res://ui/main_menu/refresh.svg" id="3_ckv4l"]
 
 [node name="Main_Menu" type="Control" node_paths=PackedStringArray("playerName")]
@@ -21,7 +21,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-texture = ExtResource("2_oa8qe")
+texture = ExtResource("2_kdndo")
 expand_mode = 1
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
