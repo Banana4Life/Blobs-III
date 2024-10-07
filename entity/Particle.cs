@@ -13,11 +13,11 @@ public partial class Particle : RigidBody2D, MassContributor
 
     public int ContributedMass => size;
     public double eatenCd;
-    private RandomNumberGenerator random;
+    private RandomNumberGenerator random =  Global.Instance.Random;
+    public bool tiny;
     
     public override void _Ready()
     {
-        random = Global.Instance.Random;
         var syncher = GetNode<MultiplayerSynchronizer>("ParticleSync");
         syncher.SetVisibilityFor(0, false);
         
@@ -31,11 +31,9 @@ public partial class Particle : RigidBody2D, MassContributor
         shaderMat.SetShaderParameter("uFrequency", freq);
     }
 
-    public void RandomInit(int minSize)
+    public void RandomInit(int size)
     {
-        var random = Global.Instance.Random;
-        size = random.RandiRange(minSize, 500);
-        
+        this.size = size;
         var color = Color.FromHsv(random.RandfRange(0, 1f), 1f, 1f, random.RandfRange(0.2f, 0.4f));
         Color = color;
         seed = random.RandfRange(0f, 10000f);

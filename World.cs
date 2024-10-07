@@ -10,23 +10,21 @@ public partial class World : Node2D
 
     private int players = 1;
     public int totalMass = 0;
+    public int totalTinyMass = 0;
     public int maxAiPlayers = 3;
     public int aiPlayers;
     [Export] public int maxMass;
+    [Export] public int maxTinyMass = 10000;
     [Export] public Vector2 PlayArea;
     public int i = 0;
 
     public int AI_ID;
     
     public Player authorityPlayer;
+    private RandomNumberGenerator random = Global.Instance.Random;
 
-    public int spawnRandomParticle()
+    public int spawnRandomParticle(int minSize, int maxSize, bool tiny)
     {
-        var massContributors = GetTree().GetNodesInGroup("MassContributor");
-        var players = massContributors.Where(mc => mc is Player);
-        
-        var minSize = players.Count() == 0 ? 10 : Mathf.Max(1, players.Min(p => ((Player)p).PlayerSize) - 10);
-
         var particle = particlePrefab.Instantiate<Particle>();
         var spawnPos = randomSpawnPos();
 
@@ -35,7 +33,8 @@ public partial class World : Node2D
 
         particle.GlobalPosition = spawnPos;
         particle.Name = "particle_" + i++;
-        particle.RandomInit(minSize);
+        particle.RandomInit( random.RandiRange(minSize, maxSize));
+        particle.tiny = tiny;
 
         AddChild(particle);
         return particle.size;
@@ -45,7 +44,7 @@ public partial class World : Node2D
     
     private Vector2 randomSpawnPos()
     {
-        var random = Global.Instance.Random;
+        var random = this.random;
         var spawnPos = new Vector2(
             random.RandfRange(-PlayArea.X / 2, PlayArea.X / 2),
             random.RandfRange(-PlayArea.Y / 2, PlayArea.Y / 2)
@@ -58,7 +57,15 @@ public partial class World : Node2D
     {
         if (totalMass < maxMass)
         {
-            totalMass += spawnRandomParticle();
+            var massContributors = GetTree().GetNodesInGroup("MassContributor");
+            var players = massContributors.Where(mc => mc is Player);
+            var minSize = players.Count() == 0 ? 10 : Mathf.Max(1, players.Min(p => ((Player)p).PlayerSize) - 10);
+            totalMass += spawnRandomParticle(minSize, 500, false);
+        }
+        
+        if (totalTinyMass < maxTinyMass)
+        {
+            totalTinyMass += spawnRandomParticle(5, 40, true);
         }
 
         if (maxAiPlayers > aiPlayers)
@@ -123,7 +130,7 @@ public partial class World : Node2D
         var player = playerPrefab.Instantiate<Player>();
         player.Name = "AI" + AI_ID++;
         player.DisplayName = NameGenerator.RandomName();
-        var random = Global.Instance.Random;
+        var random = this.random;
         player.GrowPlayer(random.RandiRange(100, 250));
         player.aiControlled = true;
         aiPlayers++;

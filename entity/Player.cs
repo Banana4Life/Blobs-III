@@ -34,7 +34,8 @@ public partial class Player : CharacterBody2D, MassContributor
         if (Multiplayer.IsServer() && aiControlled)
         {
             var massContributors = GetTree().GetNodesInGroup("MassContributor");
-            var max = massContributors.Where(mc => mc is Player { aiControlled: false }).Max(mc => ((Player)mc).PlayerSize);
+            var players = massContributors.Where(mc => mc is Player { aiControlled: false });
+            var max = !players.Any() ? 0 : players.Max(mc => ((Player)mc).PlayerSize);
             if (PlayerSize > max)
             {
                 // TODO do stuff when player size was reached
@@ -144,7 +145,14 @@ public partial class Player : CharacterBody2D, MassContributor
         particle.size -= mass;
         
         var world = GetParent<World>();
-        world.totalMass -= mass;
+        if (particle.tiny)
+        {
+            world.totalTinyMass -= mass;
+        }
+        else
+        {
+            world.totalMass -= mass;
+        }
     }
 
     
