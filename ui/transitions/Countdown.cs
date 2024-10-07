@@ -1,7 +1,7 @@
 using Godot;
 using LD56;
 
-public partial class Countdown : Control
+public partial class Countdown : CanvasLayer
 {
 	private double timer;
 	[Export] private Label label;

@@ -10,6 +10,7 @@ public partial class Player : CharacterBody2D, MassContributor
 
     [Export] public string DisplayName;
     [Export] public int PlayerSize;
+    [Export] public Color PlayerColor;
     public Vector2 targetScale;
 
     public int ContributedMass => PlayerSize;
@@ -19,6 +20,8 @@ public partial class Player : CharacterBody2D, MassContributor
     {
         // var syncher = GetNode<MultiplayerSynchronizer>("PlayerSync");
         // syncher.SetVisibilityFor(0, false);
+        (GetNode<Sprite2D>("scaled/Sprite2D").Material as ShaderMaterial)
+            .SetShaderParameter("bodyColor", PlayerColor);
     }
 
     public override void _PhysicsProcess(double delta)
@@ -89,6 +92,8 @@ public partial class Player : CharacterBody2D, MassContributor
 
     public override void _Process(double delta)
     {
+
+        
         eatenCd -= delta;
         GetNode<Label>("Label").Text = DisplayName;
         var scaled = GetNode<Node2D>("scaled");

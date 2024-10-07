@@ -2,33 +2,23 @@
 
 [ext_resource type="Script" path="res://ui/transitions/Respawn.cs" id="1_hrtr1"]
 
-[node name="Respawn" type="Control"]
-layout_mode = 3
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = -577.0
-offset_top = -321.0
-offset_right = -577.0
-offset_bottom = -321.0
-grow_horizontal = 2
-grow_vertical = 2
+[node name="Respawn" type="CanvasLayer"]
 script = ExtResource("1_hrtr1")
 
 [node name="respawntext" type="Label" parent="."]
-layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -20.0
-offset_top = -11.5
-offset_right = 20.0
-offset_bottom = 11.5
+offset_left = -484.0
+offset_top = -312.0
+offset_right = 494.0
+offset_bottom = 309.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_font_sizes/font_size = 150
 text = "You died
-Press (R) to Respawn"
+Press (R) to 
+Respawn"
 horizontal_alignment = 1
