@@ -9,10 +9,14 @@ public partial class World : Node2D
 
     private int players = 1;
     public int totalMass = 0;
+    public int maxAiPlayers = 3;
+    public int aiPlayers;
     [Export] public int maxMass;
     [Export] public Vector2 PlayArea;
     public int i = 0;
 
+    public int AI_ID;
+    
     private RandomNumberGenerator random;
 
     public Player authorityPlayer;
@@ -25,9 +29,6 @@ public partial class World : Node2D
 
     public int spawnRandomParticle()
     {
-        var spawnRange = GetViewport().GetVisibleRect().Size;
-
-
         var particle = particlePrefab.Instantiate<Particle>();
         var spawnPos = randomSpawnPos();
 
@@ -57,6 +58,11 @@ public partial class World : Node2D
         if (totalMass < maxMass)
         {
             totalMass += spawnRandomParticle();
+        }
+
+        if (maxAiPlayers > aiPlayers)
+        {
+            SpawnAI();
         }
     }
 
@@ -111,6 +117,20 @@ public partial class World : Node2D
         }
     }
 
+    private void SpawnAI()
+    {
+        var player = playerPrefab.Instantiate<Player>();
+        player.Name = "AI" + AI_ID++;
+        player.DisplayName = NameGenerator.RandomName();
+        player.GrowPlayer();
+        player.aiControlled = true;
+        aiPlayers++;
+        AddChild(player);
+        player.GlobalPosition = randomSpawnPos();
+        GD.Print($"{Multiplayer.GetUniqueId()}: spawned {player.Name} {player.DisplayName}");
+    }
+
+    
     private void SpawnPlayer(PlayerManager.PlayerInfo info)
     {
         GD.Print($"{Multiplayer.GetUniqueId()}: player spawn {info.name} {info.peerId}");

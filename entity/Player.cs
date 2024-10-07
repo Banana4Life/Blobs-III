@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using Godot;
 using LD56;
 
@@ -8,6 +9,8 @@ public partial class Player : CharacterBody2D, MassContributor
     
     public const float SPEED = 300.0f;
 
+    public bool aiControlled;
+    
     [Export] public string DisplayName;
     [Export] public int PlayerSize;
     [Export] public int score;
@@ -27,51 +30,96 @@ public partial class Player : CharacterBody2D, MassContributor
 
     public override void _PhysicsProcess(double delta)
     {
+        if (Multiplayer.IsServer() && aiControlled)
+        {
+            var massContributors = GetTree().GetNodesInGroup("MassContributor");
+            var sorted = massContributors.Where(mc =>
+            {
+                if (mc is Particle pa)
+                {
+                    return pa.size < PlayerSize;
+                }
+
+                if (mc is Player pl)
+                {
+                    return pl.PlayerSize < PlayerSize;
+                }
+
+                return false;
+            }).OrderBy(mc => (((Node2D)mc).GlobalPosition - GlobalPosition).LengthSquared());
+            if (sorted.Count() == 0)
+            {
+                GD.Print($"{Name} cannot find any prey");
+                PlayerDied();
+                return;
+            }
+            Velocity = (((Node2D)sorted.First()).GlobalPosition - GlobalPosition).Normalized() * SPEED;
+            MoveAndSlide();
+            detectCollision(delta);
+            return;
+        }
+
         // GrowPlayer(2);
         if (IsMultiplayerAuthority())
         {
             Velocity = Input.GetVector("ui_left", "ui_right", "ui_up", "ui_down") * SPEED;
             MoveAndSlide();
-            for (int i = 0; i < GetSlideCollisionCount(); i++)
+            detectCollision(delta);
+        }
+    }
+
+    private void detectCollision(double delta)
+    {
+        for (int i = 0; i < GetSlideCollisionCount(); i++)
+        {
+            var collision = GetSlideCollision(i);
+            // GD.Print($"{DisplayName} collided {collision.GetCollider()}");
+
+            if (collision.GetCollider() is RigidBody2D rb)
             {
-                var collision = GetSlideCollision(i);
-                // GD.Print($"{DisplayName} collided {collision.GetCollider()}");
-
-                if (collision.GetCollider() is RigidBody2D rb)
+                rb.ApplyCentralImpulse(-collision.GetNormal() * 5);
+            }
+            if (collision.GetCollider() is Particle pa)
+            {
+                if (pa.size < PlayerSize)
                 {
-                    rb.ApplyCentralImpulse(-collision.GetNormal() * 5);
-                }
-                if (collision.GetCollider() is Particle pa)
-                {
-                    if (pa.size < PlayerSize)
+                    if (pa.eatenCd < 0)
                     {
-                        if (pa.eatenCd < 0)
-                        {
-                            pa.eatenCd = 0.1;
-                            var massEaten = (int) (Mathf.Max(5, pa.size * delta * 25));
-                            GrowPlayer(Mathf.Max(1, massEaten / 2));
-                            RpcId(1, MethodName.EatParticle, pa.Name, massEaten);    
-                        }
-                        
+                        pa.eatenCd = 0.1;
+                        var massEaten = (int) (Mathf.Max(5, pa.size * delta * 25));
+                        GrowPlayer(Mathf.Max(1, massEaten / 2));
+                        RpcId(1, MethodName.EatParticle, pa.Name, massEaten);    
                     }
+                        
                 }
+            }
 
-                if (collision.GetCollider() is Player pl)
+            if (collision.GetCollider() is Player pl)
+            {
+                if (PlayerSize > pl.PlayerSize)
                 {
-                    if (PlayerSize > pl.PlayerSize)
+                    if (pl.eatenCd < 0)
                     {
-                        if (pl.eatenCd < 0)
-                        {
-                            var massEaten = (int) (Mathf.Max(5, pl.PlayerSize * delta * 25));
-                            GrowPlayer(Mathf.Max(1, massEaten / 4));
-                            GD.Print($"{Multiplayer.GetUniqueId()} : {DisplayName} eats {massEaten} of {pl.DisplayName}");
-                            RpcId(int.Parse(pl.Name), MethodName.EatPlayer, pl.Name, massEaten);
-                            pl.eatenCd = 0.1;
-                        }
+                        var massEaten = (int) (Mathf.Max(5, pl.PlayerSize * delta * 25));
+                        GrowPlayer(Mathf.Max(1, massEaten / 4));
+                        GD.Print($"{Multiplayer.GetUniqueId()} : {DisplayName} eats {massEaten} of {pl.DisplayName}");
+                            
+                        RpcId(pl.authorityFromName(), MethodName.EatPlayer, pl.Name, massEaten);
+                        pl.eatenCd = 0.1;
                     }
                 }
             }
         }
+    }
+
+    public int authorityFromName()
+    {
+        if (Name.ToString().StartsWith("AI"))
+        {
+            return 1;
+        }
+
+        return int.Parse(Name);
     }
 
     [Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = true)]
@@ -85,7 +133,7 @@ public partial class Player : CharacterBody2D, MassContributor
     }
 
     
-    [Rpc(MultiplayerApi.RpcMode.AnyPeer)]
+    [Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = true)]
     public void EatPlayer(string name, int mass)
     {
         var player = GetParent().GetNode<Player>(name);
@@ -109,7 +157,10 @@ public partial class Player : CharacterBody2D, MassContributor
 
     public void _enter_tree()
     {
-        SetMultiplayerAuthority(int.Parse(Name));
+        if (!Name.ToString().StartsWith("AI"))
+        {
+            SetMultiplayerAuthority(authorityFromName());
+        }
     }
 
     public void GrowPlayer(int mass = 200)
@@ -149,10 +200,13 @@ public partial class Player : CharacterBody2D, MassContributor
             GetParent<World>().AddChild(particle);
         }
         
-        GetParent<World>().authorityPlayer = null;
         QueueFree(); 
-        Global.Instance.SendPlayerDead();
+        if (!aiControlled)
+        {
+            GetParent<World>().authorityPlayer = null;
+            Global.Instance.SendPlayerDead();
+            Global.Instance.LoadRespawnScene(score);    
+        }
         
-        Global.Instance.LoadRespawnScene(score);
     }
 }
