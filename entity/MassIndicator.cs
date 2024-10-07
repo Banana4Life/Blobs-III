@@ -72,7 +72,7 @@ public partial class MassIndicator : Node2D
 		{
 			var massFraction = (angleBuckets[i] - minMass) / massRange;
 			var indicator = indicators[i];
-			(indicator.Material as ShaderMaterial)?.SetShaderParameter("arc_color", Color.FromHsv(0, (float)massFraction, 1, 0.5f + ((float)massFraction / 2f)));
+			(indicator.Material as ShaderMaterial)?.SetShaderParameter("arc_color", Color.FromHsv(0, (float)massFraction, 1, (float)massFraction / 2f));
 		}
 	}
 }
