@@ -120,7 +120,7 @@ public partial class Particle : RigidBody2D, MassContributor
 
         }
         
-        if (validSpawn)
+        if (validSpawn && Multiplayer.IsServer())
         {
             GetNode<Sprite2D>("scaled/Sprite2D").Visible = validSpawn;
             var newScale = GetNode<Node2D>("scaled").Scale.Lerp(targetScale, 0.1f);

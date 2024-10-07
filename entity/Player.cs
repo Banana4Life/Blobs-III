@@ -201,7 +201,10 @@ public partial class Player : CharacterBody2D, MassContributor
         var scale = Mathf.Sqrt(PlayerSize / Mathf.Pi) * 2 / 10f;
         targetScale = new Vector2(scale, scale);
         
-        DisplayServer.WindowSetTitle($"LD56 - {DisplayName} - Score: {score}");
+        if (Name == Multiplayer.GetUniqueId().ToString())
+        {
+            DisplayServer.WindowSetTitle($"LD56 - {DisplayName} - Score: {score}");
+        }
 
 
     }
@@ -216,6 +219,7 @@ public partial class Player : CharacterBody2D, MassContributor
 
     public void GrowPlayer(int mass = 200)
     {
+        
         starving = 2;
         PlayerSize += mass;
         score = Mathf.Max(PlayerSize, score);
