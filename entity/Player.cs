@@ -320,7 +320,7 @@ public partial class Player : CharacterBody2D, MassContributor
         // {
             // GD.Print($"{DisplayName}({Name}) shrinks to {PlayerSize} (-{mass})");
         // }
-        if (PlayerSize < 0)
+        if (PlayerSize <= 0)
         {
             PlayerDied();
         }
@@ -328,21 +328,29 @@ public partial class Player : CharacterBody2D, MassContributor
 
     public void PlayerDied()
     {
-        
         var world = GetParent<World>();
         world.SpawnColoredParticles(world.deathParticles, GlobalPosition, Color.Color);
-        Audio.Instance.SplatAt(GlobalPosition);    
-        
-        QueueFree();
-        if (aiControlled)
+        Audio.Instance.SplatAt(GlobalPosition);
+        if (!aiControlled)
         {
-            world.aiPlayers--;
+            GD.Print($"{Multiplayer.GetUniqueId()}: PlayerDied: {DisplayName}({Name})");
         }
-        else
+        if (IsMultiplayerAuthority())
         {
-            world.authorityPlayer = null;
-            Global.Instance.SendPlayerDead();
-            Global.Instance.LoadRespawnScene(score);
+            QueueFree();
+            if (aiControlled)
+            {
+                world.aiPlayers--;
+            }
+            else
+            {
+                GD.Print($"{Multiplayer.GetUniqueId()}: PlayerDied: {DisplayName}({Name}) with authority");
+
+                world.authorityPlayer = null;
+                Global.Instance.SendPlayerDead();
+                Global.Instance.LoadRespawnScene(score);
+            }
         }
+      
     }
 }

@@ -88,7 +88,7 @@ shader_parameter/width = 40.0
 
 [node name="player" type="CharacterBody2D" groups=["MassContributor"]]
 script = ExtResource("1_v5huj")
-UnlockableColorName = "PureRed"
+UnlockableColorName = "Pure Red"
 
 [node name="PlayerSync" type="MultiplayerSynchronizer" parent="."]
 replication_config = SubResource("SceneReplicationConfig_pmm4k")
