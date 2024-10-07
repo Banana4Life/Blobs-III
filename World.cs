@@ -11,17 +11,19 @@ public partial class World : Node2D
     [Export] public PackedScene playerPrefab;
 
     private int players = 1;
-    public int totalMass = 0;
-    public int totalTinyMass = 0;
+    [Export] public int maxMass;
+    [Export] public int totalMass;
+    [Export] public int maxTinyMass = 10000;
+    [Export] public int totalTinyMass;
+
     public int maxAiPlayers = 5;
     public int aiPlayers;
-    [Export] public int maxMass;
-    [Export] public int maxTinyMass = 10000;
-    [Export] public Vector2 PlayArea;
+    public int AI_ID;
     public int i = 0;
 
-    public int AI_ID;
-    
+    [Export] public Vector2 PlayArea;
+
+
     public Player authorityPlayer;
     private RandomNumberGenerator random = Global.Instance.Random;
 

@@ -3,8 +3,8 @@ using LD56;
 
 public partial class Particle : RigidBody2D, MassContributor
 {
-    private bool validSpawn = false;
-    private double aliveTime = 0;
+    private bool validSpawn;
+    private double aliveTime;
     [Export] public int size;
     private Vector2 targetScale;
     [Export] public Color Color;
@@ -45,7 +45,22 @@ public partial class Particle : RigidBody2D, MassContributor
         freq = random.RandfRange(0.5f, 5.5f);
     }
 
-    public void RemoveFromGame()
+    public void Despawn()
+    {
+        var world = GetParent<World>();
+        if (tiny)
+        {
+            world.totalTinyMass -= size;
+        }
+        else
+        {
+            world.totalMass -= size;
+        }
+
+        QueueFree();
+    }
+
+    public void Die()
     {
         QueueFree();
         var world = GetParent<World>();
@@ -62,15 +77,14 @@ public partial class Particle : RigidBody2D, MassContributor
 
     public void _on_area_2d_area_entered(Area2D area)
     {
-        var otherParent = area.GetParent().GetParent(); // TODO other things that collide?
-        
+        var otherParent = area.GetParent().GetParent(); 
         if (otherParent is Particle otherParticle) // Spawning particle
         {
             if (validSpawn)
             {
                 if (!otherParticle.validSpawn)
                 {
-                    otherParticle.RemoveFromGame();
+                    otherParticle.Despawn();
                 }
                 else
                 {
@@ -79,17 +93,31 @@ public partial class Particle : RigidBody2D, MassContributor
             }
             else if (otherParticle.validSpawn)
             {
-                RemoveFromGame();
+                Despawn();
             }
             else
             {
                 validSpawn = true;
-                otherParticle.RemoveFromGame();
+                otherParticle.Despawn();
+            }
+        }
+        else if (otherParent is Player player)
+        {
+            if (!validSpawn)
+            {
+                var sprite = GetNode<Sprite2D>("scaled/Sprite2D");
+                // sprite.Visible = false;
+                if (sprite.Material is ShaderMaterial shaderMat)
+                {
+                    shaderMat.SetShaderParameter("bodyColor", Godot.Colors.Red);
+                }
+                // GD.Print("Despawn in player..");
+                Despawn();
             }
         }
         else
         {
-            GD.Print($"area entered {area} {this}");
+            GD.PrintErr($"unhandled area entered {area} {this}", otherParent.Name);
         }
     }
 
@@ -102,7 +130,7 @@ public partial class Particle : RigidBody2D, MassContributor
     {
         if (size <= 0)
         {
-            RemoveFromGame();
+            Die();
         }
         
         eatenCd -= delta;
@@ -111,11 +139,10 @@ public partial class Particle : RigidBody2D, MassContributor
         {
             if (!validSpawn)
             {
-                GetNode<Node2D>("scaled").Scale = new Vector2(0,0);
+                GetNode<Node2D>("scaled").Scale = new Vector2(0,0); // Reset size for spawning
             }
             validSpawn = true;
             // GD.Print("Spawned particle " + size);
-
             GetNode<CollisionShape2D>("PhysicsCollisionShape").Disabled = false;
             var syncher = GetNode<MultiplayerSynchronizer>("ParticleSync");
             syncher.SetVisibilityFor(0, true);

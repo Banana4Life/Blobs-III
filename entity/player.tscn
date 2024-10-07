@@ -1,9 +1,9 @@
-[gd_scene load_steps=18 format=3 uid="uid://fmi00jcend8v"]
+[gd_scene load_steps=19 format=3 uid="uid://fmi00jcend8v"]
 
 [ext_resource type="Texture2D" uid="uid://basqxtapupvpo" path="res://icon.svg" id="1_oae10"]
 [ext_resource type="Script" path="res://entity/Player.cs" id="1_v5huj"]
 [ext_resource type="Shader" uid="uid://whygv3qsb6m6" path="res://shaders/blob2.tres" id="2_8jh64"]
-[ext_resource type="Theme" uid="uid://bkt0vvx5lh6rj" path="res://theme.tres" id="2_fidhm"]
+[ext_resource type="Theme" path="res://theme.tres" id="2_fidhm"]
 [ext_resource type="Shader" uid="uid://b31386icwo8hn" path="res://shaders/circle.tres" id="4_1h2u5"]
 [ext_resource type="Script" path="res://entity/MassIndicator.cs" id="4_n03ik"]
 
@@ -33,6 +33,9 @@ shader_parameter/uSeed = 0.05
 shader_parameter/uMagnitude = 0.05
 shader_parameter/uFrequency = 4.0
 shader_parameter/uRadius = 0.2
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_105wq"]
+radius = 53.0377
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_7lr3c"]
 shader = ExtResource("4_1h2u5")
@@ -98,6 +101,15 @@ shape = SubResource("CircleShape2D_hvhe3")
 [node name="Sprite2D" type="Sprite2D" parent="scaled"]
 material = SubResource("ShaderMaterial_61gl6")
 texture = ExtResource("1_oae10")
+
+[node name="Area2D" type="Area2D" parent="scaled"]
+collision_layer = 3
+collision_mask = 3
+input_pickable = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="scaled/Area2D"]
+shape = SubResource("CircleShape2D_105wq")
+debug_color = Color(1, 1, 1, 0.42)
 
 [node name="EnemyIndicator" type="Node2D" parent="."]
 visible = false
