@@ -173,7 +173,10 @@ public partial class Player : CharacterBody2D, MassContributor
     public void EatParticle(string name, int mass)
     {
         var particle = GetParent().GetNode<Particle>(name);
-        particle.Shrink(mass);
+        if (particle != null)
+        {
+            particle.Shrink(mass);
+        }
     }
 
     

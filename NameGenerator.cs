@@ -56,7 +56,8 @@ public static class NameGenerator
         "lemur",
         "possum",
         "koala",
-        "beaver"
+        "beaver",
+        "legionaire"
     };
 
     
@@ -110,7 +111,8 @@ public static class NameGenerator
         "jolly",
         "rotund",
         "plump",
-        "perky"
+        "perky",
+        "legendary"
     };
     
     
