@@ -187,10 +187,10 @@ public partial class Global : Node
     {
         respawn.QueueFree();
         countdown = countDownScene.Instantiate<Countdown>();
+        countdown.respawn = true;
         SetWindowTitle("Respawning");
         GetTree().Root.AddChild(countdown);
         GetTree().SetCurrentScene(countdown);
-        // TODO render in screenspace
     }
 
 
@@ -220,7 +220,7 @@ public partial class Global : Node
     
     public void ResetWorld()
     {
-        GetTree().Root.RemoveChild(world);
+        world.QueueFree();
         world = null;
         ready = false;
     }

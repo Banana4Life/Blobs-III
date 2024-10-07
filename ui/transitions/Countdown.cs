@@ -6,6 +6,7 @@ public partial class Countdown : CanvasLayer
 	private double timer;
 	[Export] private Label label;
 	[Export] private PackedScene worldScene;
+	public bool respawn;
 	
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
@@ -27,7 +28,7 @@ public partial class Countdown : CanvasLayer
 		GD.Print("Countdown finished");
 		Audio.Instance.BackgroundVolumeLinear = 0.05f;
 		Global.Instance.LoadWorldScene(true);
-		if (Global.Instance.State is ClientState)
+		if (Global.Instance.State is ClientState || respawn)
 		{
 			Global.Instance.SendPlayerReady();
 		}
