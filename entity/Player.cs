@@ -41,6 +41,23 @@ public partial class Player : CharacterBody2D, MassContributor
             ?.SetShaderParameter("bodyColor", Color.Color);
     }
 
+    [Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = true)]
+    public void Bump(string name, Vector2 direction)
+    {
+        var node = GetParent().GetNode(name);
+        if (node is Player pl)
+        {
+            var playerNode = GetParent().GetNode<Player>(name);
+            playerNode.Velocity = direction * SPEED * 3;    
+        }
+
+        if (node is Particle particle)
+        {
+            particle.ApplyCentralImpulse(direction);
+        }
+        
+    }
+    
     public override void _PhysicsProcess(double delta)
     {
         if (Multiplayer.IsServer() && aiControlled)
@@ -49,65 +66,69 @@ public partial class Player : CharacterBody2D, MassContributor
             var players = massContributors.Where(mc => mc is Player { aiControlled: false }).ToArray();
             var max = players.Length == 0 ? 0 : players.Max(mc => ((Player)mc).PlayerSize);
             max = Math.Max(max, 450);
-            if (PlayerSize > max)
+            if (PlayerSize <= max)
+            {
+                var sorted = massContributors.Where(mc =>
+                    {
+                        if (mc is Particle pa)
+                        {
+                            return pa.size < PlayerSize;
+                        }
+
+                        if (mc is Player pl)
+                        {
+                            return pl.PlayerSize < PlayerSize;
+                        }
+
+                        return false;
+                    }).OrderBy(mc => (((Node2D)mc).GlobalPosition - GlobalPosition).LengthSquared())
+                    .ToArray();
+                if (sorted.Length == 0)
+                {
+                    if (starving < 0)
+                    {
+                        GD.Print($"{Name} cannot find any prey");
+                        PlayerDied();
+                    }
+
+                    return;
+                }
+
+                var newVelocity = (((Node2D)sorted.First()).GlobalPosition - GlobalPosition).Normalized() * Speed();
+                Velocity = Velocity.Lerp(newVelocity, 0.1f);
+            }
+            else
             {
                 // TODO do stuff when player size was reached
-                return;
             }
-            var sorted = massContributors.Where(mc =>
-            {
-                if (mc is Particle pa)
-                {
-                    return pa.size < PlayerSize;
-                }
-
-                if (mc is Player pl)
-                {
-                    return pl.PlayerSize < PlayerSize;
-                }
-
-                return false;
-            }).OrderBy(mc => (((Node2D)mc).GlobalPosition - GlobalPosition).LengthSquared())
-                .ToArray();
-            if (sorted.Length == 0)
-            {
-                if (starving < 0)
-                {
-                    GD.Print($"{Name} cannot find any prey");
-                    PlayerDied();    
-                }
-                return;
-            }
-            Velocity = (((Node2D)sorted.First()).GlobalPosition - GlobalPosition).Normalized() * Speed();
-            MoveAndSlide();
-            DetectCollision(delta);
-            return;
         }
-
-        // GrowPlayer(2);
-        if (IsMultiplayerAuthority())
+        else
         {
-            if (dashing)
+            if (IsMultiplayerAuthority())
             {
-                currentSpeed -= (float) (delta * SPEED * 1.5);
-                if (currentSpeed < SPEED)
+                if (dashing)
                 {
-                    currentSpeed = SPEED;
-                    dashing = false;
+                    currentSpeed -= (float) (delta * SPEED * 1.5);
+                    if (currentSpeed < SPEED)
+                    {
+                        currentSpeed = SPEED;
+                        dashing = false;
+                    }
                 }
-            }
 
-            if (!dashing && Input.GetActionStrength("dash") > 0.5)
-            {
-                dashing = true;
-                currentSpeed = SPEED * 3;
-                GrowPlayer(-Math.Max(10, PlayerSize / 10));
-            }
+                if (!dashing && Input.GetActionStrength("dash") > 0.5)
+                {
+                    dashing = true;
+                    currentSpeed = SPEED * 3;
+                    GrowPlayer(-Math.Max(10, PlayerSize / 10));
+                }
 
-            Velocity = Input.GetVector("ui_left", "ui_right", "ui_up", "ui_down") *  Speed();
-            MoveAndSlide();
-            DetectCollision(delta);
+                var newVelocity = Input.GetVector("ui_left", "ui_right", "ui_up", "ui_down") * Speed();
+                Velocity = Velocity.Lerp(newVelocity, 0.1f);
+            }
         }
+        MoveAndSlide();
+        DetectCollision(delta);
     }
 
     private float Speed()
@@ -128,6 +149,8 @@ public partial class Player : CharacterBody2D, MassContributor
         }
     }
     
+    
+    
     private void DetectCollision(double delta)
     {
         for (int i = 0; i < GetSlideCollisionCount(); i++)
@@ -135,18 +158,34 @@ public partial class Player : CharacterBody2D, MassContributor
             var collision = GetSlideCollision(i);
             // GD.Print($"{DisplayName} collided {collision.GetCollider()}");
 
-            if (collision.GetCollider() is RigidBody2D rb)
+            if (collision.GetCollider() is Particle particle)
             {
-                float dashingMulti = dashing ? 50 : 1;
-                if (rb is not Particle particle || particle.size >= PlayerSize)
+                Vector2 impulse = Vector2.Zero;
+                if (particle.size < PlayerSize && !dashing)
                 {
-                    rb.ApplyCentralImpulse(-collision.GetNormal() * 6 * dashingMulti);
+                    impulse = -collision.GetNormal() * 3;
+                 
                 }
                 else
                 {
-                    rb.ApplyCentralImpulse(-collision.GetNormal() * 3 * dashingMulti);
+                    float dashingMulti = dashing ? 10 : 1;
+                    // var ratio = Mathf.Max(1, PlayerSize / particle.size);
+                    impulse = -collision.GetNormal() * 6 * dashingMulti;
+                }
+                RpcId(1, MethodName.Bump, particle.Name, impulse);  // Notify server we bumped
+                if (!Multiplayer.IsServer())
+                {
+                    particle.ApplyCentralImpulse(impulse); // also apply locally (for prediction)
                 }
             }
+      
+            if (collision.GetCollider() is Player player && dashing)
+            {
+                GD.Print(DisplayName, "dash into ", player.DisplayName, player.AuthorityFromName(), collision.GetNormal());
+                RpcId(player.AuthorityFromName(), MethodName.Bump, player.Name, -collision.GetNormal().Normalized());
+            }
+            
+            
             if (dashing) // Cannot eat while dashing
             {
                 return;
