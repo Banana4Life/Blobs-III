@@ -204,7 +204,7 @@ public partial class Player : CharacterBody2D, MassContributor
         starving -= delta;
         if (starving <= 0)
         {
-            GrowPlayer(-PlayerSize/10);
+            GrowPlayer(Math.Min(-PlayerSize/10, -1));
         }
         eatenCd -= delta;
         GetNode<Label>("Label").Text = DisplayName;
@@ -234,7 +234,7 @@ public partial class Player : CharacterBody2D, MassContributor
 
     public void GrowPlayer(int mass = 200)
     {
-        
+
         starving = 2;
         PlayerSize += mass;
         score = Mathf.Max(PlayerSize, score);
