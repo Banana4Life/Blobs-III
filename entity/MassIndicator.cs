@@ -45,16 +45,9 @@ public partial class MassIndicator : Node2D
 			if (node != player && node is Node2D node2d && node is MassContributor massContributor)
 			{
 				var contributorDir = node2d.GlobalPosition - playerPos;
-				var contributorAngle = Mathf.RadToDeg(Mathf.Atan2(contributorDir.Y, contributorDir.X)) + 180;
-				var angleBucket = (int)(contributorAngle / bucketSize);
-				try
-				{
-					angleBuckets[angleBucket] += massContributor.ContributedMass;
-				}
-				catch (Exception e)
-				{
-					GD.PrintErr(angleBuckets, angleBucket, e);
-				}
+				var contributorAngle = Mathf.RadToDeg(Mathf.Atan2(contributorDir.Y, contributorDir.X) + Mathf.Pi);
+				var angleBucket = (int)(contributorAngle / bucketSize) % angleBuckets.Length;
+				angleBuckets[angleBucket] += massContributor.ContributedMass;
 			}
 		}
 		
