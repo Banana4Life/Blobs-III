@@ -24,12 +24,14 @@ public partial class Particle : RigidBody2D, MassContributor
         
         var sprite = GetNode<Sprite2D>("scaled/Sprite2D");
         sprite.Visible = false;
-        var shaderMat = (sprite.Material as ShaderMaterial);
-        shaderMat.SetShaderParameter("bodyColor", Color);
-        shaderMat.SetShaderParameter("cellColor", Colors.Black);
-        shaderMat.SetShaderParameter("uSeed", seed);
-        shaderMat.SetShaderParameter("uMagnitude", mag);
-        shaderMat.SetShaderParameter("uFrequency", freq);
+        if (sprite.Material is ShaderMaterial shaderMat)
+        {
+            shaderMat.SetShaderParameter("bodyColor", Color);
+            shaderMat.SetShaderParameter("cellColor", Colors.Black);
+            shaderMat.SetShaderParameter("uSeed", seed);
+            shaderMat.SetShaderParameter("uMagnitude", mag);
+            shaderMat.SetShaderParameter("uFrequency", freq);
+        }
     }
 
     public void RandomInit(int size)

@@ -40,15 +40,15 @@ public class SignalingClient
         }
     }
 
-    private void sendText(string json)
+    private void SendText(string json)
     {
         GD.Print($"{role} - Send packet: {json}");
         _webSocket.SendText(json);
     }
 
-    private void sendText(Dictionary json)
+    private void SendText(Dictionary json)
     {
-        sendText(Json.Stringify(json));
+        SendText(Json.Stringify(json));
     }
 
     public Dictionary ReadPacket()
@@ -78,7 +78,7 @@ public class SignalingClient
             {"_type", "controllers.HostingMessage"},
             {"playerCount", playerCount},
         };
-        sendText(dict);
+        SendText(dict);
     }
 
     public void JoinMessage()
@@ -87,7 +87,7 @@ public class SignalingClient
         {
             {"_type", "controllers.JoinMessage"},
         };
-        sendText(dict);
+        SendText(dict);
     }
 
     public void IceCandidateMessage(string media, long index, string name, Guid source, Guid destination)
@@ -101,7 +101,7 @@ public class SignalingClient
             { "sourceId", source.ToString() },
             { "destinationId", destination.ToString() },
         };
-        sendText(dict);
+        SendText(dict);
     }
 
     public void HostAcceptsJoinMessage(Guid id, int peerId)
@@ -112,7 +112,7 @@ public class SignalingClient
             { "id", id.ToString() },
             { "peerId", peerId },
         };
-        sendText(dict);
+        SendText(dict);
     }
 
     public void OfferMessage(Guid destination, string offer)
@@ -123,7 +123,7 @@ public class SignalingClient
             {"destination", destination.ToString() },
             {"offer", offer},
         };
-        sendText(dict);
+        SendText(dict);
     }
 
     public void AnsweringMessage(Guid destination, string answer)
@@ -134,6 +134,6 @@ public class SignalingClient
             {"destination", destination.ToString()},
             {"answer", answer},
         };
-        sendText(dict);
+        SendText(dict);
     }
 }

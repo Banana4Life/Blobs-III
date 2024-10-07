@@ -28,7 +28,7 @@ public partial class Player : CharacterBody2D, MassContributor
         // var syncher = GetNode<MultiplayerSynchronizer>("PlayerSync");
         // syncher.SetVisibilityFor(0, false);
         (GetNode<Sprite2D>("scaled/Sprite2D").Material as ShaderMaterial)
-            .SetShaderParameter("bodyColor", PlayerColor);
+            ?.SetShaderParameter("bodyColor", PlayerColor);
     }
 
     public override void _PhysicsProcess(double delta)
@@ -36,8 +36,8 @@ public partial class Player : CharacterBody2D, MassContributor
         if (Multiplayer.IsServer() && aiControlled)
         {
             var massContributors = GetTree().GetNodesInGroup("MassContributor");
-            var players = massContributors.Where(mc => mc is Player { aiControlled: false });
-            var max = !players.Any() ? 0 : players.Max(mc => ((Player)mc).PlayerSize);
+            var players = massContributors.Where(mc => mc is Player { aiControlled: false }).ToArray();
+            var max = players.Length == 0 ? 0 : players.Max(mc => ((Player)mc).PlayerSize);
             max = Math.Max(max, 450);
             if (PlayerSize > max)
             {
@@ -57,8 +57,9 @@ public partial class Player : CharacterBody2D, MassContributor
                 }
 
                 return false;
-            }).OrderBy(mc => (((Node2D)mc).GlobalPosition - GlobalPosition).LengthSquared());
-            if (sorted.Count() == 0)
+            }).OrderBy(mc => (((Node2D)mc).GlobalPosition - GlobalPosition).LengthSquared())
+                .ToArray();
+            if (sorted.Length == 0)
             {
                 if (starving < 0)
                 {
@@ -69,7 +70,7 @@ public partial class Player : CharacterBody2D, MassContributor
             }
             Velocity = (((Node2D)sorted.First()).GlobalPosition - GlobalPosition).Normalized() * Speed();
             MoveAndSlide();
-            detectCollision(delta);
+            DetectCollision(delta);
             return;
         }
 
@@ -78,7 +79,7 @@ public partial class Player : CharacterBody2D, MassContributor
         {
             Velocity = Input.GetVector("ui_left", "ui_right", "ui_up", "ui_down") *  Speed();
             MoveAndSlide();
-            detectCollision(delta);
+            DetectCollision(delta);
         }
     }
 
@@ -100,9 +101,8 @@ public partial class Player : CharacterBody2D, MassContributor
         }
     }
     
-    private void detectCollision(double delta)
+    private void DetectCollision(double delta)
     {
-        var world = GetParent<World>();
         for (int i = 0; i < GetSlideCollisionCount(); i++)
         {
             var collision = GetSlideCollision(i);
@@ -149,7 +149,7 @@ public partial class Player : CharacterBody2D, MassContributor
                         GrowPlayer(Mathf.Max(1, massEaten / 4));
                         // GD.Print($"{Multiplayer.GetUniqueId()} : {DisplayName} eats {massEaten} of {pl.DisplayName}");
                             
-                        RpcId(pl.authorityFromName(), MethodName.EatPlayer, pl.Name, massEaten);
+                        RpcId(pl.AuthorityFromName(), MethodName.EatPlayer, pl.Name, massEaten);
                         pl.eatenCd = 0.1;
                         
                         SpawnColoredParticlesOnScaled(pl, eatParticles, collision.GetPosition(), pl.PlayerColor);
@@ -159,7 +159,7 @@ public partial class Player : CharacterBody2D, MassContributor
         }
     }
 
-    public int authorityFromName()
+    public int AuthorityFromName()
     {
         if (Name.ToString().StartsWith("AI"))
         {
@@ -216,7 +216,7 @@ public partial class Player : CharacterBody2D, MassContributor
     {
         if (!Name.ToString().StartsWith("AI"))
         {
-            SetMultiplayerAuthority(authorityFromName());
+            SetMultiplayerAuthority(AuthorityFromName());
         }
     }
 
