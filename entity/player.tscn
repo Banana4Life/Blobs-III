@@ -102,6 +102,7 @@ material = SubResource("ShaderMaterial_61gl6")
 texture = ExtResource("1_oae10")
 
 [node name="EnemyIndicator" type="Node2D" parent="."]
+visible = false
 script = ExtResource("4_n03ik")
 
 [node name="Circle8" type="Sprite2D" parent="EnemyIndicator"]

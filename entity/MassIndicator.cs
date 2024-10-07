@@ -15,6 +15,7 @@ public partial class MassIndicator : Node2D
 		if (Multiplayer.GetUniqueId().ToString() != player.Name)
 		{
 			QueueFree();
+			Visible = false;
 			return;
 		}
 
