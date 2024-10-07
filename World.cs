@@ -29,11 +29,7 @@ public partial class World : Node2D
 
 
         var particle = particlePrefab.Instantiate<Particle>();
-        var spawnPos = new Vector2(
-            random.RandfRange(-PlayArea.X / 2, PlayArea.X / 2),
-            random.RandfRange(-PlayArea.Y / 2, PlayArea.Y / 2)
-            // random.RandfRange(50f, 50f)
-        );
+        var spawnPos = randomSpawnPos();
 
         // TODO place particles outside of player range
         // TODO smarter location finding
@@ -44,6 +40,16 @@ public partial class World : Node2D
 
         AddChild(particle);
         return particle.size;
+    }
+
+    private Vector2 randomSpawnPos()
+    {
+        var spawnPos = new Vector2(
+            random.RandfRange(-PlayArea.X / 2, PlayArea.X / 2),
+            random.RandfRange(-PlayArea.Y / 2, PlayArea.Y / 2)
+            // random.RandfRange(50f, 50f)
+        );
+        return spawnPos;
     }
 
     public void spawnToMaxMass()
@@ -109,7 +115,7 @@ public partial class World : Node2D
         player.GrowPlayer();
         AddChild(player);
 
-        var spawnPos = new Vector2(50, new Random().Next(50, 500));
+        var spawnPos = randomSpawnPos();
         RpcId(info.peerId, MethodName.initPlayerOnAuthority, info.name, info.peerId, spawnPos, player.PlayerSize);
         info.alive = true;
     }
