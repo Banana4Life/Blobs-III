@@ -16,10 +16,14 @@ public partial class Audio : Node
         get => Mathf.DbToLinear(backgroundMusic.VolumeDb);
         set => backgroundMusic.VolumeDb = Mathf.LinearToDb(value);
     }
-    
-    public override void _Ready()
+
+    public Audio()
     {
         Instance = this;
+    }
+
+    public override void _Ready()
+    {
         StartBackgroundMusic();
     }
 

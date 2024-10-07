@@ -34,13 +34,13 @@ public partial class Global : Node
     public string selectedColor;
     private Toast activeToast;
 
-
-    public override void _Ready()
+    public Global()
     {
         Instance = this;
         var result = config.Load("user://config.cfg");
         c2_base_uri = DEFAULT_C2_BASE_URI;
         StatsUri = DEFAULT_C2_STATS_URI;
+        unlockedColors = defaultUnlockedColors.ToList();
         if (result == Error.Ok)
         {
             var cfg = config.GetValue("savegame", "colors", defaultUnlockedColors.ToArray());
@@ -52,9 +52,12 @@ public partial class Global : Node
             config.SetValue("savegame", "colors", unlockedColors.ToArray());
             config.Save("user://config.cfg");
             selectedColor = unlockedColors[Random.RandiRange(0, unlockedColors.Count)];
-            GD.Print($"Unlocked Colors: {unlockedColors}");
             c2_base_uri = config.GetValue("c2server", "host", DEFAULT_C2_BASE_URI).AsString();
             StatsUri = config.GetValue("c2server", "stats", DEFAULT_C2_STATS_URI).AsString();
+        }
+        else
+        {
+            GD.PushError($"Failed to load config file: {result}");
         }
     }
 
