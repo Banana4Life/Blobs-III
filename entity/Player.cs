@@ -44,17 +44,24 @@ public partial class Player : CharacterBody2D, MassContributor
     [Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = true)]
     public void Bump(string name, Vector2 direction)
     {
-        var node = GetParent().GetNode(name);
-        if (node is Player pl)
+        if (GetParent().HasNode(name))
         {
-            var playerNode = GetParent().GetNode<Player>(name);
-            playerNode.Velocity = direction * SPEED * 3;    
-        }
+            var node = GetParent().GetNode(name);
+            if (node is Player pl)
+            {
+                pl.Velocity = direction * SPEED * 3;    
+            }
 
-        if (node is Particle particle)
-        {
-            particle.ApplyCentralImpulse(direction);
+            if (node is Particle particle)
+            {
+                particle.ApplyCentralImpulse(direction);
+            }
         }
+        else
+        {
+            // TODO missing node?
+        }
+        
         
     }
     
