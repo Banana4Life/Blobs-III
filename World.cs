@@ -156,17 +156,19 @@ public partial class World : Node2D
         AddChild(player);
 
         var spawnPos = randomSpawnPos();
-        RpcId(info.peerId, MethodName.initPlayerOnAuthority, info.name, info.peerId, spawnPos, player.PlayerSize);
+        RpcId(info.peerId, MethodName.initPlayerOnAuthority, info.name, info.peerId, spawnPos, player.PlayerSize, info.selectedColor);
         info.alive = true;
     }
 
     [Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = true)]
-    private void initPlayerOnAuthority(string displayName, long id, Vector2 position, int size)
+    private void initPlayerOnAuthority(string displayName, long id, Vector2 position, int size, string name)
     {
         var existing = GetNode<Player>(id.ToString());
         existing.GlobalPosition = position;
         existing.PlayerSize = size;
         existing.DisplayName = displayName;
+        existing.UnlockableColorName = name;
+        existing.Color = UnlockableColors.Colors[existing.UnlockableColorName];
         GD.Print($"{Multiplayer.GetUniqueId()}: Player {displayName}({id}) init size: {existing.PlayerSize} auth {existing.GetMultiplayerAuthority()}");
         
         Audio.Instance.Plop(this);
