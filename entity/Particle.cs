@@ -10,6 +10,7 @@ public partial class Particle : RigidBody2D
     [Export] public float mag;
     [Export] public float freq;
 
+    public double eatenCd;
     
     public override void _Ready()
     {
@@ -30,10 +31,6 @@ public partial class Particle : RigidBody2D
     {
         size = random.RandiRange(10, 500);
         
-        var scale = Mathf.Sqrt(size / Mathf.Pi) * 2 / 10f;
-        GetNode<Node2D>("scaled").Scale = new Vector2(scale, scale);
-        GetNode<CollisionShape2D>("PhysicsCollisionShape").Scale = new Vector2(scale, scale);
-        
         var color = Color.FromHsv(random.RandfRange(0, 1f), 1f, 1f, random.RandfRange(0.2f, 0.4f));
         Color = color;
         seed = random.RandfRange(0f, 10000f);
@@ -45,8 +42,7 @@ public partial class Particle : RigidBody2D
     {
         if (!IsQueuedForDeletion())
         {
-            var world = (World)GetParent();
-            world.totalMass -= size;
+            
         }
 
         QueueFree();
@@ -93,6 +89,12 @@ public partial class Particle : RigidBody2D
 
     public override void _Process(double delta)
     {
+        if (size <= 0)
+        {
+            RemoveFromGame();
+        }
+        
+        eatenCd -= delta;
         aliveTime += delta;
         if (aliveTime >= 0.5d)
         {
@@ -105,6 +107,11 @@ public partial class Particle : RigidBody2D
         }
 
         GetNode<Sprite2D>("scaled/Sprite2D").Visible = validSpawn;
+        
+        var scale = Mathf.Sqrt(size / Mathf.Pi) * 2 / 10f;
+        var newScale = GetNode<Node2D>("scaled").Scale.Lerp(new Vector2(scale, scale), 0.1f);
+        GetNode<Node2D>("scaled").Scale = newScale;
+        GetNode<CollisionShape2D>("PhysicsCollisionShape").Scale = newScale;
     }
     
 }

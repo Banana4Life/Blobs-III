@@ -9,6 +9,8 @@ public partial class Player : CharacterBody2D
     [Export] public int PlayerSize;
     public Vector2 targetScale;
 
+    public double eatenCd;
+
 
     public override void _Ready()
     {
@@ -31,12 +33,18 @@ public partial class Player : CharacterBody2D
                 {
                     rb.ApplyCentralImpulse(-collision.GetNormal() * 5);
                 }
-                if (collision.GetCollider() is Particle p)
+                if (collision.GetCollider() is Particle pa)
                 {
-                    if (p.size < PlayerSize)
+                    if (pa.size < PlayerSize)
                     {
-                        GrowPlayer(p.size);
-                        p.RemoveFromGame();
+                        if (pa.eatenCd < 0)
+                        {
+                            pa.eatenCd = 0.1;
+                            var massEaten = (int) (Mathf.Max(5, pa.size * delta * 25));
+                            GrowPlayer(Mathf.Max(1, massEaten / 2));
+                            RpcId(1, MethodName.EatParticle, pa.Name, massEaten);    
+                        }
+                        
                     }
                 }
 
@@ -44,36 +52,49 @@ public partial class Player : CharacterBody2D
                 {
                     if (PlayerSize > pl.PlayerSize)
                     {
-                        GrowPlayer(pl.PlayerSize / 4);
-                        GD.Print($"{Multiplayer.GetUniqueId()} : {DisplayName} eats {pl.DisplayName}");
-                        RpcId(int.Parse(pl.Name), MethodName.GetEaten, pl.Name);    
+                        if (pl.eatenCd < 0)
+                        {
+                            var massEaten = (int) (Mathf.Max(5, pl.PlayerSize * delta * 25));
+                            GrowPlayer(Mathf.Max(1, massEaten / 4));
+                            GD.Print($"{Multiplayer.GetUniqueId()} : {DisplayName} eats {massEaten} of {pl.DisplayName}");
+                            RpcId(int.Parse(pl.Name), MethodName.EatPlayer, pl.Name, massEaten);
+                            pl.eatenCd = 0.1;
+                        }
                     }
                 }
             }
         }
     }
 
-    [Rpc(MultiplayerApi.RpcMode.AnyPeer)]
-    public void GetEaten(string name)
+    [Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = true)]
+    public void EatParticle(string name, int mass)
     {
-        GD.Print($"{Multiplayer.GetUniqueId()} : GetEaten");
+        var particle = GetParent().GetNode<Particle>(name);
+        particle.size -= mass;
+        
+        var world = GetParent<World>();
+        world.totalMass -= mass;
+    }
+
+    
+    [Rpc(MultiplayerApi.RpcMode.AnyPeer)]
+    public void EatPlayer(string name, int mass)
+    {
         var player = GetParent().GetNode<Player>(name);
-        player.GrowPlayer(-player.PlayerSize/2);
+        player.GrowPlayer(-mass);
     }
 
     public override void _Process(double delta)
     {
+        eatenCd -= delta;
         GetNode<Label>("Label").Text = DisplayName;
         var scaled = GetNode<Node2D>("scaled");
         var collider = GetNode<CollisionShape2D>("PhysicsCollisionShape");
         scaled.Scale = scaled.Scale.Lerp(targetScale, (float) delta);
         collider.Scale = scaled.Scale;
         
-        
         var scale = Mathf.Sqrt(PlayerSize / Mathf.Pi) * 2 / 10f;
         targetScale = new Vector2(scale, scale);
-
-
     }
 
     public void _enter_tree()
@@ -81,9 +102,20 @@ public partial class Player : CharacterBody2D
         SetMultiplayerAuthority(int.Parse(Name));
     }
 
-    public void GrowPlayer(int size = 200)
+    public void GrowPlayer(int mass = 200)
     {
-        PlayerSize += size;
-        GD.Print($"{DisplayName}({Name}) grows to {PlayerSize}");
+        PlayerSize += mass;
+        if (mass > 0)
+        {
+            GD.Print($"{DisplayName}({Name}) grows to {PlayerSize} (+{mass})");
+        }
+        else
+        {
+            GD.Print($"{DisplayName}({Name}) shrinks to {PlayerSize} (-{mass})");
+        }
+        if (PlayerSize < 0)
+        {
+            QueueFree(); // TODO
+        }
     }
 }
