@@ -73,7 +73,7 @@ public class ServerState : State
                     gamePeer.CreateServer();
                     multiplayer.MultiplayerPeer = gamePeer;
                     TransitionState(NetworkState.HOSTING);
-                    DisplayServer.WindowSetTitle($"LD56 - Server - {playerName}");
+                    Global.Instance.SetWindowTitle($"Server - {playerName}");
                     Global.Instance.SendPlayerInfo(playerName);
                     Global.Instance.SendPlayerReady();
                 }

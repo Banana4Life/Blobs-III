@@ -11,7 +11,7 @@ public partial class Mainmenu : Control
 
     public override void _Ready()
     {
-        DisplayServer.WindowSetTitle($"LD56 - Main Menu");
+        Global.Instance.SetWindowTitle("Main Menu");
         playerName.Text = NameGenerator.RandomName();
         serverCount.Text = 1.ToString();
         playerCount.Text = 1.ToString();

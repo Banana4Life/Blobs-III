@@ -10,7 +10,8 @@ config_version=5
 
 [application]
 
-config/name="LD56"
+config/name="Blobs III"
+config/version="1.0"
 run/main_scene="res://ui/main_menu/main_menu.tscn"
 config/features=PackedStringArray("4.3", "C#", "Forward Plus")
 boot_splash/image="res://splashscreen.png"

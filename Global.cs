@@ -166,6 +166,11 @@ public partial class Global : Node
         // TODO render in screenspace
     }
 
-
+        
+    public void SetWindowTitle(string title)
+    {
+        var name = ProjectSettings.GetSetting("application/config/name", "Game").AsString();
+        DisplayServer.WindowSetTitle($"{name} - {title}");
+    }
     
 }
