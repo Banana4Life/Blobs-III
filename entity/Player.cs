@@ -276,7 +276,7 @@ public partial class Player : CharacterBody2D, MassContributor
     public override void _Process(double delta)
     {
         starving -= delta;
-        if (starving <= 0)
+        if (starving <= 0 && IsMultiplayerAuthority())
         {
             GrowPlayer(Math.Min(-PlayerSize/10, -1));
         }
