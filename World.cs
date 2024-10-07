@@ -151,6 +151,7 @@ public partial class World : Node2D
         player.Name = info.peerId.ToString();
         player.DisplayName = info.name;
         player.GrowPlayer();
+        player.UnlockableColorName = info.selectedColor;
         AddChild(player);
 
         var spawnPos = randomSpawnPos();

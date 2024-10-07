@@ -3,7 +3,7 @@
 [ext_resource type="Texture2D" uid="uid://basqxtapupvpo" path="res://icon.svg" id="1_oae10"]
 [ext_resource type="Script" path="res://entity/Player.cs" id="1_v5huj"]
 [ext_resource type="Shader" uid="uid://whygv3qsb6m6" path="res://shaders/blob2.tres" id="2_8jh64"]
-[ext_resource type="Theme" uid="uid://bkt0vvx5lh6rj" path="res://theme.tres" id="2_fidhm"]
+[ext_resource type="Theme" path="res://theme.tres" id="2_fidhm"]
 [ext_resource type="Shader" uid="uid://b31386icwo8hn" path="res://shaders/circle.tres" id="4_1h2u5"]
 [ext_resource type="Script" path="res://entity/MassIndicator.cs" id="4_n03ik"]
 
@@ -25,6 +25,7 @@ properties/3/replication_mode = 1
 radius = 25.02
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_61gl6"]
+resource_local_to_scene = true
 shader = ExtResource("2_8jh64")
 shader_parameter/cellColor = Color(0, 0, 0, 1)
 shader_parameter/bodyColor = Color(0.486275, 0, 0.27451, 0.537255)
