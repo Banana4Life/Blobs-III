@@ -39,8 +39,6 @@ public static class UnlockableColors
         { "Aquamarine", new UnlockableColor(Color.FromHtml("#7fffd4"), null) },
     };
 
-    public static UnlockableColor Default => Colors["PureRed"];
-
     public static string PickRandomColorName()
     {
         var colors = Colors.Keys.ToList();
