@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://fmi00jcend8v"]
+[gd_scene load_steps=17 format=3 uid="uid://fmi00jcend8v"]
 
 [ext_resource type="Texture2D" uid="uid://basqxtapupvpo" path="res://icon.svg" id="1_oae10"]
 [ext_resource type="Script" path="res://entity/Player.cs" id="1_v5huj"]
@@ -29,13 +29,56 @@ shader_parameter/uMagnitude = 0.05
 shader_parameter/uFrequency = 4.0
 shader_parameter/uRadius = 0.2
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_nvgrv"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_7lr3c"]
 shader = ExtResource("4_1h2u5")
 shader_parameter/arc_color = Color(1, 1, 1, 1)
 shader_parameter/thickness = 0.1
 shader_parameter/width = 40.0
 
-[node name="player" type="CharacterBody2D"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_nvgrv"]
+resource_local_to_scene = true
+shader = ExtResource("4_1h2u5")
+shader_parameter/arc_color = Color(1, 1, 1, 1)
+shader_parameter/thickness = 0.1
+shader_parameter/width = 40.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_wyqny"]
+shader = ExtResource("4_1h2u5")
+shader_parameter/arc_color = Color(1, 1, 1, 1)
+shader_parameter/thickness = 0.1
+shader_parameter/width = 40.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_n87wl"]
+shader = ExtResource("4_1h2u5")
+shader_parameter/arc_color = Color(1, 1, 1, 1)
+shader_parameter/thickness = 0.1
+shader_parameter/width = 40.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_nmvgh"]
+shader = ExtResource("4_1h2u5")
+shader_parameter/arc_color = Color(1, 1, 1, 1)
+shader_parameter/thickness = 0.1
+shader_parameter/width = 40.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_bbxim"]
+shader = ExtResource("4_1h2u5")
+shader_parameter/arc_color = Color(1, 1, 1, 1)
+shader_parameter/thickness = 0.1
+shader_parameter/width = 40.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_a15as"]
+shader = ExtResource("4_1h2u5")
+shader_parameter/arc_color = Color(1, 1, 1, 1)
+shader_parameter/thickness = 0.1
+shader_parameter/width = 40.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ieu16"]
+shader = ExtResource("4_1h2u5")
+shader_parameter/arc_color = Color(1, 1, 1, 1)
+shader_parameter/thickness = 0.1
+shader_parameter/width = 40.0
+
+[node name="player" type="CharacterBody2D" groups=["MassContributor"]]
 script = ExtResource("1_v5huj")
 
 [node name="PlayerSync" type="MultiplayerSynchronizer" parent="."]
@@ -61,6 +104,13 @@ texture = ExtResource("1_oae10")
 [node name="EnemyIndicator" type="Node2D" parent="."]
 script = ExtResource("4_n03ik")
 
+[node name="Circle8" type="Sprite2D" parent="EnemyIndicator"]
+material = SubResource("ShaderMaterial_7lr3c")
+position = Vector2(0, 1.90735e-06)
+rotation = -0.785398
+scale = Vector2(0.535, 0.535)
+texture = ExtResource("1_oae10")
+
 [node name="Circle1" type="Sprite2D" parent="EnemyIndicator"]
 material = SubResource("ShaderMaterial_nvgrv")
 position = Vector2(0, 1.90735e-06)
@@ -68,50 +118,43 @@ scale = Vector2(0.535, 0.535)
 texture = ExtResource("1_oae10")
 
 [node name="Circle2" type="Sprite2D" parent="EnemyIndicator"]
-material = SubResource("ShaderMaterial_nvgrv")
+material = SubResource("ShaderMaterial_wyqny")
 position = Vector2(0, 1.90735e-06)
 rotation = 0.785398
 scale = Vector2(0.535, 0.535)
 texture = ExtResource("1_oae10")
 
 [node name="Circle3" type="Sprite2D" parent="EnemyIndicator"]
-material = SubResource("ShaderMaterial_nvgrv")
+material = SubResource("ShaderMaterial_n87wl")
 position = Vector2(0, 1.90735e-06)
 rotation = 1.5708
 scale = Vector2(0.535, 0.535)
 texture = ExtResource("1_oae10")
 
 [node name="Circle4" type="Sprite2D" parent="EnemyIndicator"]
-material = SubResource("ShaderMaterial_nvgrv")
+material = SubResource("ShaderMaterial_nmvgh")
 position = Vector2(0, 1.90735e-06)
 rotation = 2.35619
 scale = Vector2(0.535, 0.535)
 texture = ExtResource("1_oae10")
 
 [node name="Circle5" type="Sprite2D" parent="EnemyIndicator"]
-material = SubResource("ShaderMaterial_nvgrv")
+material = SubResource("ShaderMaterial_bbxim")
 position = Vector2(0, 1.90735e-06)
 rotation = -3.14159
 scale = Vector2(0.535, 0.535)
 texture = ExtResource("1_oae10")
 
 [node name="Circle6" type="Sprite2D" parent="EnemyIndicator"]
-material = SubResource("ShaderMaterial_nvgrv")
+material = SubResource("ShaderMaterial_a15as")
 position = Vector2(0, 1.90735e-06)
 rotation = -2.35619
 scale = Vector2(0.535, 0.535)
 texture = ExtResource("1_oae10")
 
 [node name="Circle7" type="Sprite2D" parent="EnemyIndicator"]
-material = SubResource("ShaderMaterial_nvgrv")
+material = SubResource("ShaderMaterial_ieu16")
 position = Vector2(0, 1.90735e-06)
 rotation = -1.5708
-scale = Vector2(0.535, 0.535)
-texture = ExtResource("1_oae10")
-
-[node name="Circle8" type="Sprite2D" parent="EnemyIndicator"]
-material = SubResource("ShaderMaterial_nvgrv")
-position = Vector2(0, 1.90735e-06)
-rotation = -0.785398
 scale = Vector2(0.535, 0.535)
 texture = ExtResource("1_oae10")

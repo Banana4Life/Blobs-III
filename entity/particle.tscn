@@ -43,7 +43,7 @@ shader_parameter/uMagnitude = 0.19
 shader_parameter/uFrequency = 5.5
 shader_parameter/uRadius = 0.2
 
-[node name="particle" type="RigidBody2D"]
+[node name="particle" type="RigidBody2D" groups=["MassContributor"]]
 gravity_scale = 0.0
 script = ExtResource("1_jl415")
 

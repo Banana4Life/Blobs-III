@@ -1,7 +1,7 @@
 using Godot;
 using LD56;
 
-public partial class Player : CharacterBody2D
+public partial class Player : CharacterBody2D, MassContributor
 {
     public const float SPEED = 300.0f;
 
@@ -9,9 +9,9 @@ public partial class Player : CharacterBody2D
     [Export] public int PlayerSize;
     public Vector2 targetScale;
 
+    public int ContributedMass => PlayerSize;
     public double eatenCd;
-
-
+    
     public override void _Ready()
     {
         // var syncher = GetNode<MultiplayerSynchronizer>("PlayerSync");

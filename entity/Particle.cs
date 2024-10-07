@@ -1,6 +1,7 @@
 using Godot;
+using LD56;
 
-public partial class Particle : RigidBody2D
+public partial class Particle : RigidBody2D, MassContributor
 {
     private bool validSpawn = false;
     private double aliveTime = 0;
@@ -9,6 +10,8 @@ public partial class Particle : RigidBody2D
     [Export] public float seed;
     [Export] public float mag;
     [Export] public float freq;
+
+    public int ContributedMass => size;
 
     public double eatenCd;
     
