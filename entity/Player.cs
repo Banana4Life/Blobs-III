@@ -189,7 +189,7 @@ public partial class Player : CharacterBody2D, MassContributor
       
             if (collision.GetCollider() is Player player && dashing)
             {
-                GD.Print(DisplayName, "dash into ", player.DisplayName, player.AuthorityFromName(), collision.GetNormal());
+                // GD.Print(DisplayName, "dash into ", player.DisplayName, player.AuthorityFromName(), collision.GetNormal());
                 RpcId(player.AuthorityFromName(), MethodName.Bump, player.Name, -collision.GetNormal().Normalized());
             }
             

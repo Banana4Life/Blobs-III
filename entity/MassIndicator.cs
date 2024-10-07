@@ -1,3 +1,4 @@
+using System;
 using Godot;
 using System.Collections.Generic;
 using System.Linq;
@@ -46,7 +47,14 @@ public partial class MassIndicator : Node2D
 				var contributorDir = node2d.GlobalPosition - playerPos;
 				var contributorAngle = Mathf.RadToDeg(Mathf.Atan2(contributorDir.Y, contributorDir.X)) + 180;
 				var angleBucket = (int)(contributorAngle / bucketSize);
-				angleBuckets[angleBucket] += massContributor.ContributedMass;
+				try
+				{
+					angleBuckets[angleBucket] += massContributor.ContributedMass;
+				}
+				catch (Exception e)
+				{
+					GD.PrintErr(angleBuckets, angleBucket, e);
+				}
 			}
 		}
 		
