@@ -31,10 +31,11 @@ public partial class Global : Node
         var config = new ConfigFile();
         var result = config.Load("user://config.cfg");
         c2_base_uri = DEFAULT_C2_BASE_URI;
+        StatsUri = DEFAULT_C2_STATS_URI;
         if (result == Error.Ok)
         {
-            c2_base_uri = config.GetValue("c2server", "host", Variant.CreateFrom(DEFAULT_C2_BASE_URI)).AsString();
-            StatsUri = config.GetValue("c2server", "stats", Variant.CreateFrom(DEFAULT_C2_STATS_URI)).AsString();
+            c2_base_uri = config.GetValue("c2server", "host", DEFAULT_C2_BASE_URI).AsString();
+            StatsUri = config.GetValue("c2server", "stats", DEFAULT_C2_STATS_URI).AsString();
         }
     }
 
