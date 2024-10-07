@@ -171,6 +171,9 @@ public partial class World : Node2D
         authorityPlayer = existing;
         var cam = GetNode<Camera2D>("Camera2D");
         cam.Position = authorityPlayer.Position;
+        
+        DisplayServer.WindowSetTitle($"LD56 - {displayName}");
+
     }
 
     public void SpawnColoredParticles(PackedScene particleSystemScene, Vector2 at, Color color)

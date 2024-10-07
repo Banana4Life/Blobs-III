@@ -200,6 +200,10 @@ public partial class Player : CharacterBody2D, MassContributor
         
         var scale = Mathf.Sqrt(PlayerSize / Mathf.Pi) * 2 / 10f;
         targetScale = new Vector2(scale, scale);
+        
+        DisplayServer.WindowSetTitle($"LD56 - {DisplayName} - Score: {score}");
+
+
     }
 
     public void _enter_tree()
