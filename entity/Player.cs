@@ -19,6 +19,7 @@ public partial class Player : CharacterBody2D, MassContributor
 
     public int ContributedMass => PlayerSize;
     public double eatenCd;
+    private double starving = 5;
     
     public override void _Ready()
     {
@@ -33,6 +34,12 @@ public partial class Player : CharacterBody2D, MassContributor
         if (Multiplayer.IsServer() && aiControlled)
         {
             var massContributors = GetTree().GetNodesInGroup("MassContributor");
+            var max = massContributors.Where(mc => mc is Player { aiControlled: false }).Max(mc => ((Player)mc).PlayerSize);
+            if (PlayerSize > max)
+            {
+                // TODO do stuff when player size was reached
+                return;
+            }
             var sorted = massContributors.Where(mc =>
             {
                 if (mc is Particle pa)
@@ -49,11 +56,14 @@ public partial class Player : CharacterBody2D, MassContributor
             }).OrderBy(mc => (((Node2D)mc).GlobalPosition - GlobalPosition).LengthSquared());
             if (sorted.Count() == 0)
             {
-                GD.Print($"{Name} cannot find any prey");
-                PlayerDied();
+                if (starving < 0)
+                {
+                    GD.Print($"{Name} cannot find any prey");
+                    PlayerDied();    
+                }
                 return;
             }
-            Velocity = (((Node2D)sorted.First()).GlobalPosition - GlobalPosition).Normalized() * SPEED;
+            Velocity = (((Node2D)sorted.First()).GlobalPosition - GlobalPosition).Normalized() * Speed();
             MoveAndSlide();
             detectCollision(delta);
             return;
@@ -62,10 +72,15 @@ public partial class Player : CharacterBody2D, MassContributor
         // GrowPlayer(2);
         if (IsMultiplayerAuthority())
         {
-            Velocity = Input.GetVector("ui_left", "ui_right", "ui_up", "ui_down") * SPEED;
+            Velocity = Input.GetVector("ui_left", "ui_right", "ui_up", "ui_down") *  Speed();
             MoveAndSlide();
             detectCollision(delta);
         }
+    }
+
+    private float Speed()
+    {
+        return Math.Max(150, SPEED - PlayerSize / 100f);
     }
 
     private void detectCollision(double delta)
@@ -102,7 +117,7 @@ public partial class Player : CharacterBody2D, MassContributor
                     {
                         var massEaten = (int) (Mathf.Max(5, pl.PlayerSize * delta * 25));
                         GrowPlayer(Mathf.Max(1, massEaten / 4));
-                        GD.Print($"{Multiplayer.GetUniqueId()} : {DisplayName} eats {massEaten} of {pl.DisplayName}");
+                        // GD.Print($"{Multiplayer.GetUniqueId()} : {DisplayName} eats {massEaten} of {pl.DisplayName}");
                             
                         RpcId(pl.authorityFromName(), MethodName.EatPlayer, pl.Name, massEaten);
                         pl.eatenCd = 0.1;
@@ -142,6 +157,11 @@ public partial class Player : CharacterBody2D, MassContributor
 
     public override void _Process(double delta)
     {
+        starving -= delta;
+        if (starving <= 0)
+        {
+            GrowPlayer(-PlayerSize/10);
+        }
         eatenCd -= delta;
         GetNode<Label>("Label").Text = DisplayName;
         var scaled = GetNode<Node2D>("scaled");
@@ -163,16 +183,17 @@ public partial class Player : CharacterBody2D, MassContributor
 
     public void GrowPlayer(int mass = 200)
     {
+        starving = 2;
         PlayerSize += mass;
         score = Mathf.Max(PlayerSize, score);
-        if (mass > 0)
-        {
-            GD.Print($"{DisplayName}({Name}) grows to {PlayerSize} (+{mass})");
-        }
-        else
-        {
-            GD.Print($"{DisplayName}({Name}) shrinks to {PlayerSize} (-{mass})");
-        }
+        // if (mass > 0)
+        // {
+            // GD.Print($"{DisplayName}({Name}) grows to {PlayerSize} (+{mass})");
+        // }
+        // else
+        // {
+            // GD.Print($"{DisplayName}({Name}) shrinks to {PlayerSize} (-{mass})");
+        // }
         if (PlayerSize < 0)
         {
             PlayerDied();

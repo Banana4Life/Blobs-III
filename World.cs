@@ -1,5 +1,6 @@
 using Godot;
 using System;
+using System.Linq;
 using LD56;
 
 public partial class World : Node2D
@@ -17,18 +18,15 @@ public partial class World : Node2D
 
     public int AI_ID;
     
-    private RandomNumberGenerator random;
-
     public Player authorityPlayer;
-
-
-    public override void _Ready()
-    {
-        random = Global.Instance.Random;
-    }
 
     public int spawnRandomParticle()
     {
+        var massContributors = GetTree().GetNodesInGroup("MassContributor");
+        var players = massContributors.Where(mc => mc is Player);
+        
+        var minSize = players.Count() == 0 ? 10 : Mathf.Max(1, players.Min(p => ((Player)p).PlayerSize) - 10);
+
         var particle = particlePrefab.Instantiate<Particle>();
         var spawnPos = randomSpawnPos();
 
@@ -37,14 +35,17 @@ public partial class World : Node2D
 
         particle.GlobalPosition = spawnPos;
         particle.Name = "particle_" + i++;
-        particle.RandomInit(random);
+        particle.RandomInit(minSize);
 
         AddChild(particle);
         return particle.size;
     }
 
+    
+    
     private Vector2 randomSpawnPos()
     {
+        var random = Global.Instance.Random;
         var spawnPos = new Vector2(
             random.RandfRange(-PlayArea.X / 2, PlayArea.X / 2),
             random.RandfRange(-PlayArea.Y / 2, PlayArea.Y / 2)
@@ -122,7 +123,8 @@ public partial class World : Node2D
         var player = playerPrefab.Instantiate<Player>();
         player.Name = "AI" + AI_ID++;
         player.DisplayName = NameGenerator.RandomName();
-        player.GrowPlayer();
+        var random = Global.Instance.Random;
+        player.GrowPlayer(random.RandiRange(100, 250));
         player.aiControlled = true;
         aiPlayers++;
         AddChild(player);

@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=3 uid="uid://fmi00jcend8v"]
+[gd_scene load_steps=18 format=3 uid="uid://fmi00jcend8v"]
 
 [ext_resource type="Texture2D" uid="uid://basqxtapupvpo" path="res://icon.svg" id="1_oae10"]
 [ext_resource type="Script" path="res://entity/Player.cs" id="1_v5huj"]
@@ -6,7 +6,6 @@
 [ext_resource type="Theme" path="res://theme.tres" id="2_fidhm"]
 [ext_resource type="Shader" uid="uid://b31386icwo8hn" path="res://shaders/circle.tres" id="4_1h2u5"]
 [ext_resource type="Script" path="res://entity/MassIndicator.cs" id="4_n03ik"]
-[ext_resource type="Texture2D" uid="uid://3vnthsnt1xdf" path="res://particle.png" id="7_mkrj6"]
 
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_pmm4k"]
 properties/0/path = NodePath(".:position")
@@ -163,8 +162,3 @@ offset_bottom = -35.0
 theme = ExtResource("2_fidhm")
 text = "NAME"
 horizontal_alignment = 1
-
-[node name="PointLight2D" type="PointLight2D" parent="."]
-position = Vector2(4.76837e-07, 0)
-scale = Vector2(2.875, 2.625)
-texture = ExtResource("7_mkrj6")

@@ -11,7 +11,6 @@ public partial class Global : Node
     private PackedScene mainMenuScene = GD.Load<PackedScene>("res://ui/main_menu/main_menu.tscn");
     private PackedScene countDownScene = GD.Load<PackedScene>("res://ui/transitions/countdown.tscn");
     private PackedScene respawnScene = GD.Load<PackedScene>("res://ui/transitions/respawn.tscn");
-
     public static Global Instance { get; private set; }
 
     public State State;

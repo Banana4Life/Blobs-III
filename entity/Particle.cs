@@ -31,9 +31,10 @@ public partial class Particle : RigidBody2D, MassContributor
         shaderMat.SetShaderParameter("uFrequency", freq);
     }
 
-    public void RandomInit(RandomNumberGenerator random)
+    public void RandomInit(int minSize)
     {
-        size = random.RandiRange(10, 500);
+        var random = Global.Instance.Random;
+        size = random.RandiRange(minSize, 500);
         
         var color = Color.FromHsv(random.RandfRange(0, 1f), 1f, 1f, random.RandfRange(0.2f, 0.4f));
         Color = color;
