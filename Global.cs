@@ -19,6 +19,7 @@ public partial class Global : Node
     private World world;
     private Respawn respawn;
     private Countdown countdown;
+    private bool ready;
     
     public readonly RandomNumberGenerator Random = new ();
 
@@ -77,6 +78,11 @@ public partial class Global : Node
 
     public void SendPlayerReady()
     {
+        if (ready)
+        {
+            return;
+        }
+        ready = true;
         GD.Print($"SendPlayerReady: {Multiplayer.GetUniqueId()}");
         RpcId(1, MethodName.ReceivePlayerReady, Multiplayer.GetUniqueId());
     }
@@ -91,6 +97,7 @@ public partial class Global : Node
     
     public void SendPlayerDead()
     {
+        ready = false;
         GD.Print($"SendPlayerDead: {Multiplayer.GetUniqueId()}");
         RpcId(1, MethodName.ReceivePlayerDead, Multiplayer.GetUniqueId());
     }

@@ -3,8 +3,8 @@
 [ext_resource type="Texture2D" uid="uid://basqxtapupvpo" path="res://icon.svg" id="1_oae10"]
 [ext_resource type="Script" path="res://entity/Player.cs" id="1_v5huj"]
 [ext_resource type="Shader" uid="uid://whygv3qsb6m6" path="res://shaders/blob2.tres" id="2_8jh64"]
-[ext_resource type="Theme" uid="uid://bkt0vvx5lh6rj" path="res://theme.tres" id="2_fidhm"]
-[ext_resource type="Shader" uid="uid://sksef3c6boug" path="res://shaders/circle.tres" id="4_1h2u5"]
+[ext_resource type="Theme" path="res://theme.tres" id="2_fidhm"]
+[ext_resource type="Shader" uid="uid://b31386icwo8hn" path="res://shaders/circle.tres" id="4_1h2u5"]
 [ext_resource type="Script" path="res://entity/MassIndicator.cs" id="4_n03ik"]
 
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_pmm4k"]
@@ -89,15 +89,6 @@ replication_config = SubResource("SceneReplicationConfig_pmm4k")
 [node name="PhysicsCollisionShape" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_hvhe3")
 
-[node name="Label" type="Label" parent="."]
-offset_left = -54.0
-offset_top = -59.0
-offset_right = 57.0
-offset_bottom = -35.0
-theme = ExtResource("2_fidhm")
-text = "NAME"
-horizontal_alignment = 1
-
 [node name="scaled" type="Node2D" parent="."]
 
 [node name="Sprite2D" type="Sprite2D" parent="scaled"]
@@ -162,3 +153,12 @@ position = Vector2(0, 1.90735e-06)
 rotation = -1.5708
 scale = Vector2(0.535, 0.535)
 texture = ExtResource("1_oae10")
+
+[node name="Label" type="Label" parent="."]
+offset_left = -54.0
+offset_top = -59.0
+offset_right = 57.0
+offset_bottom = -35.0
+theme = ExtResource("2_fidhm")
+text = "NAME"
+horizontal_alignment = 1
