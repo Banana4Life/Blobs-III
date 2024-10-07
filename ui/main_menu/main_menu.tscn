@@ -1,9 +1,10 @@
-[gd_scene load_steps=5 format=3 uid="uid://mlrhpblxt33d"]
+[gd_scene load_steps=6 format=3 uid="uid://mlrhpblxt33d"]
 
 [ext_resource type="Script" path="res://ui/main_menu/Mainmenu.cs" id="1_mc8xx"]
 [ext_resource type="Texture2D" uid="uid://ch5xkv5nreiml" path="res://ui/main_menu/background.png" id="2_kdndo"]
 [ext_resource type="Texture2D" uid="uid://b73x57dasaedv" path="res://ui/main_menu/refresh.svg" id="3_ckv4l"]
-[ext_resource type="PackedScene" uid="uid://bksqraaaaf3ea" path="res://ui/main_menu/playerSelector.tscn" id="3_en4gf"]
+[ext_resource type="PackedScene" path="res://ui/main_menu/playerSelector.tscn" id="3_en4gf"]
+[ext_resource type="Texture2D" uid="uid://y0vwqiowwj83" path="res://title.png" id="3_l24pg"]
 
 [node name="Main_Menu" type="CanvasLayer" node_paths=PackedStringArray("playerName", "serverCount", "playerCount")]
 script = ExtResource("1_mc8xx")
@@ -20,6 +21,22 @@ grow_vertical = 2
 texture = ExtResource("2_kdndo")
 expand_mode = 1
 
+[node name="TextureRect2" type="TextureRect" parent="."]
+custom_minimum_size = Vector2(750, 200)
+anchors_preset = -1
+anchor_left = -0.151042
+anchor_right = 1.15104
+anchor_bottom = 0.771605
+offset_left = 750.0
+offset_right = -750.0
+offset_bottom = -500.0
+grow_horizontal = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+texture = ExtResource("3_l24pg")
+expand_mode = 1
+metadata/_edit_use_anchors_ = true
+
 [node name="MarginContainer" type="MarginContainer" parent="."]
 anchors_preset = 15
 anchor_right = 1.0
@@ -30,24 +47,6 @@ theme_override_constants/margin_left = 12
 theme_override_constants/margin_top = 12
 theme_override_constants/margin_right = 12
 theme_override_constants/margin_bottom = 12
-
-[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
-layout_mode = 2
-theme_override_constants/separation = 70
-
-[node name="Seperator" type="Control" parent="MarginContainer/VBoxContainer"]
-layout_mode = 2
-
-[node name="Title" type="Label" parent="MarginContainer/VBoxContainer"]
-layout_mode = 2
-theme_override_colors/font_color = Color(0, 0, 0, 1)
-theme_override_font_sizes/font_size = 64
-text = "LD56"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="Seperator2" type="Control" parent="MarginContainer/VBoxContainer"]
-layout_mode = 2
 
 [node name="VBoxContainer2" type="VBoxContainer" parent="MarginContainer"]
 layout_mode = 2
