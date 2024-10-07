@@ -170,6 +170,12 @@ public partial class World : Node2D
         existing.UnlockableColorName = name;
         existing.Color = UnlockableColors.Colors[existing.UnlockableColorName];
         GD.Print($"{Multiplayer.GetUniqueId()}: Player {displayName}({id}) init size: {existing.PlayerSize} auth {existing.GetMultiplayerAuthority()}");
+        var sprite2D = existing.GetNode<Sprite2D>("scaled/Sprite2D");
+        if (existing.Color.Material != null)
+        {
+            sprite2D.Material = existing.Color.Material;
+        }
+        (sprite2D.Material as ShaderMaterial) ?.SetShaderParameter("bodyColor", existing.Color.Color);
         
         Audio.Instance.Plop(this);
 
