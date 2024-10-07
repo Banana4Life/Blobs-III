@@ -142,8 +142,6 @@ public partial class Player : CharacterBody2D, MassContributor
 
     public override void _Process(double delta)
     {
-
-        
         eatenCd -= delta;
         GetNode<Label>("Label").Text = DisplayName;
         var scaled = GetNode<Node2D>("scaled");
@@ -200,13 +198,16 @@ public partial class Player : CharacterBody2D, MassContributor
             GetParent<World>().AddChild(particle);
         }
         
-        QueueFree(); 
-        if (!aiControlled)
+        QueueFree();
+        if (aiControlled)
+        {
+            GetParent<World>().aiPlayers--;
+        }
+        else
         {
             GetParent<World>().authorityPlayer = null;
             Global.Instance.SendPlayerDead();
-            Global.Instance.LoadRespawnScene(score);    
+            Global.Instance.LoadRespawnScene(score);
         }
-        
     }
 }
