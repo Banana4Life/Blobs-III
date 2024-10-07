@@ -12,11 +12,12 @@ public partial class Particle : RigidBody2D, MassContributor
     [Export] public float freq;
 
     public int ContributedMass => size;
-
     public double eatenCd;
+    private RandomNumberGenerator random;
     
     public override void _Ready()
     {
+        random = Global.Instance.Random;
         var syncher = GetNode<MultiplayerSynchronizer>("ParticleSync");
         syncher.SetVisibilityFor(0, false);
         
@@ -86,7 +87,6 @@ public partial class Particle : RigidBody2D, MassContributor
 
     public override void _IntegrateForces(PhysicsDirectBodyState2D state)
     {
-        var random = new RandomNumberGenerator();
         state.LinearVelocity = state.LinearVelocity.Lerp(new Vector2(random.Randf() - 0.5f, random.Randf() - 0.5f) * 50f, 0.1f);
     }
 

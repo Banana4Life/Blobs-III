@@ -13,13 +13,14 @@ public partial class World : Node2D
     [Export] public Vector2 PlayArea;
     public int i = 0;
 
-    private RandomNumberGenerator random = new();
+    private RandomNumberGenerator random;
 
     public Player authorityPlayer;
 
 
     public override void _Ready()
     {
+        random = Global.Instance.Random;
     }
 
     public int spawnRandomParticle()

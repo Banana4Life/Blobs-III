@@ -19,6 +19,8 @@ public partial class Global : Node
     private World world;
     private Respawn respawn;
     private Countdown countdown;
+    
+    public readonly RandomNumberGenerator Random = new ();
 
     public override void _Ready()
     {
