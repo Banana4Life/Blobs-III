@@ -1,23 +1,17 @@
-[gd_scene load_steps=4 format=3 uid="uid://mlrhpblxt33d"]
+[gd_scene load_steps=5 format=3 uid="uid://mlrhpblxt33d"]
 
 [ext_resource type="Script" path="res://ui/main_menu/Mainmenu.cs" id="1_mc8xx"]
 [ext_resource type="Texture2D" uid="uid://ch5xkv5nreiml" path="res://ui/main_menu/background.png" id="2_kdndo"]
 [ext_resource type="Texture2D" uid="uid://b73x57dasaedv" path="res://ui/main_menu/refresh.svg" id="3_ckv4l"]
+[ext_resource type="PackedScene" uid="uid://bksqraaaaf3ea" path="res://ui/main_menu/playerSelector.tscn" id="3_en4gf"]
 
-[node name="Main_Menu" type="Control" node_paths=PackedStringArray("playerName", "serverCount", "playerCount")]
-layout_mode = 3
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
+[node name="Main_Menu" type="CanvasLayer" node_paths=PackedStringArray("playerName", "serverCount", "playerCount")]
 script = ExtResource("1_mc8xx")
 playerName = NodePath("MarginContainer/VBoxContainer2/HBoxContainer/edName")
 serverCount = NodePath("MarginContainer/HBoxContainer2/ServerCount")
 playerCount = NodePath("MarginContainer/HBoxContainer2/PlayerCount")
 
 [node name="TextureRect" type="TextureRect" parent="."]
-layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -27,7 +21,6 @@ texture = ExtResource("2_kdndo")
 expand_mode = 1
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
-layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -83,6 +76,13 @@ size_flags_horizontal = 4
 icon = ExtResource("3_ckv4l")
 icon_alignment = 1
 expand_icon = true
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer2/HBoxContainer"]
+custom_minimum_size = Vector2(86, 0)
+layout_mode = 2
+
+[node name="player" parent="MarginContainer/VBoxContainer2/HBoxContainer/VBoxContainer" instance=ExtResource("3_en4gf")]
+layout_mode = 2
 
 [node name="Join_Button" type="Button" parent="MarginContainer/VBoxContainer2"]
 layout_mode = 2

@@ -7,9 +7,9 @@ public class PlayerManager
     public List<PlayerInfo> Players = new();
     public Queue<long> PlayersToRemove = new();
 
-    public void AddPlayer(string name, long peerId)
+    public void AddPlayer(string name, long peerId, string selectedColor)
     {
-        Players.Add(new PlayerInfo(name, peerId, 0, false, false));
+        Players.Add(new PlayerInfo(name, peerId, 0, false, false, selectedColor));
     }
 
     public void SetPlayerReady(long peerId)
@@ -26,13 +26,14 @@ public class PlayerManager
 
     public class PlayerInfo
     {
-        public PlayerInfo(string name, long peerId, int size, bool alive, bool ready)
+        public PlayerInfo(string name, long peerId, int size, bool alive, bool ready, string selectedColor)
         {
             this.name = name;
             this.peerId = peerId;
             this.size = size;
             this.alive = alive;
             this.ready = ready;
+            this.selectedColor = selectedColor;
         }
 
 
@@ -41,6 +42,7 @@ public class PlayerManager
         public int size;
         public bool alive;
         public bool ready;
+        public string selectedColor;
     }
 
     public void SetPlayerDead(long peerId)

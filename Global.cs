@@ -1,4 +1,7 @@
+using System.Collections.Generic;
+using System.Linq;
 using Godot;
+using Godot.Collections;
 
 namespace LD56;
 
@@ -21,8 +24,11 @@ public partial class Global : Node
     private Respawn respawn;
     private Countdown countdown;
     private bool ready;
-    
-    public readonly RandomNumberGenerator Random = new ();
+
+    public string[] unlockedColors = ["PureGreen", "PureRed",  "PureBlue"];
+    public string selectedColor = "PureGreen";
+
+    public readonly RandomNumberGenerator Random = new();
 
     public override void _Ready()
     {
@@ -34,6 +40,9 @@ public partial class Global : Node
         StatsUri = DEFAULT_C2_STATS_URI;
         if (result == Error.Ok)
         {
+            var cfg = config.GetValue("savegame", "colors", unlockedColors);
+            unlockedColors = cfg.AsStringArray();
+            GD.Print($"Unlocked Colors: {unlockedColors}");
             c2_base_uri = config.GetValue("c2server", "host", DEFAULT_C2_BASE_URI).AsString();
             StatsUri = config.GetValue("c2server", "stats", DEFAULT_C2_STATS_URI).AsString();
         }
@@ -46,7 +55,7 @@ public partial class Global : Node
         SetWindowTitle("Joining");
     }
 
-    
+
     public void EnterServerState(string playerName)
     {
         State = new ServerState(Multiplayer, c2_base_uri, playerName);
@@ -63,16 +72,16 @@ public partial class Global : Node
     public void SendPlayerInfo(string playerName)
     {
         GD.Print($"SendPlayerInfo: {playerName}");
-        RpcId(1, MethodName.ReceivePlayerInfo, playerName, Multiplayer.GetUniqueId());
+        RpcId(1, MethodName.ReceivePlayerInfo, playerName, Multiplayer.GetUniqueId(), selectedColor);
     }
 
     [Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = true)]
-    public void ReceivePlayerInfo(string playerName, int peerId)
+    public void ReceivePlayerInfo(string playerName, int peerId, string selectedColor)
     {
         GD.Print($"ReceivePlayerInfo: {playerName} ({peerId})");
         if (State is ServerState)
         {
-            PlayerManager.AddPlayer(playerName, peerId);
+            PlayerManager.AddPlayer(playerName, peerId, selectedColor);
         }
         else
         {
@@ -86,6 +95,7 @@ public partial class Global : Node
         {
             return;
         }
+
         ready = true;
         GD.Print($"SendPlayerReady: {Multiplayer.GetUniqueId()}");
         RpcId(1, MethodName.ReceivePlayerReady, Multiplayer.GetUniqueId());
@@ -98,7 +108,7 @@ public partial class Global : Node
         GD.Print($"ReceivePlayerReady: {peerId}");
         PlayerManager.SetPlayerReady(peerId);
     }
-    
+
     public void SendPlayerDead()
     {
         ready = false;
@@ -106,7 +116,7 @@ public partial class Global : Node
         RpcId(1, MethodName.ReceivePlayerDead, Multiplayer.GetUniqueId());
     }
 
-    
+
     [Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = true)]
     public void ReceivePlayerDead(long peerId)
     {
@@ -135,28 +145,29 @@ public partial class Global : Node
                 GD.Print($"Free {current2.Name} Scene...");
                 current2.QueueFree();
             }
+
             GD.Print("Show World Scene...");
             GetTree().SetCurrentScene(world);
         }
+
         world.Visible = show;
-        
     }
-    
+
     private void LoadCountdownScene()
     {
         GetTree().ChangeSceneToPacked(countDownScene);
         LoadWorldScene(false);
     }
-    
+
     public void LoadRespawnScene(int score)
     {
         respawn = respawnScene.Instantiate<Respawn>();
         GetTree().Root.AddChild(respawn);
         GetTree().SetCurrentScene(respawn);
-        
+
         respawn.GetNode<Label>("score").Text = score.ToString();
     }
-    
+
     public void LoadCountdownSceneInWorld()
     {
         respawn.QueueFree();
@@ -167,11 +178,10 @@ public partial class Global : Node
         // TODO render in screenspace
     }
 
-        
+
     public void SetWindowTitle(string title)
     {
         var name = ProjectSettings.GetSetting("application/config/name", "Game").AsString();
         DisplayServer.WindowSetTitle($"{name} - {title}");
     }
-    
 }

@@ -2,7 +2,7 @@ using System;
 using Godot;
 using LD56;
 
-public partial class Mainmenu : Control
+public partial class Mainmenu : CanvasLayer
 {
     [Export] public LineEdit playerName;
     [Export] public Label serverCount;
