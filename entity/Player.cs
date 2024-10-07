@@ -257,7 +257,7 @@ public partial class Player : CharacterBody2D, MassContributor
         if (GetParent().HasNode(name))
         {
             var particle = GetParent().GetNode<Particle>(name);
-            if (particle != null)
+            if (particle != null && particle.validSpawn)
             {
                 particle.Shrink(mass);
             }    

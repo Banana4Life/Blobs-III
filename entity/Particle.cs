@@ -1,9 +1,10 @@
+using System;
 using Godot;
 using LD56;
 
 public partial class Particle : RigidBody2D, MassContributor
 {
-    private bool validSpawn;
+    public bool validSpawn;
     private double aliveTime;
     [Export] public int size;
     private Vector2 targetScale;
@@ -16,6 +17,7 @@ public partial class Particle : RigidBody2D, MassContributor
     public double eatenCd;
     private RandomNumberGenerator random =  Global.Instance.Random;
     public bool tiny;
+    private bool despawned;
     
     public override void _Ready()
     {
@@ -37,7 +39,7 @@ public partial class Particle : RigidBody2D, MassContributor
     public void RandomInit(int size)
     {
         this.size = size;
-        Shrink(0); // update targetscale
+        updateTargetScale();
         var color = Color.FromHsv(random.RandfRange(0, 1f), 1f, 1f, random.RandfRange(0.2f, 0.4f));
         Color = color;
         seed = random.RandfRange(0f, 10000f);
@@ -47,6 +49,11 @@ public partial class Particle : RigidBody2D, MassContributor
 
     public void Despawn()
     {
+        if (despawned)
+        {
+            return;
+        }
+        despawned = true;
         var world = GetParent<World>();
         if (tiny)
         {
@@ -162,10 +169,10 @@ public partial class Particle : RigidBody2D, MassContributor
 
     public void Shrink(int mass)
     {
+        mass = Math.Min(size, mass);
         size -= mass;
-        var scale = Mathf.Sqrt(size / Mathf.Pi) * 2 / 10f;
-        targetScale = new Vector2(scale, scale);
-      
+        updateTargetScale();
+
         var world = GetParent<World>();
         if (tiny)
         {
@@ -175,5 +182,11 @@ public partial class Particle : RigidBody2D, MassContributor
         {
             world.totalMass -= mass;
         }
+    }
+
+    private void updateTargetScale()
+    {
+        var scale = Mathf.Sqrt(size / Mathf.Pi) * 2 / 10f;
+        targetScale = new Vector2(scale, scale);
     }
 }

@@ -37,9 +37,8 @@ public partial class World : Node2D
 
         particle.GlobalPosition = spawnPos;
         particle.Name = "particle_" + i++;
-        particle.RandomInit( random.RandiRange(minSize, maxSize));
         particle.tiny = tiny;
-
+        particle.RandomInit( random.RandiRange(minSize, maxSize));
         AddChild(particle);
         return particle.size;
     }
