@@ -14,7 +14,9 @@ public class PlayerManager
 
     public void SetPlayerReady(long peerId)
     {
-        Players.Find(p => p.peerId == peerId).ready = true;
+        var playerInfo = Players.Find(p => p.peerId == peerId);
+        playerInfo.ready = true;
+        playerInfo.alive = false;
     }
 
     public void RemovePlayer(long id)
@@ -39,5 +41,11 @@ public class PlayerManager
         public int size;
         public bool alive;
         public bool ready;
+    }
+
+    public void SetPlayerDead(long peerId)
+    {
+        var playerInfo = Players.Find(p => p.peerId == peerId);
+        playerInfo.ready = false;
     }
 }

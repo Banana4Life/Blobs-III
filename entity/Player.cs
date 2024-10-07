@@ -121,10 +121,11 @@ public partial class Player : CharacterBody2D, MassContributor
 
     public void PlayerDied()
     {
-        GetParent<World>().authorityPlayer = null; 
-        Global.Instance.PlayerManager.RemovePlayer(int.Parse(Name)); // TODO on server?
+        GetParent<World>().authorityPlayer = null;
         QueueFree(); 
-        // TODO you died respawn screen?
+        Global.Instance.SendPlayerDead();
+        
+        Global.Instance.LoadRespawnScene();
         // TODO particles
     }
 }

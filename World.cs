@@ -72,6 +72,16 @@ public partial class World : Node2D
                 {
                     SpawnPlayer(playerInfo);
                 }
+
+                if (playerInfo.alive && !playerInfo.ready)
+                {
+                    var deadPlayer =  GetNodeOrNull<Player>(playerInfo.peerId.ToString());
+                    if (deadPlayer != null)
+                    {
+                        GD.Print($"Player {playerInfo.name} is dead and got removed");
+                        deadPlayer.QueueFree();
+                    }
+                }
             }
 
             var playersToRemove = Global.Instance.PlayerManager.PlayersToRemove;

@@ -10,12 +10,15 @@ public partial class Global : Node
     private PackedScene worldScene = GD.Load<PackedScene>("res://world.tscn");
     private PackedScene mainMenuScene = GD.Load<PackedScene>("res://ui/main_menu/main_menu.tscn");
     private PackedScene countDownScene = GD.Load<PackedScene>("res://ui/transitions/countdown.tscn");
+    private PackedScene respawnScene = GD.Load<PackedScene>("res://ui/transitions/respawn.tscn");
 
     public static Global Instance { get; private set; }
 
     public State State;
     public PlayerManager PlayerManager = new();
     private World world;
+    private Respawn respawn;
+    private Countdown countdown;
 
     public override void _Ready()
     {
@@ -83,6 +86,20 @@ public partial class Global : Node
         GD.Print($"ReceivePlayerReady: {peerId}");
         PlayerManager.SetPlayerReady(peerId);
     }
+    
+    public void SendPlayerDead()
+    {
+        GD.Print($"SendPlayerDead: {Multiplayer.GetUniqueId()}");
+        RpcId(1, MethodName.ReceivePlayerDead, Multiplayer.GetUniqueId());
+    }
+
+    
+    [Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = true)]
+    public void ReceivePlayerDead(long peerId)
+    {
+        GD.Print($"ReceivePlayerReady: {peerId}");
+        PlayerManager.SetPlayerDead(peerId);
+    }
 
     public void LoadWorldScene(bool show)
     {
@@ -117,5 +134,23 @@ public partial class Global : Node
         GetTree().ChangeSceneToPacked(countDownScene);
         LoadWorldScene(false);
     }
+    
+    public void LoadRespawnScene()
+    {
+        respawn = respawnScene.Instantiate<Respawn>();
+        GetTree().Root.AddChild(respawn);
+        GetTree().SetCurrentScene(respawn);
+    }
+    
+    public void LoadCountdownSceneInWorld()
+    {
+        respawn.QueueFree();
+        countdown = countDownScene.Instantiate<Countdown>();
+        GetTree().Root.AddChild(countdown);
+        GetTree().SetCurrentScene(countdown);
+        // TODO render in screenspace
+    }
 
+
+    
 }
