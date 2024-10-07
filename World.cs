@@ -15,7 +15,7 @@ public partial class World : Node2D
 
     private RandomNumberGenerator random = new();
 
-    private Player authorityPlayer;
+    public Player authorityPlayer;
 
 
     public override void _Ready()

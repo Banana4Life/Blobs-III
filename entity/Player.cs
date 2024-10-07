@@ -115,7 +115,16 @@ public partial class Player : CharacterBody2D
         }
         if (PlayerSize < 0)
         {
-            QueueFree(); // TODO
+            PlayerDied();
         }
+    }
+
+    public void PlayerDied()
+    {
+        GetParent<World>().authorityPlayer = null; 
+        Global.Instance.PlayerManager.RemovePlayer(int.Parse(Name)); // TODO on server?
+        QueueFree(); 
+        // TODO you died respawn screen?
+        // TODO particles
     }
 }
