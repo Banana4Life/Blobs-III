@@ -4,7 +4,7 @@
 [ext_resource type="Texture2D" uid="uid://ch5xkv5nreiml" path="res://ui/main_menu/background.png" id="2_kdndo"]
 [ext_resource type="Texture2D" uid="uid://b73x57dasaedv" path="res://ui/main_menu/refresh.svg" id="3_ckv4l"]
 
-[node name="Main_Menu" type="Control" node_paths=PackedStringArray("playerName")]
+[node name="Main_Menu" type="Control" node_paths=PackedStringArray("playerName", "serverCount", "playerCount")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -13,6 +13,8 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_mc8xx")
 playerName = NodePath("MarginContainer/VBoxContainer2/HBoxContainer/edName")
+serverCount = NodePath("MarginContainer/HBoxContainer2/ServerCount")
+playerCount = NodePath("MarginContainer/HBoxContainer2/PlayerCount")
 
 [node name="TextureRect" type="TextureRect" parent="."]
 layout_mode = 1
@@ -86,6 +88,27 @@ expand_icon = true
 layout_mode = 2
 theme_override_font_sizes/font_size = 50
 text = "Join"
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+size_flags_vertical = 8
+theme_override_constants/separation = 50
+
+[node name="ServerCountLabel" type="Label" parent="MarginContainer/HBoxContainer2"]
+layout_mode = 2
+text = "Servers:"
+
+[node name="ServerCount" type="Label" parent="MarginContainer/HBoxContainer2"]
+layout_mode = 2
+text = "0"
+
+[node name="PlayerCountLabel" type="Label" parent="MarginContainer/HBoxContainer2"]
+layout_mode = 2
+text = "Players:"
+
+[node name="PlayerCount" type="Label" parent="MarginContainer/HBoxContainer2"]
+layout_mode = 2
+text = "0"
 
 [connection signal="pressed" from="MarginContainer/VBoxContainer2/HBoxContainer/Button" to="." method="_on_random_name_button_pressed"]
 [connection signal="pressed" from="MarginContainer/VBoxContainer2/Join_Button" to="." method="_on_join_button_pressed"]

@@ -5,6 +5,7 @@ namespace LD56;
 public partial class Global : Node
 {
     private const string DEFAULT_C2_BASE_URI = "wss://banana4.life";
+    private const string DEFAULT_C2_STATS_URI = "https://banana4.life/ld56/stats";
     private string c2_base_uri;
 
     private PackedScene worldScene = GD.Load<PackedScene>("res://world.tscn");
@@ -15,6 +16,7 @@ public partial class Global : Node
 
     public State State;
     public PlayerManager PlayerManager = new();
+    public string StatsUri;
     private World world;
     private Respawn respawn;
     private Countdown countdown;
@@ -32,6 +34,7 @@ public partial class Global : Node
         if (result == Error.Ok)
         {
             c2_base_uri = config.GetValue("c2server", "host", Variant.CreateFrom(DEFAULT_C2_BASE_URI)).AsString();
+            StatsUri = config.GetValue("c2server", "stats", Variant.CreateFrom(DEFAULT_C2_STATS_URI)).AsString();
         }
     }
 
