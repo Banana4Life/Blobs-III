@@ -14,7 +14,7 @@ public partial class World : Node2D
     private int players = 1;
     public int totalMass = 0;
     public int totalTinyMass = 0;
-    public int maxAiPlayers = 3;
+    public int maxAiPlayers = 5;
     public int aiPlayers;
     [Export] public int maxMass;
     [Export] public int maxTinyMass = 10000;
