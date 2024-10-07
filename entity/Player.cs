@@ -12,6 +12,7 @@ public partial class Player : CharacterBody2D, MassContributor
 
     public bool aiControlled;
     
+    [Export] public string UnlockableColorName;
     [Export] public string DisplayName;
     [Export] public int PlayerSize;
     [Export] public int score;

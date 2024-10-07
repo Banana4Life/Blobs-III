@@ -135,6 +135,7 @@ public partial class World : Node2D
         var random = this.random;
         player.GrowPlayer(random.RandiRange(100, 250));
         player.aiControlled = true;
+        player.UnlockableColorName = UnlockableColors.PickRandomColorName();
         aiPlayers++;
         AddChild(player);
         player.GlobalPosition = randomSpawnPos();
