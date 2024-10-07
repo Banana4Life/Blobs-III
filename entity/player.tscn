@@ -1,8 +1,10 @@
-[gd_scene load_steps=7 format=3 uid="uid://fmi00jcend8v"]
+[gd_scene load_steps=10 format=3 uid="uid://fmi00jcend8v"]
 
 [ext_resource type="Texture2D" uid="uid://basqxtapupvpo" path="res://icon.svg" id="1_oae10"]
 [ext_resource type="Script" path="res://entity/Player.cs" id="1_v5huj"]
 [ext_resource type="Shader" uid="uid://whygv3qsb6m6" path="res://shaders/blob2.tres" id="2_8jh64"]
+[ext_resource type="Shader" uid="uid://sksef3c6boug" path="res://shaders/circle.tres" id="4_1h2u5"]
+[ext_resource type="Script" path="res://entity/MassIndicator.cs" id="4_n03ik"]
 
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_pmm4k"]
 properties/0/path = NodePath(".:position")
@@ -27,6 +29,12 @@ shader_parameter/uMagnitude = 0.05
 shader_parameter/uFrequency = 4.0
 shader_parameter/uRadius = 0.2
 
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_nvgrv"]
+shader = ExtResource("4_1h2u5")
+shader_parameter/arc_color = Color(1, 1, 1, 1)
+shader_parameter/thickness = 0.1
+shader_parameter/width = 40.0
+
 [node name="player" type="CharacterBody2D"]
 script = ExtResource("1_v5huj")
 
@@ -48,4 +56,62 @@ horizontal_alignment = 1
 
 [node name="Sprite2D" type="Sprite2D" parent="scaled"]
 material = SubResource("ShaderMaterial_61gl6")
+texture = ExtResource("1_oae10")
+
+[node name="EnemyIndicator" type="Node2D" parent="."]
+script = ExtResource("4_n03ik")
+
+[node name="Circle1" type="Sprite2D" parent="EnemyIndicator"]
+material = SubResource("ShaderMaterial_nvgrv")
+position = Vector2(0, 1.90735e-06)
+scale = Vector2(0.535, 0.535)
+texture = ExtResource("1_oae10")
+
+[node name="Circle2" type="Sprite2D" parent="EnemyIndicator"]
+material = SubResource("ShaderMaterial_nvgrv")
+position = Vector2(0, 1.90735e-06)
+rotation = 0.785398
+scale = Vector2(0.535, 0.535)
+texture = ExtResource("1_oae10")
+
+[node name="Circle3" type="Sprite2D" parent="EnemyIndicator"]
+material = SubResource("ShaderMaterial_nvgrv")
+position = Vector2(0, 1.90735e-06)
+rotation = 1.5708
+scale = Vector2(0.535, 0.535)
+texture = ExtResource("1_oae10")
+
+[node name="Circle4" type="Sprite2D" parent="EnemyIndicator"]
+material = SubResource("ShaderMaterial_nvgrv")
+position = Vector2(0, 1.90735e-06)
+rotation = 2.35619
+scale = Vector2(0.535, 0.535)
+texture = ExtResource("1_oae10")
+
+[node name="Circle5" type="Sprite2D" parent="EnemyIndicator"]
+material = SubResource("ShaderMaterial_nvgrv")
+position = Vector2(0, 1.90735e-06)
+rotation = -3.14159
+scale = Vector2(0.535, 0.535)
+texture = ExtResource("1_oae10")
+
+[node name="Circle6" type="Sprite2D" parent="EnemyIndicator"]
+material = SubResource("ShaderMaterial_nvgrv")
+position = Vector2(0, 1.90735e-06)
+rotation = -2.35619
+scale = Vector2(0.535, 0.535)
+texture = ExtResource("1_oae10")
+
+[node name="Circle7" type="Sprite2D" parent="EnemyIndicator"]
+material = SubResource("ShaderMaterial_nvgrv")
+position = Vector2(0, 1.90735e-06)
+rotation = -1.5708
+scale = Vector2(0.535, 0.535)
+texture = ExtResource("1_oae10")
+
+[node name="Circle8" type="Sprite2D" parent="EnemyIndicator"]
+material = SubResource("ShaderMaterial_nvgrv")
+position = Vector2(0, 1.90735e-06)
+rotation = -0.785398
+scale = Vector2(0.535, 0.535)
 texture = ExtResource("1_oae10")
