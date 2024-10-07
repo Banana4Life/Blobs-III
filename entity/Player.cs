@@ -168,21 +168,22 @@ public partial class Player : CharacterBody2D, MassContributor
             if (collision.GetCollider() is Particle particle)
             {
                 Vector2 impulse = Vector2.Zero;
-                if (particle.size < PlayerSize && !dashing)
+                if (particle.size < PlayerSize)
                 {
-                    impulse = -collision.GetNormal() * 3;
-                 
+                    float dashingMulti = dashing ? 10 : 1;
+                    impulse = -collision.GetNormal() * 10 * dashingMulti;
                 }
                 else
                 {
-                    float dashingMulti = dashing ? 10 : 1;
+                    float dashingMulti = dashing ? 50 : 1;
                     // var ratio = Mathf.Max(1, PlayerSize / particle.size);
-                    impulse = -collision.GetNormal() * 6 * dashingMulti;
+                    impulse = -collision.GetNormal() * 5 * dashingMulti;
                 }
                 RpcId(1, MethodName.Bump, particle.Name, impulse);  // Notify server we bumped
+                particle.ApplyCentralImpulse(impulse); // also apply locally (for prediction)
+
                 if (!Multiplayer.IsServer())
                 {
-                    particle.ApplyCentralImpulse(impulse); // also apply locally (for prediction)
                 }
             }
       
