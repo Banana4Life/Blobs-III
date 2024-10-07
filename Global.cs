@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 using Godot;
 
@@ -25,7 +26,8 @@ public partial class Global : Node
     private Countdown countdown;
     private bool ready;
 
-    public List<string> unlockedColors = ["PureGreen", "PureRed",  "PureBlue"];
+    public ImmutableList<string> defaultUnlockedColors = ["Pure Green", "Pure Red",  "Pure Blue"];
+    public List<string> unlockedColors;
     private ConfigFile config = new();
 
     public readonly RandomNumberGenerator Random = new();
@@ -41,8 +43,14 @@ public partial class Global : Node
         StatsUri = DEFAULT_C2_STATS_URI;
         if (result == Error.Ok)
         {
-            var cfg = config.GetValue("savegame", "colors", unlockedColors.ToArray());
-            unlockedColors = cfg.AsStringArray().ToList();
+            var cfg = config.GetValue("savegame", "colors", defaultUnlockedColors.ToArray());
+            unlockedColors = cfg.AsStringArray().Where(UnlockableColors.Colors.ContainsKey).ToList();
+            if (!unlockedColors.Any())
+            {
+                unlockedColors.AddRange(defaultUnlockedColors);
+            }
+            config.SetValue("savegame", "colors", unlockedColors.ToArray());
+            config.Save("user://config.cfg");
             selectedColor = unlockedColors[Random.RandiRange(0, unlockedColors.Count)];
             GD.Print($"Unlocked Colors: {unlockedColors}");
             c2_base_uri = config.GetValue("c2server", "host", DEFAULT_C2_BASE_URI).AsString();
