@@ -253,11 +253,15 @@ public partial class Player : CharacterBody2D, MassContributor
     [Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = true)]
     public void EatParticle(string name, int mass)
     {
-        var particle = GetParent().GetNode<Particle>(name);
-        if (particle != null)
+        if (GetParent().HasNode(name))
         {
-            particle.Shrink(mass);
+            var particle = GetParent().GetNode<Particle>(name);
+            if (particle != null)
+            {
+                particle.Shrink(mass);
+            }    
         }
+        
     }
 
     
