@@ -192,6 +192,7 @@ public partial class Global : Node
             unlockedColors.Add(unlock);
             config.SetValue("savegame", "colors", unlockedColors.ToArray());
             config.Save("user://config.cfg");
+            GD.Print($"Awarded {unlock}");
             Audio.Instance.Ding();
         }
     }

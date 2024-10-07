@@ -71,7 +71,7 @@ public partial class Audio : Node
 
     public void Ding()
     {
-        PlayOneShot(ding, 0.5f);
+        PlayOneShot(ding, 0.4f);
     }
     public void SplatAt(Vector2 position, float volumeLinear = 0.1f, Node node = null)
     {
