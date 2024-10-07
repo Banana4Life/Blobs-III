@@ -71,7 +71,7 @@ public partial class World : Node2D
             const float stepSize = 200;
             const float minStep = 10;
             
-            var scaledSize = Math.Min(Mathf.Floor(authorityPlayer.PlayerSize / stepSize), minStep);
+            var scaledSize = Math.Max(Mathf.Floor(authorityPlayer.PlayerSize / stepSize), minStep);
             cam.Zoom = cam.Zoom.Lerp(Vector2.One / (Vector2.One * (float)Math.Log10(scaledSize + 1d)), 0.05f);
         }
 
