@@ -100,20 +100,30 @@ public partial class Particle : RigidBody2D, MassContributor
         aliveTime += delta;
         if (aliveTime >= 0.5d)
         {
+            if (!validSpawn)
+            {
+                GetNode<Node2D>("scaled").Scale = new Vector2(0,0);
+            }
             validSpawn = true;
             // GD.Print("Spawned particle " + size);
 
             GetNode<CollisionShape2D>("PhysicsCollisionShape").Disabled = false;
             var syncher = GetNode<MultiplayerSynchronizer>("ParticleSync");
             syncher.SetVisibilityFor(0, true);
+
+        }
+        
+        if (validSpawn)
+        {
+            GetNode<Sprite2D>("scaled/Sprite2D").Visible = validSpawn;
+        
+            var scale = Mathf.Sqrt(size / Mathf.Pi) * 2 / 10f;
+            var newScale = GetNode<Node2D>("scaled").Scale.Lerp(new Vector2(scale, scale), 0.05f);
+            GetNode<Node2D>("scaled").Scale = newScale;
+            GetNode<CollisionShape2D>("PhysicsCollisionShape").Scale = newScale;
         }
 
-        GetNode<Sprite2D>("scaled/Sprite2D").Visible = validSpawn;
         
-        var scale = Mathf.Sqrt(size / Mathf.Pi) * 2 / 10f;
-        var newScale = GetNode<Node2D>("scaled").Scale.Lerp(new Vector2(scale, scale), 0.1f);
-        GetNode<Node2D>("scaled").Scale = newScale;
-        GetNode<CollisionShape2D>("PhysicsCollisionShape").Scale = newScale;
     }
     
 }
