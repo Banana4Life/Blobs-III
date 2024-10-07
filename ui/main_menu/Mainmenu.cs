@@ -17,6 +17,7 @@ public partial class Mainmenu : Control
         playerCount.Text = 1.ToString();
 
         _simpleTimer = new SimpleTimer(15);
+        Audio.Instance.Splat();
     }
 
     public override void _Process(double delta)

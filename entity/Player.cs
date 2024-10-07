@@ -215,7 +215,7 @@ public partial class Player : CharacterBody2D, MassContributor
         
         var world = GetParent<World>();
         world.SpawnDeathParticles(GlobalPosition, PlayerColor);
-    
+        Audio.Instance.SplatAt(GlobalPosition);    
         
         QueueFree();
         if (aiControlled)
