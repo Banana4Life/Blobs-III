@@ -42,7 +42,7 @@ public partial class Global : Node
     {
         LoadCountdownScene();
         State = new ClientState(Multiplayer, c2_base_uri, playerName);
-        DisplayServer.WindowSetTitle($"LD56 - Joining");
+        SetWindowTitle("Joining");
     }
 
     
@@ -160,7 +160,7 @@ public partial class Global : Node
     {
         respawn.QueueFree();
         countdown = countDownScene.Instantiate<Countdown>();
-        DisplayServer.WindowSetTitle($"LD56 - Respawning");
+        SetWindowTitle("Respawning");
         GetTree().Root.AddChild(countdown);
         GetTree().SetCurrentScene(countdown);
         // TODO render in screenspace
