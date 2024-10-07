@@ -1,9 +1,9 @@
-[gd_scene load_steps=6 format=3 uid="uid://bksqraaaaf3ea"]
+[gd_scene load_steps=6 format=3 uid="uid://dr287600kwg7d"]
 
 [ext_resource type="Script" path="res://ui/main_menu/PlayerSelector.cs" id="1_jcj1u"]
 [ext_resource type="Shader" uid="uid://whygv3qsb6m6" path="res://shaders/blob2.tres" id="2_mbixa"]
 [ext_resource type="Texture2D" uid="uid://basqxtapupvpo" path="res://icon.svg" id="3_xx8ia"]
-[ext_resource type="Theme" path="res://theme.tres" id="6_3ug8h"]
+[ext_resource type="Theme" uid="uid://bkt0vvx5lh6rj" path="res://theme.tres" id="6_3ug8h"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_61gl6"]
 shader = ExtResource("2_mbixa")

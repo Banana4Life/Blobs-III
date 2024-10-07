@@ -1,13 +1,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using Godot;
-using Godot.Collections;
-using Array = System.Array;
 
 namespace LD56;
 
 public partial class Global : Node
 {
+    public static readonly PackedScene toastScene = GD.Load<PackedScene>("res://ui/toast.tscn");
     private const string DEFAULT_C2_BASE_URI = "wss://banana4.life";
     private const string DEFAULT_C2_STATS_URI = "https://banana4.life/ld56/stats";
     private string c2_base_uri;
@@ -31,6 +30,7 @@ public partial class Global : Node
 
     public readonly RandomNumberGenerator Random = new();
     public string selectedColor;
+    private Toast activeToast;
 
 
     public override void _Ready()
@@ -196,6 +196,14 @@ public partial class Global : Node
             config.Save("user://config.cfg");
             GD.Print($"Awarded {unlock}");
             Audio.Instance.Ding();
+            if (activeToast != null)
+            {
+                activeToast.Hide();
+                activeToast.QueueFree();
+            }
+            activeToast = toastScene.Instantiate<Toast>();
+            AddChild(activeToast);
+            activeToast.Present(unlock);
         }
     }
 }
