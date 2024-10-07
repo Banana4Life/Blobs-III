@@ -1,8 +1,11 @@
+using System;
 using Godot;
 using LD56;
 
 public partial class Player : CharacterBody2D, MassContributor
 {
+    private PackedScene deathParticles = GD.Load<PackedScene>("res://particles/death_particles.tscn");
+    
     public const float SPEED = 300.0f;
 
     [Export] public string DisplayName;
@@ -121,11 +124,27 @@ public partial class Player : CharacterBody2D, MassContributor
 
     public void PlayerDied()
     {
+        var particle = deathParticles.Instantiate<GpuParticles2D>();
+        if (particle.ProcessMaterial is ParticleProcessMaterial particleProcessMaterial)
+        {
+            var gradient = new Gradient();
+            gradient.AddPoint(0.0f, Colors.Pink);
+            gradient.AddPoint(1.0f, Colors.Black);
+
+            var gradientTexture = new GradientTexture2D();
+            gradientTexture.Gradient = gradient;
+            particleProcessMaterial.SetColorRamp(gradientTexture);
+
+            particle.GlobalPosition = GlobalPosition;
+            particle.Emitting = true;
+            
+            GetParent<World>().AddChild(particle);
+        }
+        
         GetParent<World>().authorityPlayer = null;
         QueueFree(); 
         Global.Instance.SendPlayerDead();
         
         Global.Instance.LoadRespawnScene();
-        // TODO particles
     }
 }
