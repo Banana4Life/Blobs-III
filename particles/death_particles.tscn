@@ -10,6 +10,7 @@ point_count = 3
 curve = SubResource("Curve_t46qf")
 
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_ag8v8"]
+resource_local_to_scene = true
 particle_flag_disable_z = true
 emission_shape = 1
 emission_sphere_radius = 12.47
