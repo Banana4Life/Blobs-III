@@ -36,6 +36,7 @@ public partial class Player : CharacterBody2D, MassContributor
             var massContributors = GetTree().GetNodesInGroup("MassContributor");
             var players = massContributors.Where(mc => mc is Player { aiControlled: false });
             var max = !players.Any() ? 0 : players.Max(mc => ((Player)mc).PlayerSize);
+            max = Math.Min(max, 450);
             if (PlayerSize > max)
             {
                 // TODO do stuff when player size was reached
