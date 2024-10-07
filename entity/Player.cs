@@ -23,6 +23,7 @@ public partial class Player : CharacterBody2D, MassContributor
     
     public override void _Ready()
     {
+        GetNode<Node2D>("scaled").Scale = Vector2.Zero;
         // var syncher = GetNode<MultiplayerSynchronizer>("PlayerSync");
         // syncher.SetVisibilityFor(0, false);
         (GetNode<Sprite2D>("scaled/Sprite2D").Material as ShaderMaterial)
