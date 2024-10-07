@@ -48,7 +48,14 @@ public partial class Particle : RigidBody2D, MassContributor
         QueueFree();
         var world = GetParent<World>();
         world.SpawnColoredParticles(world.deathParticles, GlobalPosition, Color);
-        Audio.Instance.SplatAt(GlobalPosition, volumeLinear:0.01f);
+        if (tiny)
+        {
+            Audio.Instance.SplatAt(GlobalPosition, volumeLinear:0.03f);
+        }
+        else
+        {
+            Audio.Instance.SplatAt(GlobalPosition, volumeLinear:0.08f);
+        }
     }
 
     public void _on_area_2d_area_entered(Area2D area)

@@ -167,6 +167,7 @@ public partial class World : Node2D
         existing.DisplayName = displayName;
         GD.Print($"{Multiplayer.GetUniqueId()}: Player {displayName}({id}) init size: {existing.PlayerSize} auth {existing.GetMultiplayerAuthority()}");
         
+        Audio.Instance.Plop(this);
 
         authorityPlayer = existing;
         var cam = GetNode<Camera2D>("Camera2D");

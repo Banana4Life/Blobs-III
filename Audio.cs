@@ -7,7 +7,8 @@ public partial class Audio : Node
     public static Audio Instance { get; private set; }
     
     private AudioStreamPlayer backgroundMusic = new();
-    private AudioStream splat;
+    private AudioStream splat = GD.Load<AudioStream>("res://audio/splat.wav");
+    private AudioStream plop = GD.Load<AudioStream>("res://audio/plop.wav");
 
     public float BackgroundVolumeLinear
     {
@@ -18,7 +19,6 @@ public partial class Audio : Node
     public override void _Ready()
     {
         Instance = this;
-        splat = GD.Load<AudioStream>("res://audio/splat.wav");
         StartBackgroundMusic();
     }
 
@@ -58,6 +58,11 @@ public partial class Audio : Node
         (node ?? this).AddChild(player);
     }
 
+    public void Plop(Node node)
+    {
+        PlayOneShot(plop, 0.5f, node);
+    }
+    
     public void Splat(float volumeLinear = 0.1f, Node node = null)
     {
         PlayOneShot(splat, volumeLinear, node);
