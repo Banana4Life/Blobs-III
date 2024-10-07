@@ -45,12 +45,8 @@ public partial class Particle : RigidBody2D, MassContributor
 
     public void RemoveFromGame()
     {
-        if (!IsQueuedForDeletion())
-        {
-            
-        }
-
         QueueFree();
+        GetParent<World>().SpawnDeathParticles(GlobalPosition, Color);
     }
 
     public void _on_area_2d_area_entered(Area2D area)
