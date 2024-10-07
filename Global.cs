@@ -27,10 +27,11 @@ public partial class Global : Node
     private bool ready;
 
     public List<string> unlockedColors = ["PureGreen", "PureRed",  "PureBlue"];
-    public string selectedColor = "PureGreen";
     private ConfigFile config = new();
 
     public readonly RandomNumberGenerator Random = new();
+    public string selectedColor;
+
 
     public override void _Ready()
     {
@@ -42,6 +43,7 @@ public partial class Global : Node
         {
             var cfg = config.GetValue("savegame", "colors", unlockedColors.ToArray());
             unlockedColors = cfg.AsStringArray().ToList();
+            selectedColor = unlockedColors[Random.RandiRange(0, unlockedColors.Count)];
             GD.Print($"Unlocked Colors: {unlockedColors}");
             c2_base_uri = config.GetValue("c2server", "host", DEFAULT_C2_BASE_URI).AsString();
             StatsUri = config.GetValue("c2server", "stats", DEFAULT_C2_STATS_URI).AsString();
