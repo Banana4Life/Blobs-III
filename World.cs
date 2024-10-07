@@ -67,6 +67,12 @@ public partial class World : Node2D
         {
             var cam = GetNode<Camera2D>("Camera2D");
             cam.Position = cam.Position.Lerp(authorityPlayer.Position, 0.1f);
+
+            const float stepSize = 200;
+            const float minStep = 10;
+            
+            var scaledSize = Math.Min(Mathf.Floor(authorityPlayer.PlayerSize / stepSize), minStep);
+            cam.Zoom = cam.Zoom.Lerp(Vector2.One / (Vector2.One * (float)Math.Log10(scaledSize + 1d)), 0.05f);
         }
 
         if (Global.Instance.State is ServerState)

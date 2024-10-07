@@ -26,6 +26,7 @@ public partial class Player : CharacterBody2D, MassContributor
 
     public override void _PhysicsProcess(double delta)
     {
+        // GrowPlayer(2);
         if (IsMultiplayerAuthority())
         {
             Velocity = Input.GetVector("ui_left", "ui_right", "ui_up", "ui_down") * SPEED;
