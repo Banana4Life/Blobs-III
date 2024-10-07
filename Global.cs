@@ -41,6 +41,7 @@ public partial class Global : Node
         c2_base_uri = DEFAULT_C2_BASE_URI;
         StatsUri = DEFAULT_C2_STATS_URI;
         unlockedColors = defaultUnlockedColors.ToList();
+        selectedColor = defaultUnlockedColors.First();
         if (result == Error.Ok)
         {
             var cfg = config.GetValue("savegame", "colors", defaultUnlockedColors.ToArray());
