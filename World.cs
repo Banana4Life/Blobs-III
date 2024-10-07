@@ -57,15 +57,15 @@ public partial class World : Node2D
     {
         if (totalMass < maxMass)
         {
-            var massContributors = GetTree().GetNodesInGroup("MassContributor");
-            var players = massContributors.Where(mc => mc is Player);
-            var minSize = players.Count() == 0 ? 10 : Mathf.Max(1, players.Min(p => ((Player)p).PlayerSize) - 10);
-            totalMass += spawnRandomParticle(minSize, 500, false);
+            // var massContributors = GetTree().GetNodesInGroup("MassContributor");
+            // var players = massContributors.Where(mc => mc is Player);
+            // var minSize = players.Count() == 0 ? 10 : Mathf.Max(1, players.Min(p => ((Player)p).PlayerSize) - 10);
+            totalMass += spawnRandomParticle(50, 500, false);
         }
         
         if (totalTinyMass < maxTinyMass)
         {
-            totalTinyMass += spawnRandomParticle(5, 40, true);
+            totalTinyMass += spawnRandomParticle(5, 50, true);
         }
 
         if (maxAiPlayers > aiPlayers)

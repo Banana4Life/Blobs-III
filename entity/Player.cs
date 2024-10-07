@@ -94,7 +94,15 @@ public partial class Player : CharacterBody2D, MassContributor
 
             if (collision.GetCollider() is RigidBody2D rb)
             {
-                rb.ApplyCentralImpulse(-collision.GetNormal() * 5);
+                if (rb is not Particle particle || particle.size >= PlayerSize)
+                {
+                    rb.ApplyCentralImpulse(-collision.GetNormal() * 6);
+                }
+                else
+                {
+                    rb.ApplyCentralImpulse(-collision.GetNormal() * 3);
+                }
+              
             }
             if (collision.GetCollider() is Particle pa)
             {
@@ -103,7 +111,10 @@ public partial class Player : CharacterBody2D, MassContributor
                     if (pa.eatenCd < 0)
                     {
                         pa.eatenCd = 0.1;
-                        var massEaten = (int) (Mathf.Max(5, pa.size * delta * 25));
+                        
+                        // var massEaten = (int) (Mathf.Max(5, pa.size * delta * 25));
+                        var eatRate = 2;
+                        var massEaten = (int)Mathf.Min(PlayerSize * delta * eatRate, pa.size);
                         GrowPlayer(Mathf.Max(1, massEaten / 2));
                         RpcId(1, MethodName.EatParticle, pa.Name, massEaten);    
                     }
