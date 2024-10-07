@@ -206,7 +206,7 @@ public partial class Player : CharacterBody2D, MassContributor
         
         if (Name == Multiplayer.GetUniqueId().ToString())
         {
-            DisplayServer.WindowSetTitle($"LD56 - {DisplayName} - Score: {score}");
+            DisplayServer.WindowSetTitle($"LD56 - {DisplayName} - Score: {score}" + (Multiplayer.GetUniqueId() == 1 ? " (Server)" : ""));
         }
 
 
