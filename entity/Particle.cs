@@ -6,7 +6,7 @@ public partial class Particle : RigidBody2D, MassContributor
     private bool validSpawn = false;
     private double aliveTime = 0;
     [Export] public int size;
-    public Vector2 targetScale;
+    private Vector2 targetScale;
     [Export] public Color Color;
     [Export] public float seed;
     [Export] public float mag;
@@ -120,9 +120,9 @@ public partial class Particle : RigidBody2D, MassContributor
 
         }
         
+        GetNode<Sprite2D>("scaled/Sprite2D").Visible = validSpawn;
         if (validSpawn && Multiplayer.IsServer())
         {
-            GetNode<Sprite2D>("scaled/Sprite2D").Visible = validSpawn;
             var newScale = GetNode<Node2D>("scaled").Scale.Lerp(targetScale, 0.1f);
             GetNode<Node2D>("scaled").Scale = newScale;
             GetNode<CollisionShape2D>("PhysicsCollisionShape").Scale = newScale;
