@@ -165,17 +165,15 @@ public partial class Particle : RigidBody2D, MassContributor
         size -= mass;
         var scale = Mathf.Sqrt(size / Mathf.Pi) * 2 / 10f;
         targetScale = new Vector2(scale, scale);
+      
+        var world = GetParent<World>();
         if (tiny)
         {
-            var world = GetParent<World>();
-            if (tiny)
-            {
-                world.totalTinyMass -= mass;
-            }
-            else
-            {
-                world.totalMass -= mass;
-            }
+            world.totalTinyMass -= mass;
+        }
+        else
+        {
+            world.totalMass -= mass;
         }
     }
 }
