@@ -9,6 +9,8 @@ public partial class Player : CharacterBody2D, MassContributor
 
     
     public const float SPEED = 300.0f;
+    public float currentSpeed = SPEED;
+    public bool dashing;
 
     public bool aiControlled;
     
@@ -85,6 +87,23 @@ public partial class Player : CharacterBody2D, MassContributor
         // GrowPlayer(2);
         if (IsMultiplayerAuthority())
         {
+            if (dashing)
+            {
+                currentSpeed -= (float) (delta * SPEED * 1.5);
+                if (currentSpeed < SPEED)
+                {
+                    currentSpeed = SPEED;
+                    dashing = false;
+                }
+            }
+
+            if (!dashing && Input.GetActionStrength("dash") > 0.5)
+            {
+                dashing = true;
+                currentSpeed = SPEED * 3;
+                GrowPlayer(-Math.Max(10, PlayerSize / 10));
+            }
+
             Velocity = Input.GetVector("ui_left", "ui_right", "ui_up", "ui_down") *  Speed();
             MoveAndSlide();
             DetectCollision(delta);
@@ -93,7 +112,7 @@ public partial class Player : CharacterBody2D, MassContributor
 
     private float Speed()
     {
-        return Math.Max(150, SPEED - PlayerSize / 100f);
+        return Math.Max(150, currentSpeed - PlayerSize / 100f);
     }
 
     public void SpawnColoredParticlesOnScaled(Node2D on, PackedScene particleSystemScene, Vector2 at, Color color)
@@ -118,15 +137,19 @@ public partial class Player : CharacterBody2D, MassContributor
 
             if (collision.GetCollider() is RigidBody2D rb)
             {
+                float dashingMulti = dashing ? 50 : 1;
                 if (rb is not Particle particle || particle.size >= PlayerSize)
                 {
-                    rb.ApplyCentralImpulse(-collision.GetNormal() * 6);
+                    rb.ApplyCentralImpulse(-collision.GetNormal() * 6 * dashingMulti);
                 }
                 else
                 {
-                    rb.ApplyCentralImpulse(-collision.GetNormal() * 3);
+                    rb.ApplyCentralImpulse(-collision.GetNormal() * 3 * dashingMulti);
                 }
-              
+            }
+            if (dashing) // Cannot eat while dashing
+            {
+                return;
             }
             if (collision.GetCollider() is Particle pa)
             {
