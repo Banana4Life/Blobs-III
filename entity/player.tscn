@@ -17,6 +17,9 @@ properties/1/replication_mode = 1
 properties/2/path = NodePath(".:PlayerSize")
 properties/2/spawn = true
 properties/2/replication_mode = 1
+properties/3/path = NodePath(".:UnlockableColorName")
+properties/3/spawn = true
+properties/3/replication_mode = 1
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_hvhe3"]
 radius = 25.02
@@ -81,7 +84,7 @@ shader_parameter/width = 40.0
 
 [node name="player" type="CharacterBody2D" groups=["MassContributor"]]
 script = ExtResource("1_v5huj")
-PlayerColor = Color(0, 1, 0.533333, 0.317647)
+UnlockableColorName = "PureRed"
 
 [node name="PlayerSync" type="MultiplayerSynchronizer" parent="."]
 replication_config = SubResource("SceneReplicationConfig_pmm4k")

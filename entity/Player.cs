@@ -16,20 +16,27 @@ public partial class Player : CharacterBody2D, MassContributor
     [Export] public string DisplayName;
     [Export] public int PlayerSize;
     [Export] public int score;
-    [Export] public Color PlayerColor;
     public Vector2 targetScale;
 
     public int ContributedMass => PlayerSize;
     public double eatenCd;
     private double starving = 5;
+    public UnlockableColor Color;
     
     public override void _Ready()
     {
+        Color = UnlockableColors.Colors[UnlockableColorName];
         GetNode<Node2D>("scaled").Scale = Vector2.Zero;
         // var syncher = GetNode<MultiplayerSynchronizer>("PlayerSync");
         // syncher.SetVisibilityFor(0, false);
-        (GetNode<Sprite2D>("scaled/Sprite2D").Material as ShaderMaterial)
-            ?.SetShaderParameter("bodyColor", PlayerColor);
+        var sprite2D = GetNode<Sprite2D>("scaled/Sprite2D");
+        if (Color.Material != null)
+        {
+            sprite2D.Material = Color.Material;
+        }
+
+        (sprite2D.Material as ShaderMaterial)
+            ?.SetShaderParameter("bodyColor", Color.Color);
     }
 
     public override void _PhysicsProcess(double delta)
@@ -153,7 +160,7 @@ public partial class Player : CharacterBody2D, MassContributor
                         RpcId(pl.AuthorityFromName(), MethodName.EatPlayer, pl.Name, massEaten);
                         pl.eatenCd = 0.1;
                         
-                        SpawnColoredParticlesOnScaled(pl, eatParticles, collision.GetPosition(), pl.PlayerColor);
+                        SpawnColoredParticlesOnScaled(pl, eatParticles, collision.GetPosition(), pl.Color.Color);
                     }
                 }
             }
@@ -245,7 +252,7 @@ public partial class Player : CharacterBody2D, MassContributor
     {
         
         var world = GetParent<World>();
-        world.SpawnColoredParticles(world.deathParticles, GlobalPosition, PlayerColor);
+        world.SpawnColoredParticles(world.deathParticles, GlobalPosition, Color.Color);
         Audio.Instance.SplatAt(GlobalPosition);    
         
         QueueFree();

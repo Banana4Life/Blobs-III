@@ -65,6 +65,8 @@ public static class UnlockableColors
         { "LawnGreen", new UnlockableColor(Color.FromHtml("#7CFC00"), null) },
     };
 
+    public static UnlockableColor Default => Colors["PureRed"];
+
     public static string PickRandomColorName()
     {
         var colors = Colors.Keys.ToList();
