@@ -1,6 +1,7 @@
-[gd_scene load_steps=5 format=3 uid="uid://cxwud0lirioog"]
+[gd_scene load_steps=6 format=3 uid="uid://cxwud0lirioog"]
 
 [ext_resource type="Texture2D" uid="uid://3vnthsnt1xdf" path="res://particle.png" id="1_cwtw2"]
+[ext_resource type="Script" path="res://particles/OneShotParticle.cs" id="2_knb0q"]
 
 [sub_resource type="Curve" id="Curve_t46qf"]
 _data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(0.793774, 0.494327), -3.26762, -3.26762, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
@@ -31,3 +32,4 @@ texture = ExtResource("1_cwtw2")
 one_shot = true
 speed_scale = 1.5
 explosiveness = 0.5
+script = ExtResource("2_knb0q")

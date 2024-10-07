@@ -5,7 +5,7 @@ using LD56;
 
 public partial class World : Node2D
 {
-    private PackedScene deathParticles = GD.Load<PackedScene>("res://particles/death_particles.tscn");
+    public readonly PackedScene deathParticles = GD.Load<PackedScene>("res://particles/death_particles.tscn");
 
     
     [Export] public PackedScene particlePrefab;
@@ -173,9 +173,9 @@ public partial class World : Node2D
         cam.Position = authorityPlayer.Position;
     }
 
-    public void SpawnDeathParticles(Vector2 at, Color color)
+    public void SpawnColoredParticles(PackedScene particleSystemScene, Vector2 at, Color color)
     {
-        var particle = deathParticles.Instantiate<GpuParticles2D>();
+        var particle = particleSystemScene.Instantiate<GpuParticles2D>();
         if (particle.ProcessMaterial is ParticleProcessMaterial particleProcessMaterial)
         {
             particleProcessMaterial.SetColor(color);

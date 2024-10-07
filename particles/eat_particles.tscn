@@ -1,0 +1,39 @@
+[gd_scene load_steps=6 format=3 uid="uid://bjq1ed4nnnl1w"]
+
+[ext_resource type="Texture2D" uid="uid://3vnthsnt1xdf" path="res://particle.png" id="1_wh7tg"]
+[ext_resource type="Script" path="res://particles/OneShotParticle.cs" id="2_cdx24"]
+
+[sub_resource type="Curve" id="Curve_t46qf"]
+_data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0.490272, 0.936791), -0.386779, -0.386779, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="CurveTexture" id="CurveTexture_t4a4l"]
+curve = SubResource("Curve_t46qf")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_ag8v8"]
+resource_local_to_scene = true
+lifetime_randomness = 0.5
+particle_flag_disable_z = true
+emission_shape_scale = Vector3(2, 2, 2)
+direction = Vector3(0, -1, 0)
+spread = 180.0
+initial_velocity_min = 3.0
+initial_velocity_max = 6.0
+gravity = Vector3(0, 0, 0)
+radial_accel_min = -2.23517e-06
+radial_accel_max = -2.23517e-06
+scale_min = 0.2
+scale_max = 0.8
+color = Color(0, 1, 0, 1)
+alpha_curve = SubResource("CurveTexture_t4a4l")
+hue_variation_min = -0.3
+hue_variation_max = 0.3
+
+[node name="EatParticles" type="GPUParticles2D"]
+emitting = false
+amount = 50
+process_material = SubResource("ParticleProcessMaterial_ag8v8")
+texture = ExtResource("1_wh7tg")
+one_shot = true
+local_coords = true
+script = ExtResource("2_cdx24")

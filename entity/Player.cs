@@ -5,6 +5,8 @@ using LD56;
 
 public partial class Player : CharacterBody2D, MassContributor
 {
+    public static readonly PackedScene eatParticles = GD.Load<PackedScene>("res://particles/eat_particles.tscn");
+
     
     public const float SPEED = 300.0f;
 
@@ -36,7 +38,7 @@ public partial class Player : CharacterBody2D, MassContributor
             var massContributors = GetTree().GetNodesInGroup("MassContributor");
             var players = massContributors.Where(mc => mc is Player { aiControlled: false });
             var max = !players.Any() ? 0 : players.Max(mc => ((Player)mc).PlayerSize);
-            max = Math.Min(max, 450);
+            max = Math.Max(max, 450);
             if (PlayerSize > max)
             {
                 // TODO do stuff when player size was reached
@@ -85,8 +87,22 @@ public partial class Player : CharacterBody2D, MassContributor
         return Math.Max(150, SPEED - PlayerSize / 100f);
     }
 
+    public void SpawnColoredParticlesOnScaled(Node2D on, PackedScene particleSystemScene, Vector2 at, Color color)
+    {
+        var particle = particleSystemScene.Instantiate<GpuParticles2D>();
+        if (particle.ProcessMaterial is ParticleProcessMaterial particleProcessMaterial)
+        {
+            particleProcessMaterial.SetColor(color);
+
+            particle.Emitting = true;
+            on.GetNode<Node2D>("scaled").AddChild(particle);
+            particle.GlobalPosition = at;
+        }
+    }
+    
     private void detectCollision(double delta)
     {
+        var world = GetParent<World>();
         for (int i = 0; i < GetSlideCollisionCount(); i++)
         {
             var collision = GetSlideCollision(i);
@@ -116,7 +132,8 @@ public partial class Player : CharacterBody2D, MassContributor
                         var eatRate = 2;
                         var massEaten = (int)Mathf.Min(PlayerSize * delta * eatRate, pa.size);
                         GrowPlayer(Mathf.Max(1, massEaten / 2));
-                        RpcId(1, MethodName.EatParticle, pa.Name, massEaten);    
+                        RpcId(1, MethodName.EatParticle, pa.Name, massEaten);
+                        SpawnColoredParticlesOnScaled(pa, eatParticles, collision.GetPosition(), pa.Color);
                     }
                         
                 }
@@ -134,6 +151,8 @@ public partial class Player : CharacterBody2D, MassContributor
                             
                         RpcId(pl.authorityFromName(), MethodName.EatPlayer, pl.Name, massEaten);
                         pl.eatenCd = 0.1;
+                        
+                        SpawnColoredParticlesOnScaled(pl, eatParticles, collision.GetPosition(), pl.PlayerColor);
                     }
                 }
             }
@@ -214,7 +233,7 @@ public partial class Player : CharacterBody2D, MassContributor
     {
         
         var world = GetParent<World>();
-        world.SpawnDeathParticles(GlobalPosition, PlayerColor);
+        world.SpawnColoredParticles(world.deathParticles, GlobalPosition, PlayerColor);
         Audio.Instance.SplatAt(GlobalPosition);    
         
         QueueFree();

@@ -46,7 +46,8 @@ public partial class Particle : RigidBody2D, MassContributor
     public void RemoveFromGame()
     {
         QueueFree();
-        GetParent<World>().SpawnDeathParticles(GlobalPosition, Color);
+        var world = GetParent<World>();
+        world.SpawnColoredParticles(world.deathParticles, GlobalPosition, Color);
         Audio.Instance.SplatAt(GlobalPosition, volumeLinear:0.01f);
     }
 
