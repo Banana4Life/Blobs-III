@@ -144,11 +144,13 @@ public partial class Global : Node
         LoadWorldScene(false);
     }
     
-    public void LoadRespawnScene()
+    public void LoadRespawnScene(int score)
     {
         respawn = respawnScene.Instantiate<Respawn>();
         GetTree().Root.AddChild(respawn);
         GetTree().SetCurrentScene(respawn);
+        
+        respawn.GetNode<Label>("score").Text = score.ToString();
     }
     
     public void LoadCountdownSceneInWorld()

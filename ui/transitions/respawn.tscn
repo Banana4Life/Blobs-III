@@ -11,14 +11,44 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -484.0
-offset_top = -312.0
-offset_right = 494.0
-offset_bottom = 309.0
+offset_left = -399.0
+offset_top = -243.0
+offset_right = 402.0
+offset_bottom = -20.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_font_sizes/font_size = 150
+theme_override_font_sizes/font_size = 80
 text = "You died
-Press (R) to 
-Respawn"
+Press (R) to Respawn"
 horizontal_alignment = 1
+
+[node name="scorelbl" type="Label" parent="."]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -353.0
+offset_top = 67.0
+offset_right = -97.0
+offset_bottom = 177.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 80
+text = "Score: "
+horizontal_alignment = 1
+
+[node name="score" type="Label" parent="."]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = 12.0
+offset_top = 67.0
+offset_right = 511.0
+offset_bottom = 177.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 80
+text = "9001"

@@ -10,6 +10,7 @@ public partial class Player : CharacterBody2D, MassContributor
 
     [Export] public string DisplayName;
     [Export] public int PlayerSize;
+    [Export] public int score;
     [Export] public Color PlayerColor;
     public Vector2 targetScale;
 
@@ -114,6 +115,7 @@ public partial class Player : CharacterBody2D, MassContributor
     public void GrowPlayer(int mass = 200)
     {
         PlayerSize += mass;
+        score = Mathf.Max(PlayerSize, score);
         if (mass > 0)
         {
             GD.Print($"{DisplayName}({Name}) grows to {PlayerSize} (+{mass})");
@@ -151,6 +153,6 @@ public partial class Player : CharacterBody2D, MassContributor
         QueueFree(); 
         Global.Instance.SendPlayerDead();
         
-        Global.Instance.LoadRespawnScene();
+        Global.Instance.LoadRespawnScene(score);
     }
 }
