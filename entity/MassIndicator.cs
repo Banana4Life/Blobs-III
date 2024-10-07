@@ -42,7 +42,7 @@ public partial class MassIndicator : Node2D
 		var bucketSize = 360d / indicatorsCount;
 		foreach (var node in massContributors)
 		{
-			if (node != player && node is Node2D node2d && node is MassContributor massContributor)
+			if (node != player && node is Node2D node2d and MassContributor massContributor)
 			{
 				var contributorDir = node2d.GlobalPosition - playerPos;
 				var contributorAngle = Mathf.RadToDeg(Mathf.Atan2(contributorDir.Y, contributorDir.X) + Mathf.Pi);
