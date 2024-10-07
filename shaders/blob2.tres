@@ -1,6 +1,6 @@
 [gd_resource type="VisualShader" load_steps=26 format=3 uid="uid://whygv3qsb6m6"]
 
-[ext_resource type="Script" path="res://shaderV/rgba/noise/worley2x2x2.gd" id="1_mjbnk"]
+[ext_resource type="Script" path="res://shaderV/worley2x2x2.gd" id="1_mjbnk"]
 
 [sub_resource type="VisualShaderNodeInput" id="VisualShaderNodeInput_ulwur"]
 input_name = "time"

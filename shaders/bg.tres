@@ -1,7 +1,7 @@
 [gd_resource type="VisualShader" load_steps=15 format=3 uid="uid://6tmohkhqfvur"]
 
-[ext_resource type="Script" path="res://shaderV/rgba/noise/worley2x2x2.gd" id="1_cyqt6"]
-[ext_resource type="Script" path="res://shaderV/rgba/noise/perlin3d.gd" id="2_e5q25"]
+[ext_resource type="Script" path="res://shaderV/worley2x2x2.gd" id="1_cyqt6"]
+[ext_resource type="Script" path="res://shaderV/perlin3d.gd" id="2_e5q25"]
 
 [sub_resource type="VisualShaderNodeFloatOp" id="VisualShaderNodeFloatOp_f3ari"]
 default_input_values = [0, 0.0, 1, 0.05]
