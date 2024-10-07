@@ -13,7 +13,7 @@ public partial class World : Node2D
     private int players = 1;
     [Export] public int maxMass;
     [Export] public int totalMass;
-    [Export] public int maxTinyMass = 10000;
+    [Export] public int maxTinyMass = 1000;
     [Export] public int totalTinyMass;
 
     public int maxAiPlayers = 5;
@@ -64,12 +64,12 @@ public partial class World : Node2D
             // var massContributors = GetTree().GetNodesInGroup("MassContributor");
             // var players = massContributors.Where(mc => mc is Player);
             // var minSize = players.Count() == 0 ? 10 : Mathf.Max(1, players.Min(p => ((Player)p).PlayerSize) - 10);
-            totalMass += spawnRandomParticle(50, 500, false);
+            totalMass += spawnRandomParticle(20, 500, false);
         }
         
         if (totalTinyMass < maxTinyMass)
         {
-            totalTinyMass += spawnRandomParticle(5, 50, true);
+            totalTinyMass += spawnRandomParticle(3, 20, true);
         }
 
         if (maxAiPlayers > aiPlayers)
