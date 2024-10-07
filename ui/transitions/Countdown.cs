@@ -27,6 +27,9 @@ public partial class Countdown : CanvasLayer
 		GD.Print("Countdown finished");
 		Audio.Instance.BackgroundVolumeLinear = 0.05f;
 		Global.Instance.LoadWorldScene(true);
-		Global.Instance.SendPlayerReady();
+		if (Global.Instance.State is ClientState)
+		{
+			Global.Instance.SendPlayerReady();
+		}
 	}
 }

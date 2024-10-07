@@ -134,6 +134,11 @@ public partial class Global : Node
         PlayerManager.SetPlayerDead(peerId);
     }
 
+    public void LoadMainMenu()
+    {
+        GetTree().ChangeSceneToPacked(mainMenuScene);
+    }
+    
     public void LoadWorldScene(bool show)
     {
         GD.Print("Loading World Scene...");
@@ -211,5 +216,12 @@ public partial class Global : Node
             }
             activeToast.Present(unlock);
         }
+    }
+    
+    public void ResetWorld()
+    {
+        GetTree().Root.RemoveChild(world);
+        world = null;
+        ready = false;
     }
 }

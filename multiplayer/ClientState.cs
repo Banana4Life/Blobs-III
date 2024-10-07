@@ -63,6 +63,8 @@ public class ClientState : State
     private void OnServerDisconnected()
     {
         GD.Print($"Client - {multiplayer.GetUniqueId()}: OnServerDisconnected");
+        Global.Instance.LoadMainMenu();
+        Global.Instance.ResetWorld();
     }
 
     private void OnConnectedToServer()
@@ -109,7 +111,6 @@ public class ClientState : State
     {
         signalingClient.JoinMessage();
         TransitionState(NetworkState.AWAIT_ACCEPT);
-        timer = 0;
     }
 
     private void UpdateAwaitAcceptState()
