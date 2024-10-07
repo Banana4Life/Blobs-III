@@ -196,13 +196,11 @@ public partial class Global : Node
             config.Save("user://config.cfg");
             GD.Print($"Awarded {unlock}");
             Audio.Instance.Ding();
-            if (activeToast != null)
+            if (activeToast == null)
             {
-                activeToast.Hide();
-                activeToast.QueueFree();
+                activeToast = toastScene.Instantiate<Toast>();
+                AddChild(activeToast);
             }
-            activeToast = toastScene.Instantiate<Toast>();
-            AddChild(activeToast);
             activeToast.Present(unlock);
         }
     }

@@ -26,7 +26,6 @@ public partial class Toast : CanvasLayer
 		if (Visible && timer.Update(delta))
 		{
 			Hide();
-			QueueFree();
 		}
 	}
 }
