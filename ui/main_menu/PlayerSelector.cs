@@ -1,5 +1,6 @@
 using Godot;
 using System;
+using System.Linq;
 using LD56;
 
 public partial class PlayerSelector : Control
@@ -20,9 +21,9 @@ public partial class PlayerSelector : Control
 
 	public void _on_btn_pressed()
 	{
-		var indexOf = Array.IndexOf(Global.Instance.unlockedColors, Global.Instance.selectedColor);
+		var indexOf = Global.Instance.unlockedColors.IndexOf(Global.Instance.selectedColor);
 		indexOf++;
-		if (indexOf >= Global.Instance.unlockedColors.Length)
+		if (indexOf >= Global.Instance.unlockedColors.Count())
 		{
 			indexOf = 0;
 		}

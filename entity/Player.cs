@@ -154,6 +154,10 @@ public partial class Player : CharacterBody2D, MassContributor
                     if (pl.eatenCd < 0)
                     {
                         var massEaten = (int) (Mathf.Max(5, pl.PlayerSize * delta * 25));
+                        if (pl.PlayerSize <= massEaten)
+                        {
+                            Global.Instance.AwardUnlockedColor(pl.UnlockableColorName);
+                        }
                         GrowPlayer(Mathf.Max(1, massEaten / 4));
                         // GD.Print($"{Multiplayer.GetUniqueId()} : {DisplayName} eats {massEaten} of {pl.DisplayName}");
                             

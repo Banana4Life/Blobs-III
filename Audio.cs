@@ -9,6 +9,7 @@ public partial class Audio : Node
     private AudioStreamPlayer backgroundMusic = new();
     private AudioStream splat = GD.Load<AudioStream>("res://audio/splat.wav");
     private AudioStream plop = GD.Load<AudioStream>("res://audio/plop.wav");
+    private AudioStream ding = GD.Load<AudioStream>("res://audio/ding.wav");
 
     public float BackgroundVolumeLinear
     {
@@ -68,6 +69,10 @@ public partial class Audio : Node
         PlayOneShot(splat, volumeLinear, node);
     }
 
+    public void Ding()
+    {
+        PlayOneShot(ding, 0.5f);
+    }
     public void SplatAt(Vector2 position, float volumeLinear = 0.1f, Node node = null)
     {
         PlayOneShotAt(position, splat, volumeLinear, node);
