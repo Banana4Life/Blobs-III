@@ -1,4 +1,4 @@
-[gd_resource type="VisualShader" load_steps=15 format=3 uid="uid://6tmohkhqfvur"]
+[gd_resource type="VisualShader" load_steps=18 format=3 uid="uid://6tmohkhqfvur"]
 
 [ext_resource type="Script" path="res://shaderV/worley2x2x2.gd" id="1_cyqt6"]
 [ext_resource type="Script" path="res://shaderV/perlin3d.gd" id="2_e5q25"]
@@ -37,6 +37,18 @@ output_port_for_preview = 0
 [sub_resource type="VisualShaderNodeFloatOp" id="VisualShaderNodeFloatOp_sqsk2"]
 default_input_values = [0, 0.0, 1, 0.2]
 operator = 2
+
+[sub_resource type="VisualShaderNodeCustom" id="VisualShaderNodeCustom_qypyo"]
+output_port_for_preview = 0
+default_input_values = [1, Vector3(0, 0, 0), 2, 5.0, 3, 100.0, 4, 0.0]
+initialized = true
+script = ExtResource("1_cyqt6")
+
+[sub_resource type="VisualShaderNodeInput" id="VisualShaderNodeInput_hhy0p"]
+input_name = "uv"
+
+[sub_resource type="VisualShaderNodeInput" id="VisualShaderNodeInput_66866"]
+input_name = "time"
 
 [sub_resource type="VisualShaderNodeFloatConstant" id="VisualShaderNodeFloatConstant_spmlu"]
 constant = 500.0
@@ -139,6 +151,7 @@ void fragment() {
 
 }
 "
+graph_offset = Vector2(-1020.13, -420.536)
 mode = 1
 flags/light_only = false
 nodes/fragment/0/position = Vector2(360, -60)
@@ -166,4 +179,10 @@ nodes/fragment/115/node = SubResource("VisualShaderNodeFloatOp_uscru")
 nodes/fragment/115/position = Vector2(20, -240)
 nodes/fragment/116/node = SubResource("VisualShaderNodeFloatOp_sqsk2")
 nodes/fragment/116/position = Vector2(-400, -480)
-nodes/fragment/connections = PackedInt32Array(24, 0, 108, 0, 108, 0, 23, 4, 23, 0, 110, 0, 112, 0, 111, 4, 6, 0, 111, 0, 24, 0, 112, 0, 19, 0, 23, 2, 6, 0, 23, 0, 111, 0, 113, 0, 113, 0, 110, 1, 115, 0, 0, 1, 110, 0, 115, 1, 114, 0, 116, 0, 116, 0, 115, 0, 112, 0, 114, 3)
+nodes/fragment/117/node = SubResource("VisualShaderNodeCustom_qypyo")
+nodes/fragment/117/position = Vector2(-1180, 360)
+nodes/fragment/118/node = SubResource("VisualShaderNodeInput_hhy0p")
+nodes/fragment/118/position = Vector2(-1560, 380)
+nodes/fragment/119/node = SubResource("VisualShaderNodeInput_66866")
+nodes/fragment/119/position = Vector2(-1540, 480)
+nodes/fragment/connections = PackedInt32Array(24, 0, 108, 0, 108, 0, 23, 4, 23, 0, 110, 0, 112, 0, 111, 4, 6, 0, 111, 0, 24, 0, 112, 0, 19, 0, 23, 2, 6, 0, 23, 0, 111, 0, 113, 0, 113, 0, 110, 1, 115, 0, 0, 1, 110, 0, 115, 1, 114, 0, 116, 0, 116, 0, 115, 0, 112, 0, 114, 3, 118, 0, 117, 0, 119, 0, 117, 4)

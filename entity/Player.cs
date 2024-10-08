@@ -309,7 +309,7 @@ public partial class Player : CharacterBody2D, MassContributor
         }
     }
 
-    public void GrowPlayer(int mass = 200)
+    public void GrowPlayer(int mass = 2000)
     {
 
         starving = 2;
