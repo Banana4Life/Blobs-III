@@ -60,8 +60,21 @@ public static class NameGenerator
         "legionaire"
     };
 
-    
-    static readonly List<string> adjectives = new()
+    private static readonly List<string> robotAdjectives =
+    [
+        "Intelligent", "Autonomous", "Efficient", "Precise", "Advanced", "Adaptive",
+        "Responsive", "Futuristic", "Programmable", "Analytical", "Powerful",
+        "Innovative", "Interactive", "Agile", "Synthetic", "Mechanical", "Sleek",
+        "Fast", "Reliable", "Intuitive", "Sophisticated", "Networked", "Cognitive",
+        "Automated", "Dynamic", "Flexible", "Versatile", "Predictive", "Smart",
+        "Logical", "Systematic", "Proactive", "Streamlined", "Modular", "Robust",
+        "Compact", "Precautionary", "Scalable", "Computational", "Immersive",
+        "Optimized", "Seamless", "Durable", "Strategic", "Integrated", "Responsive",
+        "Conscious", "Connected", "Algorithmic", "Self-learning"
+    ];
+
+
+    static readonly List<string> tinyAdjectives = new()
     {
         "adorable",
         "tiny",
@@ -114,14 +127,19 @@ public static class NameGenerator
         "perky",
         "legendary"
     };
-    
-    
 
 
     public static string RandomName()
     {
         var random = new Random();
-        return adjectives[random.Next(0, adjectives.Count)] + " " + 
+        return tinyAdjectives[random.Next(0, tinyAdjectives.Count)] + " " +
+               animals[random.Next(0, animals.Count)];
+    }
+
+    public static string RandomAIName()
+    {
+        var random = new Random();
+        return robotAdjectives[random.Next(0, tinyAdjectives.Count)] + " " +
                animals[random.Next(0, animals.Count)];
     }
 }

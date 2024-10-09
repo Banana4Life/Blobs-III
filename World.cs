@@ -132,7 +132,7 @@ public partial class World : Node2D
     {
         var player = playerPrefab.Instantiate<Player>();
         player.Name = "AI" + AI_ID++;
-        player.DisplayName = NameGenerator.RandomName();
+        player.DisplayName = NameGenerator.RandomAIName();
         var random = this.random;
         player.GrowPlayer(random.RandiRange(100, 250));
         player.aiControlled = true;
